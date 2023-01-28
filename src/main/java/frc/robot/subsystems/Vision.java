@@ -1,0 +1,80 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
+package frc.robot.subsystems;
+
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+public class Vision extends SubsystemBase {
+  NetworkTable table;
+  NetworkTableEntry tx;
+  NetworkTableEntry ty;
+  NetworkTableEntry ta;
+  NetworkTableEntry ts;
+  NetworkTableEntry cameraMode;
+
+  double x;
+  double y;
+  double area;
+  double skew;
+  /** Creates a new Vision. */
+  public Vision() {
+    table = NetworkTableInstance.getDefault().getTable("limelight");
+    tx = table.getEntry("tx"); // Horizontal Offset From Crosshair To Target  (-27 degrees to 27 degrees)
+    ty = table.getEntry("ty"); // Vertical Offset From Crosshair To Target (-20.5 degrees to 20.5 degrees)
+    ta = table.getEntry("ta"); // Target Area (0% of image to 100% of image)
+    ts = table.getEntry("ts"); // Target Skew
+    cameraMode = table.getEntry("camMode"); // Gets camera mode
+
+    x = tx.getDouble(0);
+    y = ty.getDouble(0);
+    area = ta.getDouble(0);
+
+    // Debug info
+    SmartDashboard.putNumber("Limelight X", x);
+    SmartDashboard.putNumber("Limelight Y", y);
+  }
+
+  public void update() {
+    x = tx.getDouble(0);
+    y = ty.getDouble(0);
+    area = ta.getDouble(0);
+    skew = ts.getDouble(0);
+
+    // Shuffleboard info
+    SmartDashboard.putNumber("Limelight X", x);
+    SmartDashboard.putNumber("Limelight Y", y);
+    SmartDashboard.putNumber("Limelight Area", area);
+  }
+
+  public double getXOffset() {
+    update();
+    return x;
+  }
+  public double getYOffset() {
+    update();
+    return y;
+  }
+  public double getArea() {
+    update();
+    return area;
+  }
+  public void switchCameraMode() {
+    // Switches between driver camera and limelight camera stream
+    if (cameraMode.getDouble(0) == 0) {
+      cameraMode.setNumber(1);
+    } else if (cameraMode.getDouble(0) == 1) {
+      cameraMode.setNumber(0);
+    }
+  }
+
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+  }
+}

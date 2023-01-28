@@ -1,0 +1,71 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
+package frc.robot.commands;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.RobotContainer;
+import frc.robot.Constants.VisionConstants;
+import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Vision;
+
+public class FollowTape extends CommandBase {
+  Drivetrain drivetrain = RobotContainer.m_drivetrain;
+  Vision limelight = RobotContainer.m_vision;
+
+  double x;
+  double y;
+  double area;
+  double skew;
+  double driveError;
+  double turnError;
+  /** Creates a new ChargeAtTape. */
+  public FollowTape() {
+    addRequirements(drivetrain);
+    addRequirements(limelight);
+    // Use addRequirements() here to declare subsystem dependencies.
+  }
+
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {
+    drivetrain.enableBrakes();
+  }
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+    SmartDashboard.putString("AUTONOMOUS", "FOLLOWING TAPE");
+
+    x = limelight.getXOffset();
+    y = limelight.getYOffset();
+    area = limelight.getArea();
+
+    // Calculate error margins
+    driveError = VisionConstants.kSetpointCharge - area;
+    turnError = VisionConstants.kSetpointTurn - x;
+    
+    // Prevents robot from moving if there is no tape
+    if (area == 0) {
+      driveError = 0;
+      turnError = 0;
+    }
+    // Adjusts motor outputs based on drive and turn errors
+    drivetrain.driveRobot(VisionConstants.kPCharge * -driveError, VisionConstants.kPTurn * -turnError, 1.00, 1.00);
+  }
+
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {
+    drivetrain.driveRobot(0, 0, 0, 0);
+  }
+
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    return false;
+    // return ((drivetrain.getTurnSpeed() < 0.30 && drivetrain.getTurnSpeed() > -0.30 && drivetrain.getDriveSpeed() < 0.40 && drivetrain.getDriveSpeed() > -0.40) || area == 0);
+  }
+}
