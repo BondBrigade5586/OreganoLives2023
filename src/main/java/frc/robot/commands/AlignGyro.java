@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -15,14 +17,25 @@ import frc.robot.subsystems.Gyro;
 public class AlignGyro extends CommandBase {
   Drivetrain drivetrain = RobotContainer.m_drivetrain;
   Gyro gyro = RobotContainer.m_gyro;
-  int sp = DriveConstants.kGyroSPAngle;
   double z;
+  double sp;
   double error;
   double errorSum;
-  double prevTimestamp = Timer.getFPGATimestamp();
+  double errorRate;
+  double lastError;
+  double prevTimestamp;
+  double outputSpeed;
+
+  Supplier<Double> setpt;
 
   /** Creates a new AlignGyro. */
-  public AlignGyro() {
+  public AlignGyro(Supplier<Double> setpoint) {
+    this.setpt = setpoint;
+    // sp = setpoint.get(); // TODO sp does not update each time method is called
+    SmartDashboard.putNumber("Gyro Setpoint:", sp); // TODO REMOVE -- DEBUG ONLY
+
+    lastError = 0;
+    prevTimestamp = Timer.getFPGATimestamp();
     addRequirements(drivetrain);
     addRequirements(gyro);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -30,11 +43,14 @@ public class AlignGyro extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    sp = setpt.get();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    // SmartDashboard.putNumber("Gyro Setpoint:", sp); // TODO REMOVE -- DEBUG ONLY
     z = gyro.getZRotation();
 
     // Converts z and setpoint values to 360-degree scale (0<x<360)
@@ -48,23 +64,31 @@ public class AlignGyro extends CommandBase {
     // Finds distance between current position and setpoint
     error = Math.min(Math.abs(sp-z), 360-Math.abs(z-sp));
     errorSum += error * (Timer.getFPGATimestamp() - prevTimestamp);
+    errorRate = (error - lastError) / (Timer.getFPGATimestamp() - prevTimestamp);
     SmartDashboard.putNumber("Gyro Z Error", error);
 
-    // Prevents turning more than 180 degrees
+    outputSpeed = error*DriveConstants.kGyroP + errorSum*DriveConstants.kGyroI + errorRate*DriveConstants.kGyroD;
+
+    // Sets turn speed parameters
+    if (outputSpeed > 0.70) {
+      outputSpeed = 0.70;
+    } else if (outputSpeed < 0.35) {
+      outputSpeed = 0.45;
+    }
+
+    // Prevents turning more than 180 degrees, uses PID to determine setpoint speeds
     if (Math.abs(sp-z) <= 180 && sp>z) {
-      drivetrain.turnRobot(error*DriveConstants.kGyroP + errorSum*DriveConstants.kGyroI);
-
+      drivetrain.turnRobot(outputSpeed);
     } else if (Math.abs(sp-z) <= 180 && z>sp) {
-      drivetrain.turnRobot(-error*DriveConstants.kGyroP - errorSum*DriveConstants.kGyroI);
-
+      drivetrain.turnRobot(-outputSpeed);
     } else if (Math.abs(sp-z) > 180 && sp>z) {
-      drivetrain.turnRobot(-error*DriveConstants.kGyroP - errorSum*DriveConstants.kGyroI);
-    
+      drivetrain.turnRobot(-outputSpeed);
     } else if (Math.abs(sp-z) > 180 && z>sp) {
-      drivetrain.turnRobot(error*DriveConstants.kGyroP + errorSum*DriveConstants.kGyroI);
+      drivetrain.turnRobot(outputSpeed);
     }
 
     prevTimestamp = Timer.getFPGATimestamp();
+    lastError = error;
   }
 
   // Called once the command ends or is interrupted.
@@ -72,12 +96,24 @@ public class AlignGyro extends CommandBase {
   public void end(boolean interrupted) {
     error = 0;
     errorSum = 0;
+    lastError = 0;
+    sp=0;
+
+    // Stops motors quicker by setting power to opposite direction
+    if (outputSpeed < 0) {
+      drivetrain.turnRobot(outputSpeed+0.1);
+    } else if (outputSpeed > 0) {
+      drivetrain.turnRobot(-outputSpeed-0.1);
+    }
+    
+    // Stops robot
     drivetrain.driveRobot(0, 0, 0, 0);
+    drivetrain.enableBrakes();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (gyro.getZRotation() <= DriveConstants.kGyroSPAngle+1 && gyro.getZRotation() >= DriveConstants.kGyroSPAngle-1);
+    return (error<0.8);
   }
 }

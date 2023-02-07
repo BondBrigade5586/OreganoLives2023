@@ -4,7 +4,9 @@
 
 package frc.robot;
 
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 
@@ -42,10 +44,12 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    for (int i=0;i<=m_led.getLength();i++) {
+
+    // Sets LEDs to blue when RobotContainer is called from the Robot class
+    for (int i=1;i<m_led.getLength();i++) {
       m_led.setColorRGB(i, 0, 0, 255);
     }
-    
+
     m_drivetrain.setDefaultCommand(
       new DriveJoystick(
         m_drivetrain, 
@@ -73,14 +77,16 @@ public class RobotContainer {
     
     // Aligns robot with tape, then turns the robot to 0 degrees on Z-axis
 
-    new JoystickButton(m_subsystemController, 1).whileTrue(new FollowTape());
+    new JoystickButton(m_subsystemController, 1).whileTrue(new FollowTape(VisionConstants.kSetpointCharge, VisionConstants.kSetpointTurn));
     
-    new JoystickButton(m_driverController, 1).whileTrue(new FollowTape()); // Requires fine-tuning
-    new JoystickButton(m_driverController, 2).whileTrue(new AlignGyro()); // Test use only
+    new JoystickButton(m_driverController, 1).whileTrue(new FollowTape(VisionConstants.kSetpointCharge, VisionConstants.kSetpointTurn)); // Requires fine-tuning
+    new JoystickButton(m_driverController, 2).whileTrue(new AlignGyro(() -> DriveConstants.kGyroSPAngle)); // Test use only
     new JoystickButton(m_driverController, 3).whileTrue(new SwitchLimelightMode());
     new JoystickButton(m_driverController, 4).whileTrue(new AutoBalance()); // Test use only
-
-  }
+    new JoystickButton(m_driverController, 7).whileTrue(new ResetGyroZ()); 
+    new JoystickButton(m_driverController, 3).whileTrue(new ParallelPark(() -> m_gyro.getZRotation())); // TODO Test/refine
+    
+    }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

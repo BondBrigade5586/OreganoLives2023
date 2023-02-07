@@ -21,8 +21,12 @@ public class FollowTape extends CommandBase {
   double skew;
   double driveError;
   double turnError;
-  /** Creates a new ChargeAtTape. */
-  public FollowTape() {
+  double driveSP;
+  double turnSP;
+  /** Creates a new FollowTape. */
+  public FollowTape(double dsp, double tsp) {
+    driveSP = dsp;
+    turnSP = tsp;
     addRequirements(drivetrain);
     addRequirements(limelight);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -44,8 +48,8 @@ public class FollowTape extends CommandBase {
     area = limelight.getArea();
 
     // Calculate error margins
-    driveError = VisionConstants.kSetpointCharge - area;
-    turnError = VisionConstants.kSetpointTurn - x;
+    driveError = driveSP - area;
+    turnError =  turnSP - x;
     
     // Prevents robot from moving if there is no tape
     if (area == 0) {
@@ -54,7 +58,7 @@ public class FollowTape extends CommandBase {
     }
     // Adjusts motor outputs based on drive and turn errors
     drivetrain.driveRobot(VisionConstants.kPCharge * -driveError, VisionConstants.kPTurn * -turnError, 1.00, 1.00);
-  }
+  } 
 
   // Called once the command ends or is interrupted.
   @Override
@@ -65,7 +69,7 @@ public class FollowTape extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
-    // return ((drivetrain.getTurnSpeed() < 0.30 && drivetrain.getTurnSpeed() > -0.30 && drivetrain.getDriveSpeed() < 0.40 && drivetrain.getDriveSpeed() > -0.40) || area == 0);
+    // return false;
+    return ((drivetrain.getTurnSpeed() < 0.15 && drivetrain.getTurnSpeed() > -0.15 && drivetrain.getDriveSpeed() < 0.30 && drivetrain.getDriveSpeed() > -0.30) || area == 0);
   }
 }

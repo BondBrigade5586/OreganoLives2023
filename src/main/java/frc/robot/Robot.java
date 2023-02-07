@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.AutoBalance;
 import frc.robot.commands.DriveJoystick;
 import frc.robot.commands.FollowTape;
@@ -39,8 +40,8 @@ public class Robot extends TimedRobot {
     autoChooser = new SendableChooser<>();
 
     // Autonomous modes
-    autoChooser.addOption("Center", new AutoBalance());
-    autoChooser.addOption("Sides", new FollowTape());
+    autoChooser.addOption("Balance", new AutoBalance());
+    autoChooser.addOption("Follow Tape", new FollowTape(VisionConstants.kSetpointCharge, VisionConstants.kSetpointTurn));
     autoChooser.addOption("None", null);
     autoChooser.addOption("Circles", new DriveJoystick(RobotContainer.m_drivetrain, () -> 0.0, () -> 0.65, () -> 0.0));
     SmartDashboard.putData(autoChooser);

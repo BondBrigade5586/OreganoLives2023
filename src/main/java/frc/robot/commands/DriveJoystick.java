@@ -45,28 +45,28 @@ public class DriveJoystick extends CommandBase {
     double kSpeedFactor = DriveConstants.kDefaultSpeedFactor;
     double kTurnFactor = DriveConstants.kDefaultTurnFactor;
 
-    if (speedFactor.get() <= 1 && speedFactor.get() > 0.25) {
+    if (speedFactor.get() <= 1 && speedFactor.get() > 0.75) {
       kSpeedFactor = 0.5;
-      kTurnFactor = 0.5;
-    } else if (speedFactor.get() <= 0.25 && speedFactor.get() >= -0.25) {
-      kSpeedFactor = 0.75;
-      kTurnFactor = 0.6;
-    } else if (speedFactor.get() < -0.25) {
-      kSpeedFactor = 1.00;
-      kTurnFactor = 0.7;
+      kTurnFactor = 0.5586;
+    } else if (speedFactor.get() <= 0.75 && speedFactor.get() >= -0.75) {
+      kSpeedFactor = 0.7;
+      kTurnFactor = 0.5586;
+    } else if (speedFactor.get() < -0.75) {
+      kSpeedFactor = 0.9;
+      kTurnFactor = 0.75;
     }
 
-    // Sets color of LED lights based on move direction
+    // Sets color of LED lights based on move direction.
     if (kSpeed > 0) {
-      for (int i = 0;i<=leds.getLength();i++) {
+      for (int i = 1;i<leds.getLength();i++) {
         leds.setColorRGB(i, 0, 255, 0);
       }
     } else if (kSpeed < 0) {
-      for (int i = 0;i<=leds.getLength();i++) {
+      for (int i = 1;i<leds.getLength();i++) {
         leds.setColorRGB(i, 255, 0, 0);
       }
     } else {
-      for (int i = 0;i<=leds.getLength();i++) {
+      for (int i = 1;i<leds.getLength();i++) {
         leds.setColorRGB(i, 255, 255, 255);
       }
     }
