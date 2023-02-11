@@ -31,8 +31,6 @@ public class AlignGyro extends CommandBase {
   /** Creates a new AlignGyro. */
   public AlignGyro(Supplier<Double> setpoint) {
     this.setpt = setpoint;
-    // sp = setpoint.get(); // TODO sp does not update each time method is called
-    SmartDashboard.putNumber("Gyro Setpoint:", sp); // TODO REMOVE -- DEBUG ONLY
 
     lastError = 0;
     prevTimestamp = Timer.getFPGATimestamp();
@@ -50,7 +48,6 @@ public class AlignGyro extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // SmartDashboard.putNumber("Gyro Setpoint:", sp); // TODO REMOVE -- DEBUG ONLY
     z = gyro.getZRotation();
 
     // Converts z and setpoint values to 360-degree scale (0<x<360)

@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -31,6 +32,14 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+  
+  
+
+  // Runnables for instant commands
+  Runnable resetEncoder = new ResetEncoder();
+  Runnable resetGyroZ = new ResetGyroZ();
+  Runnable switchLimelightMode = new SwitchLimelightMode();
+
   // Set up Drivetrain tab on Shuffleboard
   public static ShuffleboardTab driveTab = Shuffleboard.getTab("Drivetrain");
   public static GenericEntry sbInches = driveTab.add("Encoder inches", 0).getEntry();
@@ -83,20 +92,31 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    
-      // TODO Convert InstantCommand and SequentialCommandGroup to inline statements
-        // Reduces clutter in the 'commands' folder and hard to navigate through
 
     new JoystickButton(m_subsystemController, 1).whileTrue(new FollowTape(VisionConstants.kSetpointCharge, VisionConstants.kSetpointTurn));
     
+    // Bind commands to buttons on joystick
     new JoystickButton(m_driverController, 1).whileTrue(new FollowTape(VisionConstants.kSetpointCharge, VisionConstants.kSetpointTurn)); // Requires fine-tuning
     new JoystickButton(m_driverController, 2).whileTrue(new AlignGyro(() -> DriveConstants.kGyroSPAngle)); // Test use only
-    new JoystickButton(m_driverController, 4).whileTrue(new SwitchLimelightMode());
     new JoystickButton(m_driverController, 5).whileTrue(new AutoBalance()); // Test use only
-    new JoystickButton(m_driverController, 7).whileTrue(new ResetGyroZ()); 
-    new JoystickButton(m_driverController, 3).whileTrue(new ParallelPark(() -> m_gyro.getZRotation())); // TODO Test/refine
-    new JoystickButton(m_driverController, 6).whileTrue(new ResetDriveEncoder()); // Resets encoder position    
-    new JoystickButton(m_driverController, 11).whileTrue(new DriveDistance(480)); // Drives robot to 16' 10.5"  
+    new JoystickButton(m_driverController, 11).whileTrue(new DriveDistance(202.5)); // Drives robot to 16' 10.5"  
+  
+    // Instant Commands
+    new JoystickButton(m_driverController, 4).whileTrue(new InstantCommand(switchLimelightMode, m_vision));
+    new JoystickButton(m_driverController, 5).whileTrue(new InstantCommand(resetGyroZ, m_gyro));
+    new JoystickButton(m_driverController, 6).whileTrue(new InstantCommand(resetEncoder, m_drivetrain));
+
+    // Sequential Command Groups
+    new JoystickButton(m_driverController, 3).whileTrue(
+      new SequentialCommandGroup(
+        new AlignGyro(() -> -m_gyro.getZRotation()),
+        new DriveUntilTapeFound(0.95, 0.05),
+        new InlineTapeWall(),
+        new AlignGyro(() -> 0.0),
+        new FollowTape(VisionConstants.kSetpointCharge, VisionConstants.kSetpointTurn)
+      )
+    );
+    
   }
 
   /**
@@ -105,6 +125,24 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new AutoBalance();
+    return null;
+  }
+
+
+  // Runnable classes for inline InstantCommands -- Is this correct?
+  class ResetEncoder implements Runnable {
+    public void run() {
+      m_drivetrain.resetEncoderPosition();
+    }
+  }
+  class ResetGyroZ implements Runnable {
+    public void run() {
+      m_gyro.resetZRotation();
+    }
+  }
+  class SwitchLimelightMode implements Runnable {
+    public void run() {
+      m_vision.switchCameraMode();
+    }
   }
 }
