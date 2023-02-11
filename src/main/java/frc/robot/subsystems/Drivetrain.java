@@ -1,9 +1,9 @@
 
 /* ------ SEASON BOT DRIVETRAIN CODE ------ */
 
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
+// // // // // Copyright (c) FIRST and other WPILib contributors.
+// // // // // Open Source Software; you can modify and/or share it under the terms of
+// // // // // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
 
@@ -38,7 +38,7 @@ public class Drivetrain extends SubsystemBase {
     m_backRight = new WPI_TalonFX(DriveConstants.kBackRightID);
 
     // Encoder
-    m_frontLeft.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+    m_frontRight.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 
     m_leftMotors = new MotorControllerGroup(m_frontLeft, m_backLeft);
     m_rightMotors = new MotorControllerGroup(m_frontRight, m_backRight);
@@ -106,9 +106,11 @@ public class Drivetrain extends SubsystemBase {
   public void driveRobot(double forward, double turn, double speedFactor, double turnFactor) {
     tankDrive.arcadeDrive(-forward*speedFactor, -turn*turnFactor);
     SmartDashboard.putNumber("Drive Speed", -forward*speedFactor);
+    SmartDashboard.putNumber("Turn Speed", turn);
   }
   public void turnRobot(double turn) {
     tankDrive.arcadeDrive(0, -turn*0.85);
+    SmartDashboard.putNumber("Drive Speed", 0);
     SmartDashboard.putNumber("Turn Speed", turn);
   }
 
@@ -141,10 +143,10 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public double getEncoderPosition() {
-    return m_frontLeft.getSelectedSensorPosition();
+    return m_frontRight.getSelectedSensorPosition();
   }
   public void setEncoderPosition(double setpoint) {
-    m_frontLeft.setSelectedSensorPosition(setpoint);
+    m_frontRight.setSelectedSensorPosition(setpoint);
   }
   public void resetEncoderPosition() {
     setEncoderPosition(0);

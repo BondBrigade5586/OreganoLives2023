@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
@@ -15,12 +16,16 @@ public class FollowTape extends CommandBase {
   Drivetrain drivetrain = RobotContainer.m_drivetrain;
   Vision limelight = RobotContainer.m_vision;
 
+  double prevTimestamp = Timer.getFPGATimestamp();
+
   double x;
   double y;
   double area;
   double skew;
   double driveError;
   double turnError;
+  double turnErrorSum;
+
   double driveSP;
   double turnSP;
   /** Creates a new FollowTape. */
@@ -50,6 +55,7 @@ public class FollowTape extends CommandBase {
     // Calculate error margins
     driveError = driveSP - area;
     turnError =  turnSP - x;
+    turnErrorSum = turnError*(Timer.getFPGATimestamp() - prevTimestamp);
     
     // Prevents robot from moving if there is no tape
     if (area == 0) {
@@ -57,7 +63,8 @@ public class FollowTape extends CommandBase {
       turnError = 0;
     }
     // Adjusts motor outputs based on drive and turn errors
-    drivetrain.driveRobot(VisionConstants.kPCharge * -driveError, VisionConstants.kPTurn * -turnError, 1.00, 1.00);
+    drivetrain.driveRobot(VisionConstants.kPCharge * -driveError, VisionConstants.kPTurn * -turnError + VisionConstants.kITurn*-turnErrorSum, 1.00, 1.00);
+    prevTimestamp = Timer.getFPGATimestamp();
   } 
 
   // Called once the command ends or is interrupted.

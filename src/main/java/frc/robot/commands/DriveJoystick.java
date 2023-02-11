@@ -4,8 +4,16 @@
 
 package frc.robot.commands;
 
+import java.sql.Time;
 import java.util.function.Supplier;
 
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.DriveConstants;
@@ -15,6 +23,24 @@ import frc.robot.subsystems.LED;
 import frc.robot.subsystems.Vision;
 
 public class DriveJoystick extends CommandBase {
+  // Encoders
+  double encoderInches;
+  double encoderFeet;
+  double encoderMiles;
+  double prevFeet = 0;
+  double prevTimestamp = Timer.getFPGATimestamp();
+  double velocity;
+  
+  // Shuffleboard tab info
+  ShuffleboardTab tab = RobotContainer.driveTab;
+  GenericEntry sbInches = RobotContainer.sbInches;
+  GenericEntry sbFeet = RobotContainer.sbFeet;
+  GenericEntry sbMiles = RobotContainer.sbMiles;
+  GenericEntry sbVelocityFPS = RobotContainer.sbVelFt;
+  GenericEntry sbVelocityMPH = RobotContainer.sbVelMi;
+
+
+  // Subsystem dependencies
   Drivetrain drivetrain = RobotContainer.m_drivetrain;
   Vision limelight = RobotContainer.m_vision;
   Gyro gyro = RobotContainer.m_gyro;
@@ -44,7 +70,20 @@ public class DriveJoystick extends CommandBase {
     double kTurn = turn.get();
     double kSpeedFactor = DriveConstants.kDefaultSpeedFactor;
     double kTurnFactor = DriveConstants.kDefaultTurnFactor;
-
+    encoderInches = drivetrain.getEncoderPosition() * DriveConstants.kTicksToInches;
+    encoderFeet = encoderInches * DriveConstants.kInchesToFt;
+    encoderMiles = encoderFeet * DriveConstants.kFeetToMiles;
+    velocity = (encoderFeet - prevFeet) / (Timer.getFPGATimestamp() - prevTimestamp); // Speed in feet/second
+    // Update shuffleboard values
+    sbInches.setDouble(encoderInches);
+    sbFeet.setDouble(encoderFeet);
+    sbMiles.setDouble(encoderMiles);
+    sbVelocityFPS.setDouble(velocity);
+    sbVelocityMPH.setDouble(velocity * DriveConstants.kFPStoMPH);
+  
+    // updateEncoderShuffleboard(encoderInches, encoderFeet, encoderMiles, velocity);
+    
+    // Calculate speed and turn factors
     if (speedFactor.get() <= 1 && speedFactor.get() > 0.75) {
       kSpeedFactor = 0.5;
       kTurnFactor = 0.5586;
@@ -56,23 +95,11 @@ public class DriveJoystick extends CommandBase {
       kTurnFactor = 0.75;
     }
 
-    // Sets color of LED lights based on move direction.
-    if (kSpeed > 0) {
-      for (int i = 1;i<leds.getLength();i++) {
-        leds.setColorRGB(i, 0, 255, 0);
-      }
-    } else if (kSpeed < 0) {
-      for (int i = 1;i<leds.getLength();i++) {
-        leds.setColorRGB(i, 255, 0, 0);
-      }
-    } else {
-      for (int i = 1;i<leds.getLength();i++) {
-        leds.setColorRGB(i, 255, 255, 255);
-      }
-    }
-
     drivetrain.driveRobot(kSpeed, kTurn, kSpeedFactor, kTurnFactor);
+    setLEDLightColor(kSpeed);    
     limelight.update();
+    prevFeet = encoderFeet;
+    prevTimestamp = Timer.getFPGATimestamp();
   }
 
   // Called once the command ends or is interrupted.
@@ -85,5 +112,22 @@ public class DriveJoystick extends CommandBase {
   @Override
   public boolean isFinished() {
     return false;
+  }
+
+  /* ------ CUSTOM METHODS ------ */
+  public void setLEDLightColor(double speed) {
+    if (speed > 0) {
+      for (int i = 1;i<leds.getLength();i++) {
+        leds.setColorRGB(i, 0, 255, 0);
+      }
+    } else if (speed < 0) {
+      for (int i = 1;i<leds.getLength();i++) {
+        leds.setColorRGB(i, 255, 0, 0);
+      }
+    } else {
+      for (int i = 1;i<leds.getLength();i++) {
+        leds.setColorRGB(i, 255, 255, 255);
+      }
+    }
   }
 }
