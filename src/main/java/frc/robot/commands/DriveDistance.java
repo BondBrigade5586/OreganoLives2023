@@ -48,7 +48,7 @@ public class DriveDistance extends CommandBase {
     positionIn = positionTicks * DriveConstants.kTicksToInches;
 
     error = positionIn - sp;
-    outputSpeed = error * DriveConstants.kDistanceP;
+    outputSpeed = -error * DriveConstants.kDistanceP;
     
     if (outputSpeed > 0.75) { // Ranges speed output from 0.40 to 0.75
       outputSpeed = 0.75;

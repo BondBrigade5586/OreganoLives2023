@@ -93,13 +93,14 @@ public class RobotContainer {
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
+    // Bind commands to buttons on controller
     new JoystickButton(m_subsystemController, 1).whileTrue(new FollowTape(VisionConstants.kSetpointCharge, VisionConstants.kSetpointTurn));
     
     // Bind commands to buttons on joystick
     new JoystickButton(m_driverController, 1).whileTrue(new FollowTape(VisionConstants.kSetpointCharge, VisionConstants.kSetpointTurn)); // Requires fine-tuning
-    new JoystickButton(m_driverController, 2).whileTrue(new AlignGyro(() -> DriveConstants.kGyroSPAngle)); // Test use only
+    new JoystickButton(m_driverController, 3).whileTrue(new AlignGyro(() -> DriveConstants.kGyroSPAngle)); // Test use only
     new JoystickButton(m_driverController, 5).whileTrue(new AutoBalance()); // Test use only
-    new JoystickButton(m_driverController, 11).whileTrue(new DriveDistance(202.5)); // Drives robot to 16' 10.5"  
+    new JoystickButton(m_driverController, 12).whileTrue(new DriveDistance(202.5)); // Drives robot to 16' 10.5"  
   
     // Instant Commands
     new JoystickButton(m_driverController, 4).whileTrue(new InstantCommand(switchLimelightMode, m_vision));
@@ -107,10 +108,10 @@ public class RobotContainer {
     new JoystickButton(m_driverController, 6).whileTrue(new InstantCommand(resetEncoder, m_drivetrain));
 
     // Sequential Command Groups
-    new JoystickButton(m_driverController, 3).whileTrue(
+    new JoystickButton(m_driverController, 11).whileTrue(
       new SequentialCommandGroup(
         new AlignGyro(() -> -m_gyro.getZRotation()),
-        new DriveUntilTapeFound(0.95, 0.05),
+        new DriveUntilTapeFound(-0.55, 0.05),
         new InlineTapeWall(),
         new AlignGyro(() -> 0.0),
         new FollowTape(VisionConstants.kSetpointCharge, VisionConstants.kSetpointTurn)

@@ -45,9 +45,9 @@ public class InlineTapeWall extends CommandBase {
 
     // Perpendicular to tape and wall
     if (b<90-VisionConstants.kBOffset) {
-      driveSpeed = -0.65;
-    } else if (b>90+VisionConstants.kBOffset) {
       driveSpeed = 0.65;
+    } else if (b>90+VisionConstants.kBOffset) {
+      driveSpeed = -0.65;
     } else {
       driveSpeed = 0;
     }

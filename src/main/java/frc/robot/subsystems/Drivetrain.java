@@ -104,7 +104,7 @@ public class Drivetrain extends SubsystemBase {
   /* ------- CUSTOM DRIVETRAIN METHODS ------ */
 
   public void driveRobot(double forward, double turn, double speedFactor, double turnFactor) {
-    tankDrive.arcadeDrive(-forward*speedFactor, -turn*turnFactor);
+    tankDrive.arcadeDrive(forward*speedFactor, -turn*turnFactor);
     SmartDashboard.putNumber("Drive Speed", -forward*speedFactor);
     SmartDashboard.putNumber("Turn Speed", turn);
   }

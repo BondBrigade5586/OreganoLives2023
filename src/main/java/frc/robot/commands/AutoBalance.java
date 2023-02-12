@@ -39,9 +39,9 @@ public class AutoBalance extends CommandBase {
     SmartDashboard.putString("AUTONOMOUS", "BALANCING");
       
     if (gyro.getYRotation() < -7) {
-      drivetrain.driveRobot(-0.65, 0, 0.65, 0);
-    } else if (gyro.getYRotation() > 7) {
       drivetrain.driveRobot(0.65, 0, 0.65, 0);
+    } else if (gyro.getYRotation() > 7) {
+      drivetrain.driveRobot(-0.65, 0, 0.65, 0);
     } else {
       drivetrain.enableBrakes();
       drivetrain.driveRobot(0, 0, 0, 0);
@@ -50,7 +50,9 @@ public class AutoBalance extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    drivetrain.driveRobot(0, 0, 0, 0);
+  }
 
   // Returns true when the command should end.
   @Override

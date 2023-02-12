@@ -63,7 +63,7 @@ public class FollowTape extends CommandBase {
       turnError = 0;
     }
     // Adjusts motor outputs based on drive and turn errors
-    drivetrain.driveRobot(VisionConstants.kPCharge * -driveError, VisionConstants.kPTurn * -turnError + VisionConstants.kITurn*-turnErrorSum, 1.00, 1.00);
+    drivetrain.driveRobot(VisionConstants.kPCharge * driveError, VisionConstants.kPTurn * -turnError + VisionConstants.kITurn*-turnErrorSum, 1.00, 1.00);
     prevTimestamp = Timer.getFPGATimestamp();
   } 
 

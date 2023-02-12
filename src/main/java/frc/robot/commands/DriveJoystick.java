@@ -90,8 +90,8 @@ public class DriveJoystick extends CommandBase {
       kTurnFactor = 0.75;
     }
 
-    drivetrain.driveRobot(kSpeed, kTurn, kSpeedFactor, kTurnFactor);
-    setLEDLightColor(kSpeed);    
+    drivetrain.driveRobot(-kSpeed, kTurn, kSpeedFactor, kTurnFactor);
+    setLEDLightColor(-kSpeed);    
     limelight.update();
     prevFeet = encoderFeet;
     prevTimestamp = Timer.getFPGATimestamp();
