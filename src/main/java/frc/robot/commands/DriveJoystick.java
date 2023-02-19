@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.DriveCommands;
+package frc.robot.commands;
 
 import java.util.function.Supplier;
 
@@ -91,7 +91,7 @@ public class DriveJoystick extends CommandBase {
     }
 
     drivetrain.driveArcade(-kSpeed, kTurn, kSpeedFactor, kTurnFactor);
-    setLEDLightColor(-kSpeed);    
+    // setLEDLightColor(-kSpeed);    
     limelight.update();
     prevFeet = encoderFeet;
     prevTimestamp = Timer.getFPGATimestamp();
@@ -110,19 +110,19 @@ public class DriveJoystick extends CommandBase {
   }
 
   /* ------ CUSTOM METHODS ------ */
-  public void setLEDLightColor(double speed) {
-    if (speed > 0) {
-      for (int i = 1;i<leds.getLength();i++) {
-        leds.setColorRGB(i, 0, 255, 0);
-      }
-    } else if (speed < 0) {
-      for (int i = 1;i<leds.getLength();i++) {
-        leds.setColorRGB(i, 255, 0, 0);
-      }
-    } else {
-      for (int i = 1;i<leds.getLength();i++) {
-        leds.setColorRGB(i, 255, 255, 255);
-      }
-    }
-  }
+  // // public void setLEDLightColor(double speed) {
+  // //   if (speed > 0) {
+  // //     for (int i = 1;i<leds.getLength();i++) {
+  // //       leds.setColorRGB(i, 0, 255, 0);
+  // //     }
+  // //   } else if (speed < 0) {
+  // //     for (int i = 1;i<leds.getLength();i++) {
+  // //       leds.setColorRGB(i, 255, 0, 0);
+  // //     }
+  // //   } else {
+  // //     for (int i = 1;i<leds.getLength();i++) {
+  // //       leds.setColorRGB(i, 255, 255, 255);
+  // //     }
+  // //   }
+  // // }
 }

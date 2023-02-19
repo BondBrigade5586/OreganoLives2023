@@ -4,10 +4,10 @@
 
 package frc.robot;
 
-import frc.robot.commands.BalanceCommands.HoldOnChargeStation;
-import frc.robot.commands.DriveCommands.ForzaDrive;
-import frc.robot.commands.IntakeCommands.UseIntake;
-import frc.robot.commands.VisionCommands.FollowTape;
+import frc.robot.commands.FollowTape;
+import frc.robot.commands.ForzaDrive;
+import frc.robot.commands.HoldOnChargeStation;
+import frc.robot.commands.UseIntake;
 import frc.robot.subsystems.*;
 import frc.robot.Constants.*;
 
@@ -76,7 +76,7 @@ public class RobotContainer {
 
     // Set default commands for subsystems
     m_drivetrain.setDefaultCommand(
-      new ForzaDrive(() -> m_xboxDriverController.getRightTriggerAxis(), () -> m_xboxDriverController.getLeftTriggerAxis(), () -> m_xboxDriverController.getLeftX())
+      Robot.m_drivetrainCommand
     );
     m_intake.setDefaultCommand(
       new UseIntake(

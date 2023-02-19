@@ -13,14 +13,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.*;
-import frc.robot.commands.BalanceCommands.ClimbChargeStation;
-import frc.robot.commands.BalanceCommands.HoldOnChargeStation;
-import frc.robot.commands.DriveCommands.DriveDistance;
-import frc.robot.commands.DriveCommands.DriveDrift;
-import frc.robot.commands.DriveCommands.DriveJoystick;
-import frc.robot.commands.DriveCommands.ForzaDrive;
-import frc.robot.commands.IntakeCommands.RunIntakeTime;
-import frc.robot.commands.VisionCommands.FollowTape;
+import frc.robot.commands.ClimbChargeStation;
+import frc.robot.commands.DriveDistance;
+import frc.robot.commands.DriveDrift;
+import frc.robot.commands.DriveJoystick;
+import frc.robot.commands.FollowTape;
+import frc.robot.commands.ForzaDrive;
+import frc.robot.commands.HoldOnChargeStation;
+import frc.robot.commands.RunIntakeTime;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to

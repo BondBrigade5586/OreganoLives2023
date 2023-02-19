@@ -2,28 +2,19 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.DriveCommands;
-
-import java.util.function.Supplier;
+package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Gyro;
 
-public class ForzaDrive extends CommandBase {
+public class HoldOnChargeStation extends CommandBase {
   Drivetrain drivetrain = RobotContainer.m_drivetrain;
-  Vision limelight = RobotContainer.m_vision;
-
-  Supplier<Double> kForward, kBackward, kTurn;
-  double kSpeed;
-
-  /** Creates a new ForzaDrive. */
-  public ForzaDrive(Supplier<Double> forward, Supplier<Double> backward, Supplier<Double> turn) {
-    this.kForward = forward;
-    this.kBackward = backward;
-    this.kTurn = turn;
+  Gyro gyro = RobotContainer.m_gyro;
+  /** Creates a new HoldOnChargeStation. */
+  public HoldOnChargeStation() {
+    addRequirements(gyro);
     addRequirements(drivetrain);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -35,15 +26,16 @@ public class ForzaDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    kSpeed = kForward.get() - kBackward.get();
-
-    drivetrain.driveArcade(kSpeed, kTurn.get(), DriveConstants.kDefaultSpeedFactor, DriveConstants.kDefaultTurnFactor);
-    limelight.update();
+   if (gyro.getZRotation() > 14) {
+    drivetrain.driveArcade(0.30, 0, 0.75, 0);
+   } 
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    drivetrain.stopRobot();
+  }
 
   // Returns true when the command should end.
   @Override
