@@ -38,7 +38,7 @@ public class ClimbChargeStation extends CommandBase {
       interactedWithRamp = true;
     }
 
-    if (!interactedWithRamp) {
+    if (interactedWithRamp) {
       drivetrain.driveArcade(0.65, 0, 0.75, 0);
     } else if (interactedWithRamp) {
       if (gyro.getYRotation() < -7) {

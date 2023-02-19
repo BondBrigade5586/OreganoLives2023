@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.commands.BalanceCommands.HoldOnChargeStation;
+import frc.robot.commands.DriveCommands.ForzaDrive;
 import frc.robot.commands.IntakeCommands.UseIntake;
 import frc.robot.commands.VisionCommands.FollowTape;
 import frc.robot.subsystems.*;
@@ -75,7 +76,7 @@ public class RobotContainer {
 
     // Set default commands for subsystems
     m_drivetrain.setDefaultCommand(
-      Robot.m_drivetrainCommand
+      new ForzaDrive(() -> m_xboxDriverController.getRightTriggerAxis(), () -> m_xboxDriverController.getLeftTriggerAxis(), () -> m_xboxDriverController.getLeftX())
     );
     m_intake.setDefaultCommand(
       new UseIntake(
@@ -100,10 +101,11 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
     // Bind commands to buttons on controller
-    new JoystickButton(m_subsystemController, 1).whileTrue(new FollowTape(VisionConstants.kSetpointCharge, VisionConstants.kSetpointTurn));
-    new JoystickButton(m_subsystemController, 70).whileTrue(new HoldOnChargeStation()); // TODO Should be button 'B'
+    new JoystickButton(m_subsystemController, 3).whileTrue(new FollowTape(VisionConstants.kSetpointCharge, VisionConstants.kSetpointTurn));
+    new JoystickButton(m_subsystemController, 2).whileTrue(new HoldOnChargeStation()); // TODO Should be button 'B'
 
-    // // // // Bind commands to buttons on joystick for debug
+    // // // // Bind commands to buttons on joystick for debug\
+
     // // // new JoystickButton(m_driverController, 1).whileTrue(new FollowTape(VisionConstants.kSetpointCharge, VisionConstants.kSetpointTurn)); // Requires fine-tuning
     // // // new JoystickButton(m_driverController, 3).whileTrue(new AlignGyro(() -> DriveConstants.kGyroSPAngle)); // Test use only
     // // // new JoystickButton(m_driverController, 5).whileTrue(new ClimbChargeStation()); // Test use only
