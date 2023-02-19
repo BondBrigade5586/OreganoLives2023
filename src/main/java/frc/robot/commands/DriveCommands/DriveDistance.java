@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.DriveCommands;
 
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -62,13 +62,13 @@ public class DriveDistance extends CommandBase {
 
     sbSpeed.setDouble(outputSpeed);
     sbError.setDouble(error);
-    drivetrain.driveRobot(outputSpeed, 0, DriveConstants.kDefaultSpeedFactor, DriveConstants.kDefaultTurnFactor);
+    drivetrain.driveArcade(outputSpeed, 0, DriveConstants.kDefaultSpeedFactor, DriveConstants.kDefaultTurnFactor);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    drivetrain.driveRobot(0, 0, 0, 0);
+    drivetrain.stopRobot();
   }
 
   // Returns true when the command should end.

@@ -16,14 +16,22 @@ package frc.robot;
 public final class Constants {
   
   public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
-    public static final int kSubsystemControllerPort = 1;
+    public static final int kFlightstickDriverControllerPort = 0;
+    public static final int kXboxDriverControllerPort = 1;
+    public static final int kSubsystemControllerPort = 3;
 
     // Control Axis
     public static final int kDriveAxis = 1;
     public static final int kTurnAxis = 2;
     public static final int kSpeedFactorAxis = 3;
   }
+
+
+  public static class AutonomousConstants {
+    public static final double kDistCommunityToGrid = 216;
+    public static final double kMaxYAngleOffset = 3;
+  }
+
 
   public static class DriveConstants {
     // Drive motor controller IDs
@@ -54,11 +62,12 @@ public final class Constants {
     
     // Drive distance PID (used in DriveDistance)
     public static final double kDistanceP = 0.015;
-    public static final double kDistErrorMargin = 0.25;
+    public static final double kDistErrorMargin = 0.50;
 
     public static final double kDefaultSpeedFactor = 0.80;
     public static final double kDefaultTurnFactor = 0.80;
   }
+
 
   public static class VisionConstants {
     public static final double kPTurn = 0.05;
@@ -72,6 +81,19 @@ public final class Constants {
     public static final double kMaxXOffset = 25;
     public static final double kMaxZOffset = 6;
   }
+
+
+  public static class IntakeConstants {
+    public static final int kLeftControllerID = 4;
+    public static final int kRightControllerID = 5;
+
+    public static final int kIntakeInButton = 5;
+    public static final int kIntakeOutButton = 6;
+
+    public static final double kIntakeInSP = 0.75;
+    public static final double kIntakeOutSP = -0.75;
+  }
+
 
   public static class OtherConstants {
     public static final int kLEDPort = 0;

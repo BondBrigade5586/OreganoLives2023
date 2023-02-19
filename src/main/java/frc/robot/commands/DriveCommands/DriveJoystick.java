@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.DriveCommands;
 
 import java.util.function.Supplier;
 
@@ -43,9 +43,9 @@ public class DriveJoystick extends CommandBase {
   Supplier<Double> speed, turn, speedFactor;
 
   /** Creates a new driveJoystick. */
-  public DriveJoystick(Drivetrain drivetrain, Supplier<Double> speed, Supplier<Double> turn, Supplier<Double> speedFactor) {
+  public DriveJoystick(Drivetrain drivetrain, Supplier<Double> d, Supplier<Double> turn, Supplier<Double> speedFactor) {
     this.drivetrain = drivetrain;
-    this.speed = speed;
+    this.speed = d;
     this.turn = turn;
     this.speedFactor = speedFactor;
 
@@ -86,11 +86,11 @@ public class DriveJoystick extends CommandBase {
       kSpeedFactor = 0.7;
       kTurnFactor = 0.5586;
     } else if (speedFactor.get() < -0.75) {
-      kSpeedFactor = 0.9;
+      kSpeedFactor = 0.90;
       kTurnFactor = 0.75;
     }
 
-    drivetrain.driveRobot(-kSpeed, kTurn, kSpeedFactor, kTurnFactor);
+    drivetrain.driveArcade(-kSpeed, kTurn, kSpeedFactor, kTurnFactor);
     setLEDLightColor(-kSpeed);    
     limelight.update();
     prevFeet = encoderFeet;
@@ -100,7 +100,7 @@ public class DriveJoystick extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    drivetrain.driveRobot(0, 0, 0, 0);
+    drivetrain.stopRobot();
   }
 
   // Returns true when the command should end.

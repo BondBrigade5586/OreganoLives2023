@@ -4,11 +4,11 @@
 
 package frc.robot;
 
-import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.Constants.VisionConstants;
-import frc.robot.commands.*;
+import frc.robot.commands.BalanceCommands.HoldOnChargeStation;
+import frc.robot.commands.IntakeCommands.UseIntake;
+import frc.robot.commands.VisionCommands.FollowTape;
 import frc.robot.subsystems.*;
+import frc.robot.Constants.*;
 
 import java.util.Map;
 
@@ -19,8 +19,6 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -32,14 +30,19 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  
-  
-
   // Runnables for instant commands
   Runnable resetEncoder = new ResetEncoder();
   Runnable resetGyroZ = new ResetGyroZ();
   Runnable switchLimelightMode = new SwitchLimelightMode();
 
+  // Create and populate driver station tab
+  public static ShuffleboardTab driverStationTab = Shuffleboard.getTab("Driver Station");
+  public static GenericEntry sbDriveSpd = driverStationTab.add("Drive Speed", 0).withWidget(BuiltInWidgets.kNumberBar).withProperties(Map.of("min", -1, "max", 1)).getEntry();
+  public static GenericEntry sbTurnSpd = driverStationTab.add("Turn Speed", 0).withWidget(BuiltInWidgets.kNumberBar).withProperties(Map.of("min", -1, "max", 1)).getEntry();
+  public static GenericEntry sbGyroY = driverStationTab.add("Gyro Y Rotation", 0).withWidget(BuiltInWidgets.kDial).withProperties(Map.of("min", -90, "max", 90)).getEntry();
+  public static GenericEntry sbGyroZ = driverStationTab.add("Gyro Z Rotation", 0).withWidget(BuiltInWidgets.kDial).withProperties(Map.of("min", -180, "max", 180)).getEntry();
+  public static GenericEntry sbIntakeDir = driverStationTab.add("Intake Direction", "None").getEntry();
+  
   // Set up Drivetrain tab on Shuffleboard
   public static ShuffleboardTab driveTab = Shuffleboard.getTab("Drivetrain");
   public static GenericEntry sbInches = driveTab.add("Encoder inches", 0).getEntry();
@@ -51,11 +54,13 @@ public class RobotContainer {
   public static GenericEntry sbDistError = driveTab.add("Distance Error", 0).getEntry();
   
   // Create controllers
-  private final Joystick m_driverController = new Joystick(OperatorConstants.kDriverControllerPort);
-  private final XboxController m_subsystemController = new XboxController(OperatorConstants.kSubsystemControllerPort);
+  public final static Joystick m_flightstickDriverController = new Joystick(OperatorConstants.kFlightstickDriverControllerPort);
+  public final static XboxController m_xboxDriverController = new XboxController(OperatorConstants.kXboxDriverControllerPort);
+  public final static XboxController m_subsystemController = new XboxController(OperatorConstants.kSubsystemControllerPort);
   
   // Declare subsystems
   public final static Drivetrain m_drivetrain = new Drivetrain();
+  public final static Intake m_intake = new Intake();
   public final static Vision m_vision = new Vision();
   public final static Gyro m_gyro = new Gyro();
   public final static LED m_led = new LED();
@@ -63,18 +68,19 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
-    // Sets LEDs to blue when RobotContainer is called from the Robot class
-    for (int i=1;i<m_led.getLength();i++) {
-      m_led.setColorRGB(i, 0, 0, 255);
-    }
+    // // // // Sets LEDs to blue when RobotContainer is called from the Robot class
+    // // // for (int i=1;i<m_led.getLength();i++) {
+    // // //   m_led.setColorRGB(i, 0, 0, 255);
+    // // // }
 
+    // Set default commands for subsystems
     m_drivetrain.setDefaultCommand(
-      new DriveJoystick(
-        m_drivetrain, 
-        () -> m_driverController.getRawAxis(OperatorConstants.kDriveAxis), 
-        () -> m_driverController.getRawAxis(OperatorConstants.kTurnAxis), 
-        () -> m_driverController.getRawAxis(OperatorConstants.kSpeedFactorAxis)
-      )
+      Robot.m_drivetrainCommand
+    );
+    m_intake.setDefaultCommand(
+      new UseIntake(
+        () -> m_subsystemController.getRawButton(IntakeConstants.kIntakeInButton), 
+        () -> m_subsystemController.getRawButton(IntakeConstants.kIntakeOutButton))
     );
     
     // Configure the trigger bindings
@@ -95,28 +101,29 @@ public class RobotContainer {
 
     // Bind commands to buttons on controller
     new JoystickButton(m_subsystemController, 1).whileTrue(new FollowTape(VisionConstants.kSetpointCharge, VisionConstants.kSetpointTurn));
-    
-    // Bind commands to buttons on joystick
-    new JoystickButton(m_driverController, 1).whileTrue(new FollowTape(VisionConstants.kSetpointCharge, VisionConstants.kSetpointTurn)); // Requires fine-tuning
-    new JoystickButton(m_driverController, 3).whileTrue(new AlignGyro(() -> DriveConstants.kGyroSPAngle)); // Test use only
-    new JoystickButton(m_driverController, 5).whileTrue(new AutoBalance()); // Test use only
-    new JoystickButton(m_driverController, 12).whileTrue(new DriveDistance(202.5)); // Drives robot to 16' 10.5"  
-  
-    // Instant Commands
-    new JoystickButton(m_driverController, 4).whileTrue(new InstantCommand(switchLimelightMode, m_vision));
-    new JoystickButton(m_driverController, 5).whileTrue(new InstantCommand(resetGyroZ, m_gyro));
-    new JoystickButton(m_driverController, 6).whileTrue(new InstantCommand(resetEncoder, m_drivetrain));
+    new JoystickButton(m_subsystemController, 70).whileTrue(new HoldOnChargeStation()); // TODO Should be button 'B'
 
-    // Sequential Command Groups
-    new JoystickButton(m_driverController, 11).whileTrue(
-      new SequentialCommandGroup(
-        new AlignGyro(() -> -m_gyro.getZRotation()),
-        new DriveUntilTapeFound(-0.55, 0.05),
-        new InlineTapeWall(),
-        new AlignGyro(() -> 0.0),
-        new FollowTape(VisionConstants.kSetpointCharge, VisionConstants.kSetpointTurn)
-      )
-    );
+    // // // // Bind commands to buttons on joystick for debug
+    // // // new JoystickButton(m_driverController, 1).whileTrue(new FollowTape(VisionConstants.kSetpointCharge, VisionConstants.kSetpointTurn)); // Requires fine-tuning
+    // // // new JoystickButton(m_driverController, 3).whileTrue(new AlignGyro(() -> DriveConstants.kGyroSPAngle)); // Test use only
+    // // // new JoystickButton(m_driverController, 5).whileTrue(new ClimbChargeStation()); // Test use only
+    // // // new JoystickButton(m_driverController, 12).whileTrue(new DriveDistance(290)); // Drives robot to 16' 10.5"  
+  
+    // // // // Instant Commands
+    // // // new JoystickButton(m_driverController, 4).whileTrue(new InstantCommand(switchLimelightMode, m_vision));
+    // // // new JoystickButton(m_driverController, 5).whileTrue(new InstantCommand(resetGyroZ, m_gyro));
+    // // // new JoystickButton(m_driverController, 6).whileTrue(new InstantCommand(resetEncoder, m_drivetrain));
+
+    // // // // Sequential Command Groups
+    // // // new JoystickButton(m_driverController, 11).whileTrue(
+    // // //   new SequentialCommandGroup(
+    // // //     new AlignGyro(() -> -m_gyro.getZRotation()),
+    // // //     new DriveUntilTapeFound(-0.55, 0.05),
+    // // //     new InlineTapeWall(),
+    // // //     new AlignGyro(() -> 0.0),
+    // // //     new FollowTape(VisionConstants.kSetpointCharge, VisionConstants.kSetpointTurn)
+    // // //   )
+    // // // );
     
   }
 

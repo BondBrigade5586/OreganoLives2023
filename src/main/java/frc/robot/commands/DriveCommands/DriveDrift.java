@@ -2,26 +2,25 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.DriveCommands;
+
+import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Vision;
 
-public class DriveUntilTapeFound extends CommandBase {
+public class DriveDrift extends CommandBase {
   Drivetrain drivetrain = RobotContainer.m_drivetrain;
   Vision limelight = RobotContainer.m_vision;
 
-  double xOffset;
-  double driveSetpoint;
-  double tapeSetpoint;
-  /** Creates a new DriveUntilTapeFound. */
-  public DriveUntilTapeFound(double driveSP, double tapeSP) {
-    driveSetpoint = driveSP;
-    tapeSetpoint = tapeSP;
+  Supplier<Double> kLeft, kRight;
+  /** Creates a new DriveDrift. */
+  public DriveDrift(Supplier<Double> left, Supplier<Double> right) {
+    this.kLeft = left;
+    this.kRight = right;
     addRequirements(drivetrain);
-    addRequirements(limelight);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -32,20 +31,18 @@ public class DriveUntilTapeFound extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (limelight.getArea() < tapeSetpoint) {
-      drivetrain.driveRobot(driveSetpoint, 0, 0.75, 0);
-    }
+
+    limelight.update();
+    drivetrain.driveTank(kLeft.get(), kRight.get());
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    drivetrain.driveRobot(0, 0, 0, 0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (limelight.getArea() > tapeSetpoint);
+    return false;
   }
 }

@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.VisionCommands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -63,14 +63,14 @@ public class FollowTape extends CommandBase {
       turnError = 0;
     }
     // Adjusts motor outputs based on drive and turn errors
-    drivetrain.driveRobot(VisionConstants.kPCharge * driveError, VisionConstants.kPTurn * -turnError + VisionConstants.kITurn*-turnErrorSum, 1.00, 1.00);
+    drivetrain.driveArcade(VisionConstants.kPCharge * driveError, VisionConstants.kPTurn * -turnError + VisionConstants.kITurn*-turnErrorSum, 1.00, 1.00);
     prevTimestamp = Timer.getFPGATimestamp();
   } 
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    drivetrain.driveRobot(0, 0, 0, 0);
+    drivetrain.stopRobot();
   }
 
   // Returns true when the command should end.

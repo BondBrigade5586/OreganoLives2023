@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.VisionCommands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -61,13 +61,13 @@ public class InlineTapeWall extends CommandBase {
       turnSpeed = 0;
     }
 
-    drivetrain.driveRobot(driveSpeed, turnSpeed, 0.75, 0.70);
+    drivetrain.driveArcade(driveSpeed, turnSpeed, 0.75, 0.70);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    drivetrain.driveRobot(0, 0, 0, 0);
+    drivetrain.stopRobot();
   }
 
   // Returns true when the command should end.

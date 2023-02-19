@@ -13,8 +13,10 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.DriveConstants;
 
 public class Drivetrain extends SubsystemBase {
@@ -103,21 +105,29 @@ public class Drivetrain extends SubsystemBase {
 
   /* ------- CUSTOM DRIVETRAIN METHODS ------ */
 
-  public void driveRobot(double forward, double turn, double speedFactor, double turnFactor) {
+  public void driveTank(double left, double right) {
+    tankDrive.tankDrive(left, right);
+  }
+  public void driveArcade(double forward, double turn, double speedFactor, double turnFactor) {
     tankDrive.arcadeDrive(forward*speedFactor, -turn*turnFactor);
-    SmartDashboard.putNumber("Drive Speed", -forward*speedFactor);
+    SmartDashboard.putNumber("Drive Speed", forward*speedFactor);
     SmartDashboard.putNumber("Turn Speed", turn);
+
+    RobotContainer.sbDriveSpd.setDouble(forward*speedFactor);
+    RobotContainer.sbTurnSpd.setDouble(-turn*turnFactor);
   }
   public void turnRobot(double turn) {
     tankDrive.arcadeDrive(0, -turn*0.85);
     SmartDashboard.putNumber("Drive Speed", 0);
     SmartDashboard.putNumber("Turn Speed", turn);
   }
+  public void stopRobot() {
+    tankDrive.tankDrive(0, 0);
+  }
 
   public void enableBrakes() {
     kNeutralMode = NeutralMode.Brake;
 
-    // TODO Test brake mode - how well does it stop the robot from moving at an angle? Can use ramp at KHS to test.
     m_frontLeft.setNeutralMode(NeutralMode.Brake);
     m_frontRight.setNeutralMode(NeutralMode.Brake);
     m_backLeft.setNeutralMode(NeutralMode.Brake);

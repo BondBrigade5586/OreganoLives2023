@@ -4,15 +4,23 @@
 
 package frc.robot;
 
+
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.Constants.VisionConstants;
-import frc.robot.commands.AutoBalance;
-import frc.robot.commands.DriveJoystick;
-import frc.robot.commands.FollowTape;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants.*;
+import frc.robot.commands.BalanceCommands.ClimbChargeStation;
+import frc.robot.commands.BalanceCommands.HoldOnChargeStation;
+import frc.robot.commands.DriveCommands.DriveDistance;
+import frc.robot.commands.DriveCommands.DriveDrift;
+import frc.robot.commands.DriveCommands.DriveJoystick;
+import frc.robot.commands.DriveCommands.ForzaDrive;
+import frc.robot.commands.IntakeCommands.RunIntakeTime;
+import frc.robot.commands.VisionCommands.FollowTape;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -22,9 +30,11 @@ import frc.robot.commands.FollowTape;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-
+  public static Command m_drivetrainCommand;
+  ShuffleboardTab setupTab = Shuffleboard.getTab("Setup");
   // Chooses autonomous command
-  private SendableChooser autoChooser;
+  private SendableChooser<Object> autoChooser;
+  private SendableChooser<Object> drivetrainChooser;
   private RobotContainer m_robotContainer;
 
   /**
@@ -33,18 +43,46 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    Shuffleboard.selectTab("Setup");
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     
-    // Initialize autonomous chooser
+    // Initialize choosers
     autoChooser = new SendableChooser<>();
+    drivetrainChooser = new SendableChooser<>();
 
     // Autonomous modes
-    autoChooser.addOption("Balance", new AutoBalance());
+    autoChooser.addOption("Balance", new SequentialCommandGroup(
+      // new DriveDistance(AutonomousConstants.kDistToGrid),
+      new RunIntakeTime(4, false),
+      new DriveDistance(-(AutonomousConstants.kDistCommunityToGrid+36)),
+      new ClimbChargeStation(), 
+      new HoldOnChargeStation())
+    );
     autoChooser.addOption("Follow Tape", new FollowTape(VisionConstants.kSetpointCharge, VisionConstants.kSetpointTurn));
-    autoChooser.addOption("None", null);
     autoChooser.addOption("Circles", new DriveJoystick(RobotContainer.m_drivetrain, () -> 0.0, () -> 0.65, () -> 0.0));
-    SmartDashboard.putData(autoChooser);
+    autoChooser.addOption("None", null);
+    
+    // Drivetrain control modes
+    drivetrainChooser.addOption("Flightstick", new DriveJoystick(
+      RobotContainer.m_drivetrain, 
+      () -> RobotContainer.m_flightstickDriverController.getY(), 
+      () -> RobotContainer.m_flightstickDriverController.getTwist(), 
+      () -> RobotContainer.m_flightstickDriverController.getRawAxis(OperatorConstants.kSpeedFactorAxis)
+    ));
+    drivetrainChooser.addOption("Drift", new DriveDrift(
+      () -> RobotContainer.m_xboxDriverController.getLeftY(),
+      () -> RobotContainer.m_xboxDriverController.getRightY()
+    ));
+    drivetrainChooser.addOption("Forza", new ForzaDrive(
+      () -> RobotContainer.m_xboxDriverController.getRightTriggerAxis(),
+      () -> RobotContainer.m_xboxDriverController.getLeftTriggerAxis(),
+      () -> RobotContainer.m_xboxDriverController.getLeftX()
+    ));
+
+    // Add choosers to setup tab
+    setupTab.add(autoChooser);
+    setupTab.add(drivetrainChooser);
 
     m_robotContainer = new RobotContainer();
   }
@@ -67,7 +105,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    RobotContainer.m_drivetrain.disableBrakes();
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -75,6 +115,7 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    Shuffleboard.selectTab("Driver Station");
     // Gets selected autonomous command
     m_autonomousCommand = (Command) autoChooser.getSelected();
     // Schedules autonomous command
@@ -89,12 +130,17 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    Shuffleboard.selectTab("Driver Station");
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
+    }
+    m_drivetrainCommand = (Command) drivetrainChooser.getSelected();
+    if (m_drivetrainCommand != null) {
+      m_drivetrainCommand.schedule();
     }
   }
 

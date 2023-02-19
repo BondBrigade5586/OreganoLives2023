@@ -7,7 +7,6 @@ package frc.robot.commands;
 import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.DriveConstants;
@@ -62,7 +61,6 @@ public class AlignGyro extends CommandBase {
     error = Math.min(Math.abs(sp-z), 360-Math.abs(z-sp));
     errorSum += error * (Timer.getFPGATimestamp() - prevTimestamp);
     errorRate = (error - lastError) / (Timer.getFPGATimestamp() - prevTimestamp);
-    SmartDashboard.putNumber("Gyro Z Error", error);
 
     outputSpeed = error*DriveConstants.kGyroP + errorSum*DriveConstants.kGyroI + errorRate*DriveConstants.kGyroD;
 
@@ -104,7 +102,7 @@ public class AlignGyro extends CommandBase {
     }
     
     // Stops robot
-    drivetrain.driveRobot(0, 0, 0, 0);
+    drivetrain.stopRobot();
     drivetrain.enableBrakes();
   }
 
