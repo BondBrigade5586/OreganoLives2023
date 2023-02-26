@@ -18,6 +18,7 @@
   - Added dropdowns for autonomous mode and drive controls on the setup tab
   - Beta intake subsystem and commands are coded
   - Created side autonomous mode
+  - Created side autonomous mode
     1. Push preloaded cube out of intake into grid (3 points)
     2. Reverse outside of community (3 points)
   - Edited button bindings
