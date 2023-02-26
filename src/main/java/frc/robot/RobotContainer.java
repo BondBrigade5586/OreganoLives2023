@@ -4,10 +4,7 @@
 
 package frc.robot;
 
-import frc.robot.commands.FollowTape;
-import frc.robot.commands.ForzaDrive;
-import frc.robot.commands.HoldOnChargeStation;
-import frc.robot.commands.UseIntake;
+import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.Constants.*;
 
@@ -43,7 +40,9 @@ public class RobotContainer {
   public static GenericEntry sbGyroY = driverStationTab.add("Gyro Y Rotation", 0).withWidget(BuiltInWidgets.kDial).withProperties(Map.of("min", -90, "max", 90)).getEntry();
   public static GenericEntry sbGyroZ = driverStationTab.add("Gyro Z Rotation", 0).withWidget(BuiltInWidgets.kDial).withProperties(Map.of("min", -180, "max", 180)).getEntry();
   public static GenericEntry sbIntakeDir = driverStationTab.add("Intake Direction", "None").getEntry();
-  
+  public static GenericEntry sbEngagedTime = driverStationTab.add("Time Engaged", 0).withWidget(BuiltInWidgets.kNumberBar).withProperties(Map.of("min", 0, "max", 15)).getEntry();
+  public static GenericEntry sbInteracted = driverStationTab.add("Interacted with ramp (autonomous)", false).getEntry();
+
   // Set up Drivetrain tab on Shuffleboard
   public static ShuffleboardTab driveTab = Shuffleboard.getTab("Drivetrain");
   public static GenericEntry sbInches = driveTab.add("Encoder inches", 0).getEntry();
@@ -76,7 +75,12 @@ public class RobotContainer {
 
     // Set default commands for subsystems
     m_drivetrain.setDefaultCommand(
-      Robot.m_drivetrainCommand
+      // Robot.m_drivetrainCommand
+      new DriveForza(
+        () -> RobotContainer.m_xboxDriverController.getRightTriggerAxis(),
+        () -> RobotContainer.m_xboxDriverController.getLeftTriggerAxis(),
+        () -> RobotContainer.m_xboxDriverController.getLeftX() * 0.65
+      )
     );
     m_intake.setDefaultCommand(
       new UseIntake(
@@ -101,10 +105,11 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
     // Bind commands to buttons on controller
+    new JoystickButton(m_subsystemController, 4).whileTrue(new RunIntakeTime(5, true));
     new JoystickButton(m_subsystemController, 3).whileTrue(new FollowTape(VisionConstants.kSetpointCharge, VisionConstants.kSetpointTurn));
-    new JoystickButton(m_subsystemController, 2).whileTrue(new HoldOnChargeStation()); // TODO Should be button 'B'
+    new JoystickButton(m_xboxDriverController, 2).whileTrue(new HoldOnChargeStation());
 
-    // // // // Bind commands to buttons on joystick for debug\
+    // // // // Bind commands to buttons on joystick for debug
 
     // // // new JoystickButton(m_driverController, 1).whileTrue(new FollowTape(VisionConstants.kSetpointCharge, VisionConstants.kSetpointTurn)); // Requires fine-tuning
     // // // new JoystickButton(m_driverController, 3).whileTrue(new AlignGyro(() -> DriveConstants.kGyroSPAngle)); // Test use only

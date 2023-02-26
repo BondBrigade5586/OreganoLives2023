@@ -15,6 +15,7 @@ public class ClimbChargeStation extends CommandBase {
   Drivetrain drivetrain = RobotContainer.m_drivetrain;
   Gyro gyro = RobotContainer.m_gyro;
   boolean interactedWithRamp = false;
+  boolean engaged = false;
   /** Creates a new AutoBalance. */
   public ClimbChargeStation() {
     addRequirements(drivetrain);
@@ -34,18 +35,22 @@ public class ClimbChargeStation extends CommandBase {
   @Override
   public void execute() {
 
-    if (gyro.getYRotation() > AutonomousConstants.kMaxYAngleOffset || gyro.getYRotation() < AutonomousConstants.kMaxYAngleOffset) {
+    if (gyro.getYRotation() > AutonomousConstants.kMaxYAngleOffset || gyro.getYRotation() < -AutonomousConstants.kMaxYAngleOffset) {
       interactedWithRamp = true;
     }
+    RobotContainer.sbInteracted.setBoolean(interactedWithRamp);
+
+
 
     if (!interactedWithRamp) {
-      drivetrain.driveArcade(0.65, 0, 0.75, 0);
+      drivetrain.driveArcade(0.75, 0, 0.75, 0);
     } else if (interactedWithRamp) {
-      if (gyro.getYRotation() < -7) {
-        drivetrain.driveArcade(0.40, 0, 0.65, 0);
-      } else if (gyro.getYRotation() > 7) {
-        drivetrain.driveArcade(-0.40, 0, 0.65, 0);
+      if (gyro.getYRotation() < -10) {
+        drivetrain.driveArcade(0.75, 0, 0.80, 0);
+      } else if (gyro.getYRotation() > 10) {
+        drivetrain.driveArcade(-0.75, 0, 0.80, 0);
       } else {
+        engaged = true;
         drivetrain.enableBrakes();
         drivetrain.driveArcade(0, 0, 0, 0);
       }
@@ -63,8 +68,7 @@ public class ClimbChargeStation extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // Ends if within 3 degrees of flat
-    return gyro.getYRotation() < AutonomousConstants.kMaxYAngleOffset && gyro.getYRotation() > -AutonomousConstants.kMaxYAngleOffset;
-    // return (drivetrain.getNeutralMode() == NeutralMode.Brake); // Ends if brake mode is enabled
+    // Ends if within 3 degrees of flat & is on the charge station
+    return gyro.getYRotation() < AutonomousConstants.kMaxYAngleOffset && gyro.getYRotation() > -AutonomousConstants.kMaxYAngleOffset && engaged;
   }
 }

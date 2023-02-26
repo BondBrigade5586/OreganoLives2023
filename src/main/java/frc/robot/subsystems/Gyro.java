@@ -33,10 +33,10 @@ public class Gyro extends SubsystemBase {
     gyro.calibrate();
   }
   public double getXRotation() {
-    return gyro.getRoll();
+    return gyro.getPitch();
   }
   public double getYRotation() {
-    return gyro.getPitch();
+    return gyro.getRoll();
   }
   public double getZRotation() {
     return gyro.getYaw();

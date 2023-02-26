@@ -13,12 +13,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.*;
+import frc.robot.commands.AlignGyro;
 import frc.robot.commands.ClimbChargeStation;
 import frc.robot.commands.DriveDistance;
-import frc.robot.commands.DriveDrift;
-import frc.robot.commands.DriveJoystick;
-import frc.robot.commands.FollowTape;
-import frc.robot.commands.ForzaDrive;
+// import frc.robot.commands.DriveDrift;
+// import frc.robot.commands.DriveJoystick;
+// import frc.robot.commands.DriveForza;
 import frc.robot.commands.HoldOnChargeStation;
 import frc.robot.commands.RunIntakeTime;
 
@@ -34,7 +34,7 @@ public class Robot extends TimedRobot {
   ShuffleboardTab setupTab = Shuffleboard.getTab("Setup");
   // Chooses autonomous command
   private SendableChooser<Object> autoChooser;
-  private SendableChooser<Object> drivetrainChooser;
+  // // // // private SendableChooser<Object> drivetrainChooser;
   private RobotContainer m_robotContainer;
 
   /**
@@ -49,40 +49,51 @@ public class Robot extends TimedRobot {
     
     // Initialize choosers
     autoChooser = new SendableChooser<>();
-    drivetrainChooser = new SendableChooser<>();
+    // // // // drivetrainChooser = new SendableChooser<>();
 
     // Autonomous modes
-    autoChooser.addOption("Balance", new SequentialCommandGroup(
-      // new DriveDistance(AutonomousConstants.kDistToGrid),
-      new RunIntakeTime(4, false),
-      new DriveDistance(-(AutonomousConstants.kDistCommunityToGrid+36)),
+    autoChooser.addOption("Center", new SequentialCommandGroup(
+      new RunIntakeTime(3, true),
+      new DriveDistance(-8),
+      new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()+180)),
+      new DriveDistance(-6),
+      new DriveDistance((AutonomousConstants.kDistCommunityToGrid+26)),
+      new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()+180)),
       new ClimbChargeStation(), 
-      new HoldOnChargeStation())
-    );
-    autoChooser.addOption("Follow Tape", new FollowTape(VisionConstants.kSetpointCharge, VisionConstants.kSetpointTurn));
-    autoChooser.addOption("Circles", new DriveJoystick(RobotContainer.m_drivetrain, () -> 0.0, () -> 0.65, () -> 0.0));
+      new HoldOnChargeStation()
+    ));
+    autoChooser.addOption("Side", new SequentialCommandGroup(
+      new RunIntakeTime(3, true),
+      new DriveDistance(-(AutonomousConstants.kDistCommunityToGrid+18))
+      ));    
+      autoChooser.addOption("Balance", new SequentialCommandGroup(
+        new ClimbChargeStation(),
+        new HoldOnChargeStation()
+      ));
+    autoChooser.addOption("180 degrees", new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()+180)));
+    autoChooser.addOption("Exit community", new DriveDistance(AutonomousConstants.kDistCommunityToGrid+30));
     autoChooser.addOption("None", null);
     
     // Drivetrain control modes
-    drivetrainChooser.addOption("Flightstick", new DriveJoystick(
-      RobotContainer.m_drivetrain, 
-      () -> RobotContainer.m_flightstickDriverController.getY(), 
-      () -> RobotContainer.m_flightstickDriverController.getTwist(), 
-      () -> RobotContainer.m_flightstickDriverController.getRawAxis(OperatorConstants.kSpeedFactorAxis)
-    ));
-    drivetrainChooser.addOption("Drift", new DriveDrift(
-      () -> RobotContainer.m_xboxDriverController.getLeftY(),
-      () -> RobotContainer.m_xboxDriverController.getRightY()
-    ));
-    drivetrainChooser.addOption("Forza", new ForzaDrive(
-      () -> RobotContainer.m_xboxDriverController.getRightTriggerAxis(),
-      () -> RobotContainer.m_xboxDriverController.getLeftTriggerAxis(),
-      () -> RobotContainer.m_xboxDriverController.getLeftX()
-    ));
+    // // // // drivetrainChooser.addOption("Flightstick", new DriveJoystick(
+    // // // //   RobotContainer.m_drivetrain, 
+    // // // //   () -> RobotContainer.m_flightstickDriverController.getY(), 
+    // // // //   () -> RobotContainer.m_flightstickDriverController.getTwist(), 
+    // // // //   () -> RobotContainer.m_flightstickDriverController.getRawAxis(OperatorConstants.kSpeedFactorAxis)
+    // // // // ));
+    // // // // drivetrainChooser.addOption("Drift", new DriveDrift(
+    // // // //   () -> -RobotContainer.m_xboxDriverController.getLeftY(),
+    // // // //   () -> -RobotContainer.m_xboxDriverController.getRightY()
+    // // // // ));
+    // // // // drivetrainChooser.addOption("Forza", new DriveForza(
+    // // // //   () -> RobotContainer.m_xboxDriverController.getRightTriggerAxis(),
+    // // // //   () -> RobotContainer.m_xboxDriverController.getLeftTriggerAxis(),
+    // // // //   () -> RobotContainer.m_xboxDriverController.getLeftX() * 0.65
+    // // // // ));
 
     // Add choosers to setup tab
     setupTab.add(autoChooser);
-    setupTab.add(drivetrainChooser);
+    // // // // setupTab.add(drivetrainChooser);
 
     m_robotContainer = new RobotContainer();
   }
@@ -107,6 +118,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     RobotContainer.m_drivetrain.disableBrakes();
+    Shuffleboard.selectTab("Setup");
   }
 
   @Override
@@ -138,10 +150,11 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    m_drivetrainCommand = (Command) drivetrainChooser.getSelected();
-    if (m_drivetrainCommand != null) {
-      m_drivetrainCommand.schedule();
-    }
+    
+    // // // // m_drivetrainCommand = (Command) drivetrainChooser.getSelected();
+    // // // // if (m_drivetrainCommand != null) {
+    // // // //   m_drivetrainCommand.schedule();
+    // // // // }
   }
 
   /** This function is called periodically during operator control. */
@@ -165,4 +178,10 @@ public class Robot extends TimedRobot {
   /** This function is called periodically whilst in simulation. */
   @Override
   public void simulationPeriodic() {}
+
+  class ResetGyroZ implements Runnable {
+    public void run() {
+      RobotContainer.m_gyro.resetZRotation();
+    }
+  }
 }

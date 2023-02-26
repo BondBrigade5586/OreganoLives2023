@@ -7,7 +7,9 @@ package frc.robot.commands;
 import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+// import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.Drivetrain;
@@ -49,6 +51,9 @@ public class AlignGyro extends CommandBase {
   public void execute() {
     z = gyro.getZRotation();
 
+    if (sp > 360) {
+      sp -= 360;
+    }
     // Converts z and setpoint values to 360-degree scale (0<x<360)
     if (sp < 0) {
       sp = (360-Math.abs(sp));
@@ -62,15 +67,15 @@ public class AlignGyro extends CommandBase {
     errorSum += error * (Timer.getFPGATimestamp() - prevTimestamp);
     errorRate = (error - lastError) / (Timer.getFPGATimestamp() - prevTimestamp);
 
-    outputSpeed = error*DriveConstants.kGyroP + errorSum*DriveConstants.kGyroI + errorRate*DriveConstants.kGyroD;
+    outputSpeed = error*DriveConstants.kGyroP /* + errorSum*DriveConstants.kGyroI + errorRate*DriveConstants.kGyroD */;
 
     // Sets turn speed parameters
-    if (outputSpeed > 0.70) {
-      outputSpeed = 0.70;
-    } else if (outputSpeed < 0.35) {
-      outputSpeed = 0.45;
+    if (outputSpeed > 0.65) {
+      outputSpeed = 0.65;
+    } else if (outputSpeed < 0.37) {
+      outputSpeed = 0.37;
     }
-
+    SmartDashboard.putNumber("output speed", outputSpeed);
     // Prevents turning more than 180 degrees, uses PID to determine setpoint speeds
     if (Math.abs(sp-z) <= 180 && sp>z) {
       drivetrain.turnRobot(outputSpeed);
@@ -92,23 +97,18 @@ public class AlignGyro extends CommandBase {
     error = 0;
     errorSum = 0;
     lastError = 0;
-    sp=0;
-
-    // Stops motors quicker by setting power to opposite direction
-    if (outputSpeed < 0) {
-      drivetrain.turnRobot(outputSpeed+0.1);
-    } else if (outputSpeed > 0) {
-      drivetrain.turnRobot(-outputSpeed-0.1);
-    }
+    sp = 0;
     
     // Stops robot
     drivetrain.stopRobot();
     drivetrain.enableBrakes();
+
+    // Robot.m_drivetrainCommand.schedule(); // Reschedules drivetrain command
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (error<0.8);
+    return (error<1 && error>-1);
   }
 }

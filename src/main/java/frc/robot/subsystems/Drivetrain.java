@@ -122,6 +122,8 @@ public class Drivetrain extends SubsystemBase {
   }
   public void stopRobot() {
     tankDrive.tankDrive(0, 0);
+    RobotContainer.sbDriveSpd.setDouble(0);
+    RobotContainer.sbTurnSpd.setDouble(0);
   }
 
   public void enableBrakes() {

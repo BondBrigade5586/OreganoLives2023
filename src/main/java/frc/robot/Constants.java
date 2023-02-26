@@ -29,7 +29,7 @@ public final class Constants {
 
   public static class AutonomousConstants {
     public static final double kDistCommunityToGrid = 216;
-    public static final double kMaxYAngleOffset = 3;
+    public static final double kMaxYAngleOffset = 10;
   }
 
 
@@ -56,7 +56,7 @@ public final class Constants {
     public static final double kMPHtoFPS = 330.0 / 225.0;
 
     // Gyroscope PID (used in AlignGyro)
-    public static final double kGyroP = 0.03;
+    public static final double kGyroP = 0.008;
     public static final double kGyroI = 0.000;
     public static final double kGyroD = 0;
     
@@ -87,11 +87,12 @@ public final class Constants {
     public static final int kLeftControllerID = 4;
     public static final int kRightControllerID = 5;
 
-    public static final int kIntakeInButton = 5;
-    public static final int kIntakeOutButton = 6;
+    public static final int kIntakeInButton = 6;
+    public static final int kIntakeOutButton = 5;
 
-    public static final double kIntakeInSP = 0.75;
-    public static final double kIntakeOutSP = -0.75;
+    public static final double kIntakePullInSP = -0.75;
+    public static final double kIntakePushOutSP = 1.00;
+    public static final double kIntakeShootOutSpeed = 0.95;
   }
 
 

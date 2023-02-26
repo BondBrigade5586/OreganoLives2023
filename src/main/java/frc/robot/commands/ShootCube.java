@@ -4,24 +4,17 @@
 
 package frc.robot.commands;
 
-
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.Intake;
 
-public class RunIntakeTime extends CommandBase {
-  Intake intake = RobotContainer.m_intake;
-  
+public class ShootCube extends CommandBase {
   Timer timer = new Timer();
-
-  double endTime;
-  boolean directionOut;
-  /** Creates a new RunIntakeTime. */
-  public RunIntakeTime(double runTime, boolean out) {
-    this.endTime = runTime;
-    this.directionOut = out;
+  Intake intake = RobotContainer.m_intake;
+  /** Creates a new ShootCube. */
+  public ShootCube() {
     addRequirements(intake);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -35,23 +28,16 @@ public class RunIntakeTime extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (directionOut) {
-      intake.use(IntakeConstants.kIntakePushOutSP);
-    } else {
-      intake.use(IntakeConstants.kIntakePullInSP);
-    }
+    intake.use(IntakeConstants.kIntakeShootOutSpeed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    intake.stop();
-    // RobotContainer.driverStationTab.add("Intake Speed", 0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return timer.get() > endTime;
+    return timer.get() > 4;
   }
 }

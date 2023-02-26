@@ -21,7 +21,6 @@ public class UseIntake extends CommandBase {
     this.intakeOut = out;
 
     addRequirements(intake);
-    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
@@ -32,15 +31,18 @@ public class UseIntake extends CommandBase {
   @Override
   public void execute() {
     if (intakeIn.get() && intakeOut.get()) {
-      intakeSP = 0;
+      intakeSP = 0.30;
+      intake.twist(intakeSP);
     } else if (intakeIn.get()) {
-      intakeSP = IntakeConstants.kIntakeInSP;
+      intakeSP = IntakeConstants.kIntakePullInSP;
+      intake.use(intakeSP);
     } else if (intakeOut.get()) {
-      intakeSP = IntakeConstants.kIntakeOutSP;
+      intakeSP = IntakeConstants.kIntakePushOutSP;
+      intake.use(intakeSP);
     } else { 
       intakeSP = 0;
+      intake.use(intakeSP);
     }
-    intake.use(intakeSP);
   }
 
   // Called once the command ends or is interrupted.
