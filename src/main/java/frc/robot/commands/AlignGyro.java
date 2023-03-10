@@ -7,9 +7,7 @@ package frc.robot.commands;
 import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-// import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.Drivetrain;
@@ -72,10 +70,9 @@ public class AlignGyro extends CommandBase {
     // Sets turn speed parameters
     if (outputSpeed > 0.65) {
       outputSpeed = 0.65;
-    } else if (outputSpeed < 0.37) {
-      outputSpeed = 0.37;
+    } else if (outputSpeed < 0.39) {
+      outputSpeed = 0.39;
     }
-    SmartDashboard.putNumber("output speed", outputSpeed);
     // Prevents turning more than 180 degrees, uses PID to determine setpoint speeds
     if (Math.abs(sp-z) <= 180 && sp>z) {
       drivetrain.turnRobot(outputSpeed);

@@ -7,9 +7,7 @@ package frc.robot.subsystems;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.SerialPort.Port;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotContainer;
 
 public class Gyro extends SubsystemBase {
   
@@ -22,12 +20,6 @@ public class Gyro extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    // Debug info
-    SmartDashboard.putNumber("Gyro Y Rotation", getYRotation());
-    SmartDashboard.putNumber("Gyro Z Rotation", getZRotation());
-
-    RobotContainer.sbGyroY.setDouble(getYRotation());
-    RobotContainer.sbGyroZ.setDouble(getZRotation());
   }
   public void calibrate() {
     gyro.calibrate();

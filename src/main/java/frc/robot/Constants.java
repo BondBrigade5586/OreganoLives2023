@@ -36,9 +36,9 @@ public final class Constants {
   public static class DriveConstants {
     // Drive motor controller IDs
     public static final int kFrontLeftID = 1;
-    public static final int kFrontRightID = 2;
+    public static final int kFrontRightID = 22;
     public static final int kBackLeftID = 3;
-    public static final int kBackRightID = 4;
+    public static final int kBackRightID = 44;
 
     public static final double kGyroSPAngle = 0; // Robot should be powered on facing the wall/driver stations
     
@@ -64,8 +64,13 @@ public final class Constants {
     public static final double kDistanceP = 0.015;
     public static final double kDistErrorMargin = 0.50;
 
+    public static final double kAutoSpeedFactor = 0.80;
+
     public static final double kDefaultSpeedFactor = 0.80;
-    public static final double kDefaultTurnFactor = 0.80;
+    public static final double kSecondarySpeedFactor = 0.40;
+
+    public static final double kDefaultTurnFactor = 0.90;
+    public static final double kSecondaryTurnFactor = 0.55;
   }
 
 
@@ -92,9 +97,7 @@ public final class Constants {
 
     public static final double kIntakePullInSP = -0.75;
     public static final double kIntakePushOutSP = 1.00;
-    public static final double kIntakeShootOutSpeed = 0.95;
   }
-
 
   public static class OtherConstants {
     public static final int kLEDPort = 0;

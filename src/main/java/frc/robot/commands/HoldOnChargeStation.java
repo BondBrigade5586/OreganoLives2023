@@ -5,8 +5,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-// import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Gyro;
@@ -36,11 +36,11 @@ public class HoldOnChargeStation extends CommandBase {
   @Override
   public void execute() {
     if (gyro.getYRotation() > 3) {
-    drivetrain.driveArcade(-0.29, 0, 1.00, 0);
+    drivetrain.driveArcade(-0.325, 0, 1.00, 0);
     engaged = false;
     resetStopTimer();
    } else if (gyro.getYRotation() < -3) {
-    drivetrain.driveArcade(0.29, 0, 1.00, 0);
+    drivetrain.driveArcade(0.325, 0, 1.00, 0);
     resetStopTimer();
     engaged = false;
    } else if (gyro.getYRotation() < 3 && gyro.getYRotation() > -3 && !engaged) {
@@ -48,24 +48,25 @@ public class HoldOnChargeStation extends CommandBase {
     timeEngaged.start();
     engaged = true;
    } else if (engaged) {
-    RobotContainer.sbEngagedTime.setDouble(timeEngaged.get());
+    SmartDashboard.putNumber("Time Engaged", timeEngaged.get());
     drivetrain.stopRobot();
    } else {
     engaged = false;
    }
 
    if (!engaged) {
-    RobotContainer.sbEngagedTime.setDouble(0);
+    SmartDashboard.putNumber("Time Engaged", 0);
    }
+
+   SmartDashboard.putBoolean("Engaged", engaged);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    RobotContainer.sbEngagedTime.setDouble(0);
+    SmartDashboard.putNumber("Time Engaged", 0);
     drivetrain.stopRobot();
     resetStopTimer();
-    // Robot.m_drivetrainCommand.schedule();
   }
 
   // Returns true when the command should end.

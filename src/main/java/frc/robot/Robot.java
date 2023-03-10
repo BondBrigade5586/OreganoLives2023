@@ -16,9 +16,9 @@ import frc.robot.Constants.*;
 import frc.robot.commands.AlignGyro;
 import frc.robot.commands.ClimbChargeStation;
 import frc.robot.commands.DriveDistance;
-// import frc.robot.commands.DriveDrift;
-// import frc.robot.commands.DriveJoystick;
-// import frc.robot.commands.DriveForza;
+import frc.robot.commands.DriveDrift;
+import frc.robot.commands.DriveJoystick;
+import frc.robot.commands.DriveForza;
 import frc.robot.commands.HoldOnChargeStation;
 import frc.robot.commands.RunIntakeTime;
 
@@ -34,7 +34,7 @@ public class Robot extends TimedRobot {
   ShuffleboardTab setupTab = Shuffleboard.getTab("Setup");
   // Chooses autonomous command
   private SendableChooser<Object> autoChooser;
-  // // // // private SendableChooser<Object> drivetrainChooser;
+  // private SendableChooser<Object> drivetrainChooser;
   private RobotContainer m_robotContainer;
 
   /**
@@ -44,56 +44,62 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     Shuffleboard.selectTab("Setup");
+
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     
     // Initialize choosers
     autoChooser = new SendableChooser<>();
-    // // // // drivetrainChooser = new SendableChooser<>();
+    // drivetrainChooser = new SendableChooser<>();
 
     // Autonomous modes
     autoChooser.addOption("Center", new SequentialCommandGroup(
-      new RunIntakeTime(3, true),
-      new DriveDistance(-8),
-      new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()+180)),
-      new DriveDistance(-6),
-      new DriveDistance((AutonomousConstants.kDistCommunityToGrid+26)),
-      new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()+180)),
+      new RunIntakeTime(0.5, true),
+      // new DriveDistance(-8),
+      // new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()+180)),
+      // new DriveDistance(-6),
+      new DriveDistance(-(AutonomousConstants.kDistCommunityToGrid-6)),
+      // new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()+180)),
       new ClimbChargeStation(), 
       new HoldOnChargeStation()
     ));
     autoChooser.addOption("Side", new SequentialCommandGroup(
-      new RunIntakeTime(3, true),
-      new DriveDistance(-(AutonomousConstants.kDistCommunityToGrid+18))
-      ));    
-      autoChooser.addOption("Balance", new SequentialCommandGroup(
-        new ClimbChargeStation(),
-        new HoldOnChargeStation()
+      new RunIntakeTime(1.0, true),
+      new DriveDistance(-(AutonomousConstants.kDistCommunityToGrid-30)),
+      new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()+180))
       ));
-    autoChooser.addOption("180 degrees", new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()+180)));
-    autoChooser.addOption("Exit community", new DriveDistance(AutonomousConstants.kDistCommunityToGrid+30));
+    autoChooser.addOption("Ball only", 
+      new RunIntakeTime(5.0, true)
+    );    
+    // autoChooser.addOption("Balance", new SequentialCommandGroup(
+    //     new ClimbChargeStation(),
+    //     new HoldOnChargeStation(),
+    //     new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()+90))
+    // ));
+    // autoChooser.addOption("180 degrees", new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()+180)));
+    // autoChooser.addOption("Exit community", new DriveDistance(AutonomousConstants.kDistCommunityToGrid+30));
     autoChooser.addOption("None", null);
     
     // Drivetrain control modes
-    // // // // drivetrainChooser.addOption("Flightstick", new DriveJoystick(
-    // // // //   RobotContainer.m_drivetrain, 
-    // // // //   () -> RobotContainer.m_flightstickDriverController.getY(), 
-    // // // //   () -> RobotContainer.m_flightstickDriverController.getTwist(), 
-    // // // //   () -> RobotContainer.m_flightstickDriverController.getRawAxis(OperatorConstants.kSpeedFactorAxis)
-    // // // // ));
-    // // // // drivetrainChooser.addOption("Drift", new DriveDrift(
-    // // // //   () -> -RobotContainer.m_xboxDriverController.getLeftY(),
-    // // // //   () -> -RobotContainer.m_xboxDriverController.getRightY()
-    // // // // ));
-    // // // // drivetrainChooser.addOption("Forza", new DriveForza(
-    // // // //   () -> RobotContainer.m_xboxDriverController.getRightTriggerAxis(),
-    // // // //   () -> RobotContainer.m_xboxDriverController.getLeftTriggerAxis(),
-    // // // //   () -> RobotContainer.m_xboxDriverController.getLeftX() * 0.65
-    // // // // ));
+    // // drivetrainChooser.addOption("Flightstick", new DriveJoystick(
+    // //   RobotContainer.m_drivetrain, 
+    // //   () -> RobotContainer.m_flightstickDriverController.getY(), 
+    // //   () -> RobotContainer.m_flightstickDriverController.getTwist(), 
+    // //   () -> RobotContainer.m_flightstickDriverController.getRawAxis(OperatorConstants.kSpeedFactorAxis)
+    // // ));
+    // // drivetrainChooser.addOption("Drift", new DriveDrift(
+    // //   () -> -RobotContainer.m_xboxDriverController.getLeftY(),
+    // //   () -> -RobotContainer.m_xboxDriverController.getRightY()
+    // // ));
+    // // drivetrainChooser.addOption("Forza", new DriveForza(
+    // //   () -> RobotContainer.m_xboxDriverController.getRightTriggerAxis(),
+    // //   () -> RobotContainer.m_xboxDriverController.getLeftTriggerAxis(),
+    // //   () -> RobotContainer.m_xboxDriverController.getLeftX() * 0.65
+    // // ));
 
     // Add choosers to setup tab
     setupTab.add(autoChooser);
-    // // // // setupTab.add(drivetrainChooser);
+    // setupTab.add(drivetrainChooser);
 
     m_robotContainer = new RobotContainer();
   }
@@ -119,6 +125,8 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
     RobotContainer.m_drivetrain.disableBrakes();
     Shuffleboard.selectTab("Setup");
+    // Shuffleboard.selectTab("SmartDashboard");
+
   }
 
   @Override
@@ -127,7 +135,8 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    Shuffleboard.selectTab("Driver Station");
+    Shuffleboard.selectTab("SmartDashboard");
+
     // Gets selected autonomous command
     m_autonomousCommand = (Command) autoChooser.getSelected();
     // Schedules autonomous command
@@ -142,7 +151,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    Shuffleboard.selectTab("Driver Station");
+    Shuffleboard.selectTab("SmartDashboard");
+
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -151,10 +161,10 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
     
-    // // // // m_drivetrainCommand = (Command) drivetrainChooser.getSelected();
-    // // // // if (m_drivetrainCommand != null) {
-    // // // //   m_drivetrainCommand.schedule();
-    // // // // }
+    // m_drivetrainCommand = (Command) drivetrainChooser.getSelected();
+    // if (m_drivetrainCommand != null) {
+    //   m_drivetrainCommand.schedule();
+    // }
   }
 
   /** This function is called periodically during operator control. */

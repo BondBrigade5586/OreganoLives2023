@@ -16,13 +16,18 @@ public class DriveForza extends CommandBase {
   Vision limelight = RobotContainer.m_vision;
 
   Supplier<Double> kForward, kBackward, kTurn;
+  Supplier<Boolean> kSTFactor;
+
   double kSpeed;
+  double spdFact;
+  double trnFact;
 
   /** Creates a new ForzaDrive. */
-  public DriveForza(Supplier<Double> forward, Supplier<Double> backward, Supplier<Double> turn) {
+  public DriveForza(Supplier<Double> forward, Supplier<Double> backward, Supplier<Double> turn, Supplier<Boolean> stFact) {
     this.kForward = forward;
     this.kBackward = backward;
     this.kTurn = turn;
+    this.kSTFactor = stFact;
     addRequirements(drivetrain);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -35,8 +40,15 @@ public class DriveForza extends CommandBase {
   @Override
   public void execute() {
     kSpeed = kForward.get() - kBackward.get();
-
-    drivetrain.driveArcade(kSpeed, kTurn.get(), DriveConstants.kDefaultSpeedFactor, DriveConstants.kDefaultTurnFactor);
+    
+    if (kSTFactor.get()) {
+      spdFact = DriveConstants.kSecondarySpeedFactor;
+      trnFact = DriveConstants.kSecondaryTurnFactor;
+    } else {
+      spdFact = DriveConstants.kDefaultSpeedFactor;
+      trnFact = DriveConstants.kDefaultTurnFactor;
+    }
+    drivetrain.driveArcade(kSpeed, kTurn.get(), spdFact, trnFact);
     limelight.update();
   }
 

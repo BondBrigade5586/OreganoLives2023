@@ -62,7 +62,7 @@ public class DriveDistance extends CommandBase {
 
     sbSpeed.setDouble(outputSpeed);
     sbError.setDouble(error);
-    drivetrain.driveArcade(outputSpeed, 0, DriveConstants.kDefaultSpeedFactor, DriveConstants.kDefaultTurnFactor);
+    drivetrain.driveArcade(outputSpeed, 0, DriveConstants.kAutoSpeedFactor, DriveConstants.kDefaultTurnFactor);
   }
 
   // Called once the command ends or is interrupted.

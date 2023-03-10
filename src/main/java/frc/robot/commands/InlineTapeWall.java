@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.VisionConstants;
@@ -41,7 +40,6 @@ public class InlineTapeWall extends CommandBase {
     z = gyro.getZRotation();
 
     b = 90 - (Math.abs(z) - Math.abs(x));
-    SmartDashboard.putNumber("Angle B", b);
 
     // Perpendicular to tape and wall
     if (b<90-VisionConstants.kBOffset) {

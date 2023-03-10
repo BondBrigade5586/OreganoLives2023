@@ -14,12 +14,14 @@ import frc.robot.Constants.AutonomousConstants;;
 public class ClimbChargeStation extends CommandBase {
   Drivetrain drivetrain = RobotContainer.m_drivetrain;
   Gyro gyro = RobotContainer.m_gyro;
-  boolean interactedWithRamp = false;
-  boolean engaged = false;
+  boolean interactedWithRamp;
+  boolean engaged;
   /** Creates a new AutoBalance. */
   public ClimbChargeStation() {
     addRequirements(drivetrain);
     addRequirements(gyro);
+    interactedWithRamp = false;
+    engaged = false;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -38,24 +40,23 @@ public class ClimbChargeStation extends CommandBase {
     if (gyro.getYRotation() > AutonomousConstants.kMaxYAngleOffset || gyro.getYRotation() < -AutonomousConstants.kMaxYAngleOffset) {
       interactedWithRamp = true;
     }
-    RobotContainer.sbInteracted.setBoolean(interactedWithRamp);
 
 
 
     if (!interactedWithRamp) {
-      drivetrain.driveArcade(0.75, 0, 0.75, 0);
+      drivetrain.driveArcade(0.60, 0, 0.75, 0);
     } else if (interactedWithRamp) {
       if (gyro.getYRotation() < -10) {
-        drivetrain.driveArcade(0.75, 0, 0.80, 0);
+        drivetrain.driveArcade(0.60, 0, 0.75, 0);
       } else if (gyro.getYRotation() > 10) {
-        drivetrain.driveArcade(-0.75, 0, 0.80, 0);
+        drivetrain.driveArcade(-0.60, 0, 0.75, 0);
       } else {
         engaged = true;
         drivetrain.enableBrakes();
         drivetrain.driveArcade(0, 0, 0, 0);
       }
+      SmartDashboard.putBoolean("Engaged", engaged);
     }
-    SmartDashboard.putNumber("Gyro Y Rotation", gyro.getYRotation());  
     
   }
 
@@ -63,7 +64,8 @@ public class ClimbChargeStation extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     drivetrain.stopRobot();
-
+    engaged = false;
+    interactedWithRamp = false;
   }
   // Returns true when the command should end.
   @Override

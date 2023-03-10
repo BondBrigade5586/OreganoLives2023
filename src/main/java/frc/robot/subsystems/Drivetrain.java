@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotContainer;
 import frc.robot.Constants.DriveConstants;
 
 public class Drivetrain extends SubsystemBase {
@@ -111,9 +110,6 @@ public class Drivetrain extends SubsystemBase {
     tankDrive.arcadeDrive(forward*speedFactor, -turn*turnFactor);
     SmartDashboard.putNumber("Drive Speed", forward*speedFactor);
     SmartDashboard.putNumber("Turn Speed", turn);
-
-    RobotContainer.sbDriveSpd.setDouble(forward*speedFactor);
-    RobotContainer.sbTurnSpd.setDouble(-turn*turnFactor);
   }
   public void turnRobot(double turn) {
     tankDrive.arcadeDrive(0, -turn*0.85);
@@ -122,8 +118,8 @@ public class Drivetrain extends SubsystemBase {
   }
   public void stopRobot() {
     tankDrive.tankDrive(0, 0);
-    RobotContainer.sbDriveSpd.setDouble(0);
-    RobotContainer.sbTurnSpd.setDouble(0);
+    SmartDashboard.putNumber("Drive Speed", 0);
+    SmartDashboard.putNumber("Turn Speed", 0);
   }
 
   public void enableBrakes() {

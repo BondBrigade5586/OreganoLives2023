@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Vision extends SubsystemBase {
@@ -16,7 +15,7 @@ public class Vision extends SubsystemBase {
   NetworkTableEntry ty;
   NetworkTableEntry ta;
   NetworkTableEntry ts;
-  NetworkTableEntry cameraMode;
+  NetworkTableEntry pipeline;
 
   double x;
   double y;
@@ -29,15 +28,11 @@ public class Vision extends SubsystemBase {
     ty = table.getEntry("ty"); // Vertical Offset From Crosshair To Target (-20.5 degrees to 20.5 degrees)
     ta = table.getEntry("ta"); // Target Area (0% of image to 100% of image)
     ts = table.getEntry("ts"); // Target Skew
-    cameraMode = table.getEntry("camMode"); // Gets camera mode
+    pipeline = table.getEntry("pipeline"); // Gets camera mode
 
     x = tx.getDouble(0);
     y = ty.getDouble(0);
     area = ta.getDouble(0);
-
-    // Debug info
-    SmartDashboard.putNumber("Limelight X", x);
-    SmartDashboard.putNumber("Limelight Y", y);
   }
 
   public void update() {
@@ -46,10 +41,6 @@ public class Vision extends SubsystemBase {
     area = ta.getDouble(0);
     skew = ts.getDouble(0);
 
-    // Shuffleboard info
-    SmartDashboard.putNumber("Limelight X", x);
-    SmartDashboard.putNumber("Limelight Y", y);
-    SmartDashboard.putNumber("Limelight Area", area);
   }
 
   public double getXOffset() {
@@ -66,10 +57,10 @@ public class Vision extends SubsystemBase {
   }
   public void switchCameraMode() {
     // Switches between driver camera and limelight camera stream
-    if (cameraMode.getDouble(0) == 0) {
-      cameraMode.setNumber(1);
-    } else if (cameraMode.getDouble(0) == 1) {
-      cameraMode.setNumber(0);
+    if (pipeline.getDouble(0) == 0) {
+      pipeline.setNumber(1);
+    } else if (pipeline.getDouble(0) == 1) {
+      pipeline.setNumber(0);
     }
   }
 

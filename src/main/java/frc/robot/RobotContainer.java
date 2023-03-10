@@ -4,7 +4,12 @@
 
 package frc.robot;
 
-import frc.robot.commands.*;
+import frc.robot.commands.AlignGyro;
+import frc.robot.commands.DriveForza;
+import frc.robot.commands.FollowTape;
+import frc.robot.commands.HoldOnChargeStation;
+import frc.robot.commands.RunIntakeTime;
+import frc.robot.commands.UseIntake;
 import frc.robot.subsystems.*;
 import frc.robot.Constants.*;
 
@@ -17,8 +22,10 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -32,17 +39,17 @@ public class RobotContainer {
   Runnable resetEncoder = new ResetEncoder();
   Runnable resetGyroZ = new ResetGyroZ();
   Runnable switchLimelightMode = new SwitchLimelightMode();
-
-  // Create and populate driver station tab
-  public static ShuffleboardTab driverStationTab = Shuffleboard.getTab("Driver Station");
-  public static GenericEntry sbDriveSpd = driverStationTab.add("Drive Speed", 0).withWidget(BuiltInWidgets.kNumberBar).withProperties(Map.of("min", -1, "max", 1)).getEntry();
-  public static GenericEntry sbTurnSpd = driverStationTab.add("Turn Speed", 0).withWidget(BuiltInWidgets.kNumberBar).withProperties(Map.of("min", -1, "max", 1)).getEntry();
-  public static GenericEntry sbGyroY = driverStationTab.add("Gyro Y Rotation", 0).withWidget(BuiltInWidgets.kDial).withProperties(Map.of("min", -90, "max", 90)).getEntry();
-  public static GenericEntry sbGyroZ = driverStationTab.add("Gyro Z Rotation", 0).withWidget(BuiltInWidgets.kDial).withProperties(Map.of("min", -180, "max", 180)).getEntry();
-  public static GenericEntry sbIntakeDir = driverStationTab.add("Intake Direction", "None").getEntry();
-  public static GenericEntry sbEngagedTime = driverStationTab.add("Time Engaged", 0).withWidget(BuiltInWidgets.kNumberBar).withProperties(Map.of("min", 0, "max", 15)).getEntry();
-  public static GenericEntry sbInteracted = driverStationTab.add("Interacted with ramp (autonomous)", false).getEntry();
-
+  
+  // Declare subsystems
+  public final static Drivetrain m_drivetrain = new Drivetrain();
+  public final static Intake m_intake = new Intake();
+  public final static Vision m_vision = new Vision();
+  public final static Gyro m_gyro = new Gyro();
+  public final static LED m_led = new LED();
+  
+  // Create and populate debug tab
+  // // public static ShuffleboardTab debugTab = Shuffleboard.getTab("Debug");
+  
   // Set up Drivetrain tab on Shuffleboard
   public static ShuffleboardTab driveTab = Shuffleboard.getTab("Drivetrain");
   public static GenericEntry sbInches = driveTab.add("Encoder inches", 0).getEntry();
@@ -58,12 +65,6 @@ public class RobotContainer {
   public final static XboxController m_xboxDriverController = new XboxController(OperatorConstants.kXboxDriverControllerPort);
   public final static XboxController m_subsystemController = new XboxController(OperatorConstants.kSubsystemControllerPort);
   
-  // Declare subsystems
-  public final static Drivetrain m_drivetrain = new Drivetrain();
-  public final static Intake m_intake = new Intake();
-  public final static Vision m_vision = new Vision();
-  public final static Gyro m_gyro = new Gyro();
-  public final static LED m_led = new LED();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -77,9 +78,10 @@ public class RobotContainer {
     m_drivetrain.setDefaultCommand(
       // Robot.m_drivetrainCommand
       new DriveForza(
-        () -> RobotContainer.m_xboxDriverController.getRightTriggerAxis(),
-        () -> RobotContainer.m_xboxDriverController.getLeftTriggerAxis(),
-        () -> RobotContainer.m_xboxDriverController.getLeftX() * 0.65
+        () -> m_xboxDriverController.getRightTriggerAxis(),
+        () -> m_xboxDriverController.getLeftTriggerAxis(),
+        () -> m_xboxDriverController.getLeftX() * 0.65,
+        () -> m_xboxDriverController.getXButton()
       )
     );
     m_intake.setDefaultCommand(
@@ -104,10 +106,16 @@ public class RobotContainer {
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
-    // Bind commands to buttons on controller
+    // Bind commands to buttons on p1 controller
+    new JoystickButton(m_xboxDriverController, 1).whileTrue(new InstantCommand(switchLimelightMode, m_vision));
+    new POVButton(m_xboxDriverController,270).whileTrue(new AlignGyro(() -> (m_gyro.getZRotation()-90)));
+    new POVButton(m_xboxDriverController,90).whileTrue(new AlignGyro(() -> (m_gyro.getZRotation()+90)));
+    
+    // Bind commands to buttons on p2 controller
     new JoystickButton(m_subsystemController, 4).whileTrue(new RunIntakeTime(5, true));
-    new JoystickButton(m_subsystemController, 3).whileTrue(new FollowTape(VisionConstants.kSetpointCharge, VisionConstants.kSetpointTurn));
-    new JoystickButton(m_xboxDriverController, 2).whileTrue(new HoldOnChargeStation());
+    new JoystickButton(m_subsystemController, 2).whileTrue(new HoldOnChargeStation());
+    
+
 
     // // // // Bind commands to buttons on joystick for debug
 
