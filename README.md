@@ -18,6 +18,7 @@
   - Removed issues where robot disables/disconnects
   - Automatically select Shuffleboard tab
   - Removed drive control selection dropdown
+  - Removed ShootCube command
 
 2/19/23 Sussex Mini-Regional
   - New Shuffleboard tabs 'Setup' and 'Driver Station'
