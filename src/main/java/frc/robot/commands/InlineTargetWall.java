@@ -11,7 +11,7 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Gyro;
 import frc.robot.subsystems.Vision;
 
-public class InlineTapeWall extends CommandBase {
+public class InlineTargetWall extends CommandBase {
   Vision limelight = RobotContainer.m_vision;
   Drivetrain drivetrain  = RobotContainer.m_drivetrain;
   Gyro gyro = RobotContainer.m_gyro;
@@ -23,7 +23,7 @@ public class InlineTapeWall extends CommandBase {
   double driveSpeed;
   double turnSpeed;
   /** Creates a new InlineTapeWall. */
-  public InlineTapeWall() {
+  public InlineTargetWall() {
     addRequirements(drivetrain);
     addRequirements(limelight);
     addRequirements(gyro);
@@ -50,7 +50,7 @@ public class InlineTapeWall extends CommandBase {
       driveSpeed = 0;
     }
 
-    // Keeps tape in horizontal FOV of limelight
+    // Keeps target in horizontal FOV of limelight
     if (x>VisionConstants.kMaxXOffset) {
       turnSpeed = 0.45;
     } else if (x<-VisionConstants.kMaxXOffset) {

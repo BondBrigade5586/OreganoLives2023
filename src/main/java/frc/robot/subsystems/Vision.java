@@ -55,13 +55,18 @@ public class Vision extends SubsystemBase {
     update();
     return area;
   }
-  public void switchCameraMode() {
-    // Switches between driver camera and limelight camera stream
-    if (pipeline.getDouble(0) == 0) {
-      pipeline.setNumber(1);
-    } else if (pipeline.getDouble(0) == 1) {
-      pipeline.setNumber(0);
-    }
+  
+  public void enableDriverCamera() {
+    pipeline.setNumber(0);
+  }
+  public void enableTapeProcessor() {
+    pipeline.setNumber(1);
+  }
+  public void enableCubeProcessor() {
+    pipeline.setNumber(2);
+  }
+  public void enableAprilTagProcessor() {
+    pipeline.setNumber(3);
   }
 
   @Override

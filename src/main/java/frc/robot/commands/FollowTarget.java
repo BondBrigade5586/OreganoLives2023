@@ -4,14 +4,16 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
+import frc.robot.Constants.AutonomousConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Vision;
 
-public class FollowTape extends CommandBase {
+public class FollowTarget extends CommandBase {
   Drivetrain drivetrain = RobotContainer.m_drivetrain;
   Vision limelight = RobotContainer.m_vision;
 
@@ -27,10 +29,18 @@ public class FollowTape extends CommandBase {
 
   double driveSP;
   double turnSP;
+  double kP;
+
+  GenericEntry sbArea = RobotContainer.sbArea;
+  GenericEntry sbAreaError = RobotContainer.sbAreaError;
+  GenericEntry sbDriveSpeed = RobotContainer.sbDriveSpeed;
+  GenericEntry sbTurnSpeed = RobotContainer.sbTurnSpeed;
+
   /** Creates a new FollowTape. */
-  public FollowTape(double dsp, double tsp) {
-    driveSP = dsp;
-    turnSP = tsp;
+  public FollowTarget(double dsp, double tsp, double p) {
+    this.driveSP = dsp;
+    this.turnSP = tsp;
+    this.kP = p;
     addRequirements(drivetrain);
     addRequirements(limelight);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -39,6 +49,15 @@ public class FollowTape extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    // Decides which limelight pipeline to use based on target area (each target has a unique target area)
+    if (driveSP == VisionConstants.kTapeTargetArea) {
+      limelight.enableTapeProcessor();
+    } else if (driveSP == VisionConstants.kCubeTargetArea) {
+      limelight.enableCubeProcessor();
+    } else if (driveSP == VisionConstants.kAprilTagTargetArea) {
+      limelight.enableAprilTagProcessor();
+    }
+
     drivetrain.enableBrakes();
   }
 
@@ -61,21 +80,27 @@ public class FollowTape extends CommandBase {
       turnError = 0;
     }
     // Adjusts motor outputs based on drive and turn errors
-    drivetrain.driveArcade(VisionConstants.kPCharge * driveError, VisionConstants.kPTurn * -turnError + VisionConstants.kITurn*-turnErrorSum, 1.00, 1.00);
+    drivetrain.driveArcade(kP * driveError, VisionConstants.kPTurn * -turnError + VisionConstants.kITurn*-turnErrorSum, AutonomousConstants.kAutoSpeedFactor, AutonomousConstants.kAutoTurnFactor);
     prevTimestamp = Timer.getFPGATimestamp();
+
+    sbArea.setDouble(area);
+    sbAreaError.setDouble(driveError);
+    sbDriveSpeed.setDouble(driveError*kP);
+    sbTurnSpeed.setDouble(VisionConstants.kPTurn * -turnError + VisionConstants.kITurn*-turnErrorSum);
+
   } 
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    limelight.enableDriverCamera();
     drivetrain.stopRobot();
-    // Robot.m_drivetrainCommand.schedule();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // return false;
-    return ((drivetrain.getTurnSpeed() < 0.15 && drivetrain.getTurnSpeed() > -0.15 && drivetrain.getDriveSpeed() < 0.30 && drivetrain.getDriveSpeed() > -0.30) || area == 0);
+    // Ends if area is within 5% of the target area
+    return area > (driveSP-(driveSP*0.05)) && area < (driveSP+(driveSP*0.05));
   }
 }

@@ -11,16 +11,18 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.*;
 import frc.robot.commands.AlignGyro;
 import frc.robot.commands.ClimbChargeStation;
-import frc.robot.commands.DriveDistance;
-import frc.robot.commands.DriveDrift;
-import frc.robot.commands.DriveJoystick;
-import frc.robot.commands.DriveForza;
+import frc.robot.commands.ExitCommunity;
+import frc.robot.commands.FollowTarget;
 import frc.robot.commands.HoldOnChargeStation;
+import frc.robot.commands.InlineTargetWall;
 import frc.robot.commands.RunIntakeTime;
+import frc.robot.commands.RunIntakeUntilPiece;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -30,11 +32,9 @@ import frc.robot.commands.RunIntakeTime;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-  public static Command m_drivetrainCommand;
   ShuffleboardTab setupTab = Shuffleboard.getTab("Setup");
   // Chooses autonomous command
   private SendableChooser<Object> autoChooser;
-  // private SendableChooser<Object> drivetrainChooser;
   private RobotContainer m_robotContainer;
 
   /**
@@ -47,59 +47,64 @@ public class Robot extends TimedRobot {
 
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
-    
-    // Initialize choosers
     autoChooser = new SendableChooser<>();
-    // drivetrainChooser = new SendableChooser<>();
 
     // Autonomous modes
-    autoChooser.addOption("Center", new SequentialCommandGroup(
+    autoChooser.addOption("Place Cube, Exit Community, Pick Up Cube, Engage", new SequentialCommandGroup(
       new RunIntakeTime(0.5, true),
-      // new DriveDistance(-8),
-      // new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()+180)),
-      // new DriveDistance(-6),
-      new DriveDistance(-(AutonomousConstants.kDistCommunityToGrid-6)),
-      // new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()+180)),
+      new ExitCommunity(true),
+      new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()+135)),
+      new FollowTarget(VisionConstants.kCubeTargetArea, VisionConstants.kCubeXOffset, VisionConstants.kCubeP),
+      new RunIntakeTime(0.5, false),
+      new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()-135)),
+      // new InstantCommand(m_enableAprilTagProcessor, RobotContainer.m_vision),
+      // new InlineTargetWall(),
       new ClimbChargeStation(), 
       new HoldOnChargeStation()
     ));
-    autoChooser.addOption("Side", new SequentialCommandGroup(
+
+    autoChooser.addOption("Place Cube, Exit Community, Engage", new SequentialCommandGroup(
+      new RunIntakeTime(0.5, true),
+      new ExitCommunity(true),
+      new ClimbChargeStation(), 
+      new HoldOnChargeStation(),
+      new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()+180)),
+      new HoldOnChargeStation(),
+      new HoldOnChargeStation()
+    ));
+    autoChooser.addOption("Cube and Exit Community", new SequentialCommandGroup(
       new RunIntakeTime(1.0, true),
-      new DriveDistance(-(AutonomousConstants.kDistCommunityToGrid-30)),
+      new ExitCommunity(true),
       new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()+180))
       ));
-    autoChooser.addOption("Ball only", 
+    autoChooser.addOption("Cube only", 
       new RunIntakeTime(5.0, true)
-    );    
-    // autoChooser.addOption("Balance", new SequentialCommandGroup(
-    //     new ClimbChargeStation(),
-    //     new HoldOnChargeStation(),
-    //     new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()+90))
-    // ));
-    // autoChooser.addOption("180 degrees", new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()+180)));
-    // autoChooser.addOption("Exit community", new DriveDistance(AutonomousConstants.kDistCommunityToGrid+30));
+    );
+
+    // TODO Test
+    autoChooser.addOption("Two Cubes", new SequentialCommandGroup(
+      new RunIntakeTime(0.5, true),
+      new ExitCommunity(true),
+      new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()+180)),
+      new ParallelCommandGroup(
+        new FollowTarget(VisionConstants.kCubeTargetArea, VisionConstants.kCubeXOffset, VisionConstants.kCubeP),
+        new RunIntakeUntilPiece()
+      ),
+      new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()+180)),
+      new FollowTarget(VisionConstants.kAprilTagTargetArea, VisionConstants.kAprilTagXOffset, VisionConstants.kAprilTagP),
+      new RunIntakeTime(1.0, true)
+    ));
+
+    autoChooser.addOption("Follow & Pick Up Cube", new SequentialCommandGroup(
+      new ParallelCommandGroup(
+        new FollowTarget(VisionConstants.kCubeTargetArea, VisionConstants.kCubeXOffset, VisionConstants.kCubeP),
+        new RunIntakeUntilPiece()
+      )
+    ));
     autoChooser.addOption("None", null);
-    
-    // Drivetrain control modes
-    // // drivetrainChooser.addOption("Flightstick", new DriveJoystick(
-    // //   RobotContainer.m_drivetrain, 
-    // //   () -> RobotContainer.m_flightstickDriverController.getY(), 
-    // //   () -> RobotContainer.m_flightstickDriverController.getTwist(), 
-    // //   () -> RobotContainer.m_flightstickDriverController.getRawAxis(OperatorConstants.kSpeedFactorAxis)
-    // // ));
-    // // drivetrainChooser.addOption("Drift", new DriveDrift(
-    // //   () -> -RobotContainer.m_xboxDriverController.getLeftY(),
-    // //   () -> -RobotContainer.m_xboxDriverController.getRightY()
-    // // ));
-    // // drivetrainChooser.addOption("Forza", new DriveForza(
-    // //   () -> RobotContainer.m_xboxDriverController.getRightTriggerAxis(),
-    // //   () -> RobotContainer.m_xboxDriverController.getLeftTriggerAxis(),
-    // //   () -> RobotContainer.m_xboxDriverController.getLeftX() * 0.65
-    // // ));
 
     // Add choosers to setup tab
     setupTab.add(autoChooser);
-    // setupTab.add(drivetrainChooser);
 
     m_robotContainer = new RobotContainer();
   }
@@ -125,7 +130,6 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
     RobotContainer.m_drivetrain.disableBrakes();
     Shuffleboard.selectTab("Setup");
-    // Shuffleboard.selectTab("SmartDashboard");
 
   }
 
@@ -160,11 +164,6 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    
-    // m_drivetrainCommand = (Command) drivetrainChooser.getSelected();
-    // if (m_drivetrainCommand != null) {
-    //   m_drivetrainCommand.schedule();
-    // }
   }
 
   /** This function is called periodically during operator control. */
@@ -192,6 +191,11 @@ public class Robot extends TimedRobot {
   class ResetGyroZ implements Runnable {
     public void run() {
       RobotContainer.m_gyro.resetZRotation();
+    }
+  }
+  class EnableAprilTagProcessor implements Runnable {
+    public void run() {
+      RobotContainer.m_vision.enableAprilTagProcessor();
     }
   }
 }

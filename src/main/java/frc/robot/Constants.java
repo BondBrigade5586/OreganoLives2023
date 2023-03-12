@@ -28,8 +28,11 @@ public final class Constants {
 
 
   public static class AutonomousConstants {
-    public static final double kDistCommunityToGrid = 216;
+    public static final double kDistCommunityToGrid = 188;
     public static final double kMaxYAngleOffset = 10;
+
+    public static final double kAutoSpeedFactor = 0.80;
+    public static final double kAutoTurnFactor = 0.90;
   }
 
 
@@ -64,8 +67,6 @@ public final class Constants {
     public static final double kDistanceP = 0.015;
     public static final double kDistErrorMargin = 0.50;
 
-    public static final double kAutoSpeedFactor = 0.80;
-
     public static final double kDefaultSpeedFactor = 0.80;
     public static final double kSecondarySpeedFactor = 0.40;
 
@@ -78,9 +79,17 @@ public final class Constants {
     public static final double kPTurn = 0.05;
     public static final double kITurn = 0.004;
 
-    public static final double kPCharge = 0.5;
-    public static final double kSetpointCharge = 1.25; // Target area of RR tape in limelight
-    public static final double kSetpointTurn = 0; // Target X offset of tape in limelight
+    public static final double kTapeTargetArea = 1.25; // Target area of RR tape in limelight
+    public static final double kTapeXOffset = 0; // Target X offset of tape in limelight
+    public static final double kTapeP = 0.5;
+
+    public static final double kCubeTargetArea = 7.65;
+    public static final double kCubeXOffset = 0;
+    public static final double kCubeP = 0.13;
+
+    public static final double kAprilTagTargetArea = 5;
+    public static final double kAprilTagXOffset = 0;
+    public static final double kAprilTagP = 0;
 
     public static final double kBOffset = 2;
     public static final double kMaxXOffset = 25;

@@ -6,22 +6,16 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Intake;
 
-public class DriveUntilTapeFound extends CommandBase {
-  Drivetrain drivetrain = RobotContainer.m_drivetrain;
-  Vision limelight = RobotContainer.m_vision;
+public class RunIntakeUntilPiece extends CommandBase {
+  Intake intake = RobotContainer.m_intake;
 
-  double xOffset;
-  double driveSetpoint;
-  double tapeSetpoint;
-  /** Creates a new DriveUntilTapeFound. */
-  public DriveUntilTapeFound(double driveSP, double tapeSP) {
-    driveSetpoint = driveSP;
-    tapeSetpoint = tapeSP;
-    addRequirements(drivetrain);
-    addRequirements(limelight);
+  // TODO Implement limit switch functionality that runs the intake until the limit switch has been activated 
+
+  /** Creates a new RunIntakeUntilPiece. */
+  public RunIntakeUntilPiece() {
+    addRequirements(intake);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -31,21 +25,17 @@ public class DriveUntilTapeFound extends CommandBase {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    if (limelight.getArea() < tapeSetpoint) {
-      drivetrain.driveArcade(driveSetpoint, 0, 0.75, 0);
-    }
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    drivetrain.stopRobot();
+    intake.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (limelight.getArea() > tapeSetpoint);
+    return false;
   }
 }

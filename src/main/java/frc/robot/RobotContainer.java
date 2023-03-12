@@ -6,7 +6,7 @@ package frc.robot;
 
 import frc.robot.commands.AlignGyro;
 import frc.robot.commands.DriveForza;
-import frc.robot.commands.FollowTape;
+import frc.robot.commands.FollowTarget;
 import frc.robot.commands.HoldOnChargeStation;
 import frc.robot.commands.RunIntakeTime;
 import frc.robot.commands.UseIntake;
@@ -38,7 +38,6 @@ public class RobotContainer {
   // Runnables for instant commands
   Runnable resetEncoder = new ResetEncoder();
   Runnable resetGyroZ = new ResetGyroZ();
-  Runnable switchLimelightMode = new SwitchLimelightMode();
   
   // Declare subsystems
   public final static Drivetrain m_drivetrain = new Drivetrain();
@@ -48,7 +47,11 @@ public class RobotContainer {
   public final static LED m_led = new LED();
   
   // Create and populate debug tab
-  // // public static ShuffleboardTab debugTab = Shuffleboard.getTab("Debug");
+  public static ShuffleboardTab debugTab = Shuffleboard.getTab("Debug");
+  public static GenericEntry sbArea = debugTab.add("Area", 0).getEntry();
+  public static GenericEntry sbAreaError = debugTab.add("Area Error", 0).getEntry();
+  public static GenericEntry sbDriveSpeed = debugTab.add("Drive Setpoint", 0).getEntry();
+  public static GenericEntry sbTurnSpeed = debugTab.add("Turn Speed", 0).getEntry();
   
   // Set up Drivetrain tab on Shuffleboard
   public static ShuffleboardTab driveTab = Shuffleboard.getTab("Drivetrain");
@@ -86,8 +89,8 @@ public class RobotContainer {
     );
     m_intake.setDefaultCommand(
       new UseIntake(
-        () -> m_subsystemController.getRawButton(IntakeConstants.kIntakeInButton), 
-        () -> m_subsystemController.getRawButton(IntakeConstants.kIntakeOutButton))
+        () -> m_xboxDriverController.getRawButton(IntakeConstants.kIntakeInButton), 
+        () -> m_xboxDriverController.getRawButton(IntakeConstants.kIntakeOutButton))
     );
     
     // Configure the trigger bindings
@@ -106,40 +109,17 @@ public class RobotContainer {
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
+    // TODO Remove -- debug only
+    new JoystickButton(m_xboxDriverController, 1).whileTrue(new FollowTarget(VisionConstants.kCubeTargetArea, VisionConstants.kCubeXOffset, VisionConstants.kCubeP));
+    
     // Bind commands to buttons on p1 controller
-    new JoystickButton(m_xboxDriverController, 1).whileTrue(new InstantCommand(switchLimelightMode, m_vision));
     new POVButton(m_xboxDriverController,270).whileTrue(new AlignGyro(() -> (m_gyro.getZRotation()-90)));
     new POVButton(m_xboxDriverController,90).whileTrue(new AlignGyro(() -> (m_gyro.getZRotation()+90)));
     
     // Bind commands to buttons on p2 controller
     new JoystickButton(m_subsystemController, 4).whileTrue(new RunIntakeTime(5, true));
     new JoystickButton(m_subsystemController, 2).whileTrue(new HoldOnChargeStation());
-    
-
-
-    // // // // Bind commands to buttons on joystick for debug
-
-    // // // new JoystickButton(m_driverController, 1).whileTrue(new FollowTape(VisionConstants.kSetpointCharge, VisionConstants.kSetpointTurn)); // Requires fine-tuning
-    // // // new JoystickButton(m_driverController, 3).whileTrue(new AlignGyro(() -> DriveConstants.kGyroSPAngle)); // Test use only
-    // // // new JoystickButton(m_driverController, 5).whileTrue(new ClimbChargeStation()); // Test use only
-    // // // new JoystickButton(m_driverController, 12).whileTrue(new DriveDistance(290)); // Drives robot to 16' 10.5"  
-  
-    // // // // Instant Commands
-    // // // new JoystickButton(m_driverController, 4).whileTrue(new InstantCommand(switchLimelightMode, m_vision));
-    // // // new JoystickButton(m_driverController, 5).whileTrue(new InstantCommand(resetGyroZ, m_gyro));
-    // // // new JoystickButton(m_driverController, 6).whileTrue(new InstantCommand(resetEncoder, m_drivetrain));
-
-    // // // // Sequential Command Groups
-    // // // new JoystickButton(m_driverController, 11).whileTrue(
-    // // //   new SequentialCommandGroup(
-    // // //     new AlignGyro(() -> -m_gyro.getZRotation()),
-    // // //     new DriveUntilTapeFound(-0.55, 0.05),
-    // // //     new InlineTapeWall(),
-    // // //     new AlignGyro(() -> 0.0),
-    // // //     new FollowTape(VisionConstants.kSetpointCharge, VisionConstants.kSetpointTurn)
-    // // //   )
-    // // // );
-    
+        
   }
 
   /**
@@ -162,10 +142,5 @@ public class RobotContainer {
     public void run() {
       m_gyro.resetZRotation();
     }
-  }
-  class SwitchLimelightMode implements Runnable {
-    public void run() {
-      m_vision.switchCameraMode();
-    }
-  }
+  }  
 }

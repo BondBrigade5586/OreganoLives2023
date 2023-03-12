@@ -46,10 +46,10 @@ public class ClimbChargeStation extends CommandBase {
     if (!interactedWithRamp) {
       drivetrain.driveArcade(0.60, 0, 0.75, 0);
     } else if (interactedWithRamp) {
-      if (gyro.getYRotation() < -10) {
-        drivetrain.driveArcade(0.60, 0, 0.75, 0);
-      } else if (gyro.getYRotation() > 10) {
-        drivetrain.driveArcade(-0.60, 0, 0.75, 0);
+      if (gyro.getYRotation() < -8.5) {
+        drivetrain.driveArcade(-0.55, 0, 0.75, 0);
+      } else if (gyro.getYRotation() > 8.5) {
+        drivetrain.driveArcade(0.55, 0, 0.75, 0);
       } else {
         engaged = true;
         drivetrain.enableBrakes();

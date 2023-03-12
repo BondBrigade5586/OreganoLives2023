@@ -8,10 +8,11 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
+import frc.robot.Constants.AutonomousConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.Drivetrain;
 
-public class DriveDistance extends CommandBase {
+public class ExitCommunity extends CommandBase {
 
   // Shuffleboard tab info
   ShuffleboardTab tab = RobotContainer.driveTab;
@@ -22,20 +23,26 @@ public class DriveDistance extends CommandBase {
   double sp;
   double outputSpeed;
 
+  boolean inverted;
+
   double error;
   double positionTicks; // Position of robot in ticks
   double positionIn; // Position of robot in feet
 
   /** Creates a new DriveDistance. */
-  public DriveDistance(double setpoint) {
+  public ExitCommunity(boolean reverse) {
     // SETPOINT MUST BE IN INCHES
     addRequirements(drivetrain);
-    this.sp = setpoint; 
+    this.sp = AutonomousConstants.kDistCommunityToGrid; 
+    this.inverted = reverse;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    if (inverted) {
+      sp *= -1;
+    }
     drivetrain.disableBrakes();
     drivetrain.resetEncoderPosition();
     positionTicks = drivetrain.getEncoderPosition();
@@ -62,7 +69,7 @@ public class DriveDistance extends CommandBase {
 
     sbSpeed.setDouble(outputSpeed);
     sbError.setDouble(error);
-    drivetrain.driveArcade(outputSpeed, 0, DriveConstants.kAutoSpeedFactor, DriveConstants.kDefaultTurnFactor);
+    drivetrain.driveArcade(outputSpeed, 0, AutonomousConstants.kAutoSpeedFactor, DriveConstants.kDefaultTurnFactor);
   }
 
   // Called once the command ends or is interrupted.

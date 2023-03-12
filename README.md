@@ -4,6 +4,16 @@
 
 ---- Changelog ----
 
+3/11/23 Week 2 Competitions: Saturday Meeting
+  - Created beta two-cube autonomous mode
+  - Added vision pipelines for tracking game pieces & AprilTags
+  - Generalized vision commands to allow for all targets instead of only retroreflective tape
+  - Changed DriveDistance to ExitCommunity
+  - Turned the time the intake runs in autonomous from 5.0 to 0.5 (much more time to engage)
+  - Vision command
+    1. Removed method "switchLimelightMode"
+    2. Added methods to select each vision pipeline (tape, cube, AprilTag, driver camera)
+
 3/9/23 Post-Week 1 Northern Lights Regional
   - Tuned center autonomous to account for added robot weight
   - Button to switch between driver camera and vision processor
