@@ -5,15 +5,18 @@ package frc.robot.commands;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Proximity;
 import frc.robot.subsystems.Vision;
 
 public class DriveForza extends CommandBase {
   Drivetrain drivetrain = RobotContainer.m_drivetrain;
   Vision limelight = RobotContainer.m_vision;
+  Proximity proximity = RobotContainer.m_proximity;
 
   Supplier<Double> kForward, kBackward, kTurn;
   Supplier<Boolean> kSTFactor;
@@ -21,6 +24,8 @@ public class DriveForza extends CommandBase {
   double kSpeed;
   double spdFact;
   double trnFact;
+
+  GenericEntry sbSensorStatus = RobotContainer.sbProxSensorStatus;
 
   /** Creates a new ForzaDrive. */
   public DriveForza(Supplier<Double> forward, Supplier<Double> backward, Supplier<Double> turn, Supplier<Boolean> stFact) {
@@ -50,6 +55,7 @@ public class DriveForza extends CommandBase {
     }
     drivetrain.driveArcade(kSpeed, kTurn.get(), spdFact, trnFact);
     limelight.update();
+
   }
 
   // Called once the command ends or is interrupted.

@@ -35,15 +35,15 @@ public class HoldOnChargeStation extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (gyro.getYRotation() > 4) {
+    if (gyro.getYRotation() > 5) {
     drivetrain.driveArcade(0.325, 0, 1.00, 0);
     engaged = false;
     resetStopTimer();
-   } else if (gyro.getYRotation() < -4) {
+   } else if (gyro.getYRotation() < -5) {
     drivetrain.driveArcade(-0.325, 0, 1.00, 0);
     resetStopTimer();
     engaged = false;
-   } else if (gyro.getYRotation() < 4 && gyro.getYRotation() > -4 && !engaged) {
+   } else if (gyro.getYRotation() < 5 && gyro.getYRotation() > -5 && !engaged) {
     drivetrain.stopRobot();
     timeEngaged.start();
     engaged = true;

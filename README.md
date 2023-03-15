@@ -4,6 +4,13 @@
 
 ---- Changelog ----
 
+3/14/23 Limelight & Vision Updates
+  - Added functionality to aim Limelight
+  - Pick up cube in autonomous
+  - Added proximity sensor to hang edge of robot without falling
+  - Removed unused drive commands (DriveJoystick, DriveDrift)
+  - Temporarily commented LED subsystem (causing issues with moving limelight due to unused PWM port)
+
 3/11/23 Week 2 Competitions: Saturday Meeting
   - Created beta two-cube autonomous mode
   - Added vision pipelines for tracking game pieces & AprilTags

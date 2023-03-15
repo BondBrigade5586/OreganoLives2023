@@ -4,9 +4,12 @@
 
 package frc.robot;
 
+import frc.robot.commands.AimLimelightAhead;
+import frc.robot.commands.AimLimelightDown;
 import frc.robot.commands.AlignGyro;
 import frc.robot.commands.DriveForza;
 import frc.robot.commands.FollowTarget;
+import frc.robot.commands.HangOffChargeStation;
 import frc.robot.commands.HoldOnChargeStation;
 import frc.robot.commands.RunIntakeTime;
 import frc.robot.commands.UseIntake;
@@ -22,7 +25,6 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -44,7 +46,8 @@ public class RobotContainer {
   public final static Intake m_intake = new Intake();
   public final static Vision m_vision = new Vision();
   public final static Gyro m_gyro = new Gyro();
-  public final static LED m_led = new LED();
+  public final static Proximity m_proximity = new Proximity();
+  // // // // public final static LED m_led = new LED();
   
   // Create and populate debug tab
   public static ShuffleboardTab debugTab = Shuffleboard.getTab("Debug");
@@ -52,6 +55,8 @@ public class RobotContainer {
   public static GenericEntry sbAreaError = debugTab.add("Area Error", 0).getEntry();
   public static GenericEntry sbDriveSpeed = debugTab.add("Drive Setpoint", 0).getEntry();
   public static GenericEntry sbTurnSpeed = debugTab.add("Turn Speed", 0).getEntry();
+  public static GenericEntry sbLimelightAngle = debugTab.add("Limelight Angle", 0).getEntry();
+  public static GenericEntry sbProxSensorStatus = debugTab.add("Sensor Status", false).getEntry();
   
   // Set up Drivetrain tab on Shuffleboard
   public static ShuffleboardTab driveTab = Shuffleboard.getTab("Drivetrain");
@@ -89,8 +94,8 @@ public class RobotContainer {
     );
     m_intake.setDefaultCommand(
       new UseIntake(
-        () -> m_xboxDriverController.getRawButton(IntakeConstants.kIntakeInButton), 
-        () -> m_xboxDriverController.getRawButton(IntakeConstants.kIntakeOutButton))
+        () -> m_subsystemController.getRawButton(IntakeConstants.kIntakeInButton), 
+        () -> m_subsystemController.getRawButton(IntakeConstants.kIntakeOutButton))
     );
     
     // Configure the trigger bindings
@@ -111,7 +116,10 @@ public class RobotContainer {
 
     // TODO Remove -- debug only
     new JoystickButton(m_xboxDriverController, 1).whileTrue(new FollowTarget(VisionConstants.kCubeTargetArea, VisionConstants.kCubeXOffset, VisionConstants.kCubeP));
-    
+    new JoystickButton(m_xboxDriverController, 4).whileTrue(new HangOffChargeStation());
+    new JoystickButton(m_xboxDriverController, 2).onTrue(new AimLimelightDown());
+    new JoystickButton(m_xboxDriverController, 2).onFalse(new AimLimelightAhead());
+
     // Bind commands to buttons on p1 controller
     new POVButton(m_xboxDriverController,270).whileTrue(new AlignGyro(() -> (m_gyro.getZRotation()-90)));
     new POVButton(m_xboxDriverController,90).whileTrue(new AlignGyro(() -> (m_gyro.getZRotation()+90)));

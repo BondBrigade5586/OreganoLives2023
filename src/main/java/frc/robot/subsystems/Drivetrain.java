@@ -1,9 +1,9 @@
 
 /* ------ SEASON BOT DRIVETRAIN CODE ------ */
 
-// // // // // Copyright (c) FIRST and other WPILib contributors.
-// // // // // Open Source Software; you can modify and/or share it under the terms of
-// // // // // the WPILib BSD license file in the root directory of this project.
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
 
@@ -36,6 +36,7 @@ public class Drivetrain extends SubsystemBase {
     m_frontRight = new WPI_TalonFX(DriveConstants.kFrontRightID);
     m_backLeft = new WPI_TalonFX(DriveConstants.kBackLeftID);
     m_backRight = new WPI_TalonFX(DriveConstants.kBackRightID);
+    
 
     // Encoder
     m_frontRight.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
@@ -51,55 +52,6 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
-
-
-/* ------ PROGRAMMING BOT DRIVETRAIN CODE ------ */
-
-// // // // // Copyright (c) FIRST and other WPILib contributors.
-// // // // // Open Source Software; you can modify and/or share it under the terms of
-// // // // // the WPILib BSD license file in the root directory of this project.
-
-// // // // package frc.robot.subsystems;
-
-// // // // import com.ctre.phoenix.motorcontrol.NeutralMode;
-// // // // import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-// // // // import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-
-// // // // import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-// // // // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-// // // // import edu.wpi.first.wpilibj2.command.SubsystemBase;
-// // // // import frc.robot.Constants.DriveConstants;
-
-// // // // public class Drivetrain extends SubsystemBase {
-  
-// // // //   private final WPI_TalonSRX m_frontLeft;
-// // // //   private final WPI_TalonSRX m_frontRight;
-// // // //   private final WPI_VictorSPX m_backLeft;
-// // // //   private final WPI_VictorSPX m_backRight;
-
-// // // //   private static NeutralMode kNeutralMode = NeutralMode.Coast;
-// // // //   private final DifferentialDrive tankDrive;
-
-// // // //   /** Creates a new Drivetrain. */
-// // // //   public Drivetrain() {
-// // // //     m_frontLeft = new WPI_TalonSRX(DriveConstants.kFrontLeftID);
-// // // //     m_frontRight = new WPI_TalonSRX(DriveConstants.kFrontRightID);
-// // // //     m_backLeft = new WPI_VictorSPX(DriveConstants.kBackLeftID);
-// // // //     m_backRight = new WPI_VictorSPX(DriveConstants. kBackRightID);
-  
-// // // //     m_frontRight.setInverted(true);
-// // // //     m_backRight.setInverted(true);
-// // // //     m_backLeft.follow(m_frontLeft);
-// // // //     m_backRight.follow(m_frontRight);
-
-// // // //     tankDrive = new DifferentialDrive(m_frontLeft, m_frontRight);
-// // // //   }
-
-// // // //   @Override
-// // // //   public void periodic() {
-// // // //     // This method will be called once per scheduler run
-// // // //   }
-
 
   /* ------- CUSTOM DRIVETRAIN METHODS ------ */
 

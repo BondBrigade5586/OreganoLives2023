@@ -4,12 +4,19 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
+import frc.robot.Constants.VisionConstants;
 
 public class Vision extends SubsystemBase {
+  Servo limelightAngleControl;
+  GenericEntry sbLimelightAngle;
+
   NetworkTable table;
   NetworkTableEntry tx;
   NetworkTableEntry ty;
@@ -23,6 +30,8 @@ public class Vision extends SubsystemBase {
   double skew;
   /** Creates a new Vision. */
   public Vision() {
+    limelightAngleControl = new Servo(VisionConstants.kLimelightAngleControlPWMPort);
+    sbLimelightAngle = RobotContainer.sbLimelightAngle;
     table = NetworkTableInstance.getDefault().getTable("limelight");
     tx = table.getEntry("tx"); // Horizontal Offset From Crosshair To Target  (-27 degrees to 27 degrees)
     ty = table.getEntry("ty"); // Vertical Offset From Crosshair To Target (-20.5 degrees to 20.5 degrees)
@@ -40,7 +49,6 @@ public class Vision extends SubsystemBase {
     y = ty.getDouble(0);
     area = ta.getDouble(0);
     skew = ts.getDouble(0);
-
   }
 
   public double getXOffset() {
@@ -67,6 +75,13 @@ public class Vision extends SubsystemBase {
   }
   public void enableAprilTagProcessor() {
     pipeline.setNumber(3);
+  }
+
+  public double getLimelightAngle() {
+    return limelightAngleControl.getAngle();
+  }
+  public void setLimelightAngle(double angle) {
+    limelightAngleControl.setAngle(angle);
   }
 
   @Override

@@ -11,16 +11,16 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.*;
+import frc.robot.commands.AimLimelightAhead;
 import frc.robot.commands.AlignGyro;
 import frc.robot.commands.ClimbChargeStation;
 import frc.robot.commands.ExitCommunity;
 import frc.robot.commands.FollowTarget;
+import frc.robot.commands.HangOffChargeStation;
 import frc.robot.commands.HoldOnChargeStation;
-import frc.robot.commands.InlineTargetWall;
 import frc.robot.commands.RunIntakeTime;
 import frc.robot.commands.RunIntakeUntilPiece;
 
@@ -49,14 +49,21 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     autoChooser = new SendableChooser<>();
 
+    autoChooser.addOption("Balance and Hang off Edge", new SequentialCommandGroup(
+      new ExitCommunity(true),
+      new ClimbChargeStation(),
+      new HoldOnChargeStation(),
+      new AlignGyro(() -> RobotContainer.m_gyro.getZRotation()+90),
+      new HangOffChargeStation()
+    ));
     // Autonomous modes
     autoChooser.addOption("Place Cube, Exit Community, Pick Up Cube, Engage", new SequentialCommandGroup(
       new RunIntakeTime(0.5, true),
       new ExitCommunity(true),
-      new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()+135)),
+      new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()+160)),
       new FollowTarget(VisionConstants.kCubeTargetArea, VisionConstants.kCubeXOffset, VisionConstants.kCubeP),
       new RunIntakeTime(0.5, false),
-      new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()-135)),
+      new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()-160)),
       // new InstantCommand(m_enableAprilTagProcessor, RobotContainer.m_vision),
       // new InlineTargetWall(),
       new ClimbChargeStation(), 
@@ -128,6 +135,7 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
+    new AimLimelightAhead();
     RobotContainer.m_drivetrain.disableBrakes();
     Shuffleboard.selectTab("Setup");
 
@@ -139,7 +147,7 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    Shuffleboard.selectTab("SmartDashboard");
+    Shuffleboard.selectTab("Debug");
 
     // Gets selected autonomous command
     m_autonomousCommand = (Command) autoChooser.getSelected();
@@ -155,7 +163,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    Shuffleboard.selectTab("SmartDashboard");
+    Shuffleboard.selectTab("Debug");
 
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to

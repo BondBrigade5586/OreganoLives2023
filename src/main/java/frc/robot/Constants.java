@@ -39,9 +39,9 @@ public final class Constants {
   public static class DriveConstants {
     // Drive motor controller IDs
     public static final int kFrontLeftID = 1;
-    public static final int kFrontRightID = 22;
+    public static final int kFrontRightID = 22; // 22
     public static final int kBackLeftID = 3;
-    public static final int kBackRightID = 44;
+    public static final int kBackRightID = 44; // 44
 
     public static final double kGyroSPAngle = 0; // Robot should be powered on facing the wall/driver stations
     
@@ -74,8 +74,11 @@ public final class Constants {
     public static final double kSecondaryTurnFactor = 0.55;
   }
 
-
   public static class VisionConstants {
+    public static final int kLimelightAngleControlPWMPort = 0;
+    public static final double kLimelightStraightForwardAngle = 180;
+    public static final double kLimelightDownAngle = 120;
+
     public static final double kPTurn = 0.05;
     public static final double kITurn = 0.004;
 
@@ -83,9 +86,9 @@ public final class Constants {
     public static final double kTapeXOffset = 0; // Target X offset of tape in limelight
     public static final double kTapeP = 0.5;
 
-    public static final double kCubeTargetArea = 7.65;
+    public static final double kCubeTargetArea = 7.70;
     public static final double kCubeXOffset = 0;
-    public static final double kCubeP = 0.13;
+    public static final double kCubeP = 0.11;
 
     public static final double kAprilTagTargetArea = 5;
     public static final double kAprilTagXOffset = 0;
@@ -109,7 +112,9 @@ public final class Constants {
   }
 
   public static class OtherConstants {
-    public static final int kLEDPort = 0;
+    public static final int kLEDPort = 9;
     public static final int kLEDCount = 150;
+    
+    public static final int kProximitySensorPort = 9;
   }
 }
