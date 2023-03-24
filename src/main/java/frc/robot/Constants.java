@@ -74,8 +74,8 @@ public final class Constants {
     public static final double kDefaultSpeedFactor = 0.80;
     public static final double kSecondarySpeedFactor = 0.40;
 
-    public static final double kDefaultTurnFactor = 0.90;
-    public static final double kSecondaryTurnFactor = 0.55;
+    public static final double kDefaultTurnFactor = 0.95;
+    public static final double kSecondaryTurnFactor = 0.60;
   }
 
   public static class VisionConstants {

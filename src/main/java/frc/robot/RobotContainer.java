@@ -59,8 +59,9 @@ public class RobotContainer {
   public static GenericEntry sbProxSensorStatus = debugTab.add("Hang Sensor Status", false).getEntry();
   public static GenericEntry sbIntakeStatus = debugTab.add("Intake Up", false).getEntry();
   public static GenericEntry sbIntakeStatusD = debugTab.add("Intake Down", false).getEntry();
-  public static GenericEntry sbGyroY = debugTab.add("Gyro Y", 0).withWidget(BuiltInWidgets.kDial).withProperties(Map.of("min", 0, "max", 180)).getEntry();
-  public static GenericEntry sbGyroZ = debugTab.add("Gyro Z", 0).withWidget(BuiltInWidgets.kDial).withProperties(Map.of("min", 0, "max", 180)).getEntry();
+  public static GenericEntry sbGyroX = debugTab.add("Gyro X", 0).withWidget(BuiltInWidgets.kDial).withProperties(Map.of("min", -90, "max", 90)).getEntry();
+  public static GenericEntry sbGyroY = debugTab.add("Gyro Y", 0).withWidget(BuiltInWidgets.kDial).withProperties(Map.of("min", -90, "max", 90)).getEntry();
+  public static GenericEntry sbGyroZ = debugTab.add("Gyro Z", 0).withWidget(BuiltInWidgets.kDial).withProperties(Map.of("min", -180, "max", 180)).getEntry();
 
   // Set up Drivetrain tab on Shuffleboard
   public static ShuffleboardTab driveTab = Shuffleboard.getTab("Drivetrain");

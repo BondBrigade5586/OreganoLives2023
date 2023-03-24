@@ -23,6 +23,10 @@ public class DriveForza extends CommandBase {
   Supplier<Double> kForward, kBackward, kTurn;
   Supplier<Boolean> kSTFactor;
 
+  GenericEntry sbGyroX = RobotContainer.sbGyroX;
+  GenericEntry sbGyroY = RobotContainer.sbGyroY;
+  GenericEntry sbGyroZ = RobotContainer.sbGyroZ;
+
   double kSpeed;
   double spdFact;
   double trnFact;
@@ -46,6 +50,10 @@ public class DriveForza extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    sbGyroX.setDouble(RobotContainer.m_gyro.getXRotation());
+    sbGyroY.setDouble(RobotContainer.m_gyro.getYRotation());
+    sbGyroZ.setDouble(RobotContainer.m_gyro.getZRotation());
+    
     kSpeed = kForward.get() - kBackward.get();
 
     if (kSTFactor.get()) {
