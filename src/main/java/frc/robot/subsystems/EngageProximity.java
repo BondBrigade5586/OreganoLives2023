@@ -8,10 +8,10 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.OtherConstants;
 
-public class Proximity extends SubsystemBase {
+public class EngageProximity extends SubsystemBase {
   private DigitalInput chargeStationSensor;
   /** Creates a new Proximity. */
-  public Proximity() {
+  public EngageProximity() {
     chargeStationSensor = new DigitalInput(OtherConstants.kProximitySensorPort);
   }
 

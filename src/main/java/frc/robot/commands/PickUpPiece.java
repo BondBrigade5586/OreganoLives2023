@@ -6,42 +6,45 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.Vision;
+import frc.robot.Constants.AutonomousConstants;
+import frc.robot.Constants.IntakeConstants;
+import frc.robot.subsystems.Intake;
 
-public class ChangeLimelightAngle extends CommandBase {
-  Vision limelight = RobotContainer.m_vision;
+public class PickUpPiece extends CommandBase {
+  Intake intake = RobotContainer.m_intake;
 
-  boolean kDirectionUp;
-  double sp;
-  /** Creates a new ChangeLimelightAngle. */
-  public ChangeLimelightAngle(boolean up) {
-    addRequirements(limelight);
-    this.kDirectionUp = up;
+  // TODO Test limit switch functionality that runs the intake until the limit switch has been activated 
+
+  /** Creates a new RunIntakeUntilPiece. */
+  public PickUpPiece() {
+    addRequirements(intake);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  } 
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (kDirectionUp) {
-      sp = limelight.getLimelightAngle()+0.5;
+    if (intake.getProximityStatus()) {
+      intake.use(0);
     } else {
-      sp = limelight.getLimelightAngle()-0.5;
+      intake.use(AutonomousConstants.kAutoIntakeInSP);
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    // TODO Lift intake immediately after piece is picked up
+    intake.stopIntake();
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return intake.getProximityStatus();
   }
 }

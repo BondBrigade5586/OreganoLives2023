@@ -28,11 +28,15 @@ public final class Constants {
 
 
   public static class AutonomousConstants {
-    public static final double kDistCommunityToGrid = 188;
+    public static final double kDistOutsideCommunityCenter = 188;
+    public static final double kDistOutsideCommunitySide = 172;
     public static final double kMaxYAngleOffset = 10;
 
     public static final double kAutoSpeedFactor = 0.80;
     public static final double kAutoTurnFactor = 0.90;
+
+    public static final double kAutoIntakeInSP = -0.50;
+    public static final double kAutoIntakeOutSP = 1.00;
   }
 
 
@@ -75,10 +79,6 @@ public final class Constants {
   }
 
   public static class VisionConstants {
-    public static final int kLimelightAngleControlPWMPort = 0;
-    public static final double kLimelightStraightForwardAngle = 180;
-    public static final double kLimelightDownAngle = 120;
-
     public static final double kPTurn = 0.05;
     public static final double kITurn = 0.004;
 
@@ -101,11 +101,18 @@ public final class Constants {
 
 
   public static class IntakeConstants {
-    public static final int kLeftControllerID = 4;
-    public static final int kRightControllerID = 5;
+    public static final int kLeftControllerID = 5;
+    public static final int kRightControllerID = 6;
+    public static final int kUnitControllerID = 7;
 
     public static final int kIntakeInButton = 6;
     public static final int kIntakeOutButton = 5;
+
+    public static final int kSwitchUpPort = 7;
+    public static final int kSwitchDownPort = 6;
+    public static final int kCubeProxSensorPort = 8;
+    
+    public static final double kIntakeUnitMoveSP = 0.30;
 
     public static final double kIntakePullInSP = -0.75;
     public static final double kIntakePushOutSP = 1.00;

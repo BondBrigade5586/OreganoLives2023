@@ -37,7 +37,6 @@ public class Drivetrain extends SubsystemBase {
     m_backLeft = new WPI_TalonFX(DriveConstants.kBackLeftID);
     m_backRight = new WPI_TalonFX(DriveConstants.kBackRightID);
     
-
     // Encoder
     m_frontRight.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 

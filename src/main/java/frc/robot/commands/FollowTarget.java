@@ -94,7 +94,6 @@ public class FollowTarget extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     limelight.enableDriverCamera();
-    limelight.setLimelightAngle(VisionConstants.kLimelightStraightForwardAngle);
     drivetrain.stopRobot();
   }
 

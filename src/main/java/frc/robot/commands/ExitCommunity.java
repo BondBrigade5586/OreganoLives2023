@@ -29,12 +29,17 @@ public class ExitCommunity extends CommandBase {
   double positionTicks; // Position of robot in ticks
   double positionIn; // Position of robot in feet
 
+
   /** Creates a new DriveDistance. */
-  public ExitCommunity(boolean reverse) {
+  public ExitCommunity(boolean reverse, boolean center) {
     // SETPOINT MUST BE IN INCHES
     addRequirements(drivetrain);
-    this.sp = AutonomousConstants.kDistCommunityToGrid; 
     this.inverted = reverse;
+    if (center) {
+      this.sp = AutonomousConstants.kDistOutsideCommunityCenter; 
+    } else {
+      this.sp = AutonomousConstants.kDistOutsideCommunitySide;
+    }
   }
 
   // Called when the command is initially scheduled.

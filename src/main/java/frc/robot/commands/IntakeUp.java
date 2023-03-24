@@ -4,55 +4,50 @@
 
 package frc.robot.commands;
 
-
-import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
-import frc.robot.Constants.AutonomousConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.Intake;
 
-public class RunIntakeTime extends CommandBase {
+public class IntakeUp extends CommandBase {
+  GenericEntry sbIntakeStatus = RobotContainer.sbIntakeStatus;
   Intake intake = RobotContainer.m_intake;
   
-  Timer timer = new Timer();
+  DigitalInput switchUp;
 
-  double endTime;
-  boolean directionOut;
-  /** Creates a new RunIntakeTime. */
-  public RunIntakeTime(double runTime, boolean out) {
-    this.endTime = runTime;
-    this.directionOut = out;
+  /** Creates a new IntakeUp. */
+  public IntakeUp() {
+    switchUp = new DigitalInput(IntakeConstants.kSwitchUpPort);
     addRequirements(intake);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    timer.start();
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (directionOut) {
-      intake.use(AutonomousConstants.kAutoIntakeOutSP);
+    sbIntakeStatus.setBoolean(switchUp.get());
+    if (switchUp.get()) {
+      intake.moveIntakeUnit(0);
     } else {
-      intake.use(AutonomousConstants.kAutoIntakeOutSP);
+      intake.moveIntakeUnit(IntakeConstants.kIntakeUnitMoveSP);
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intake.stopIntake();
-    // RobotContainer.driverStationTab.add("Intake Speed", 0);
+    intake.stopLift();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return timer.get() > endTime;
+    return switchUp.get();
   }
 }

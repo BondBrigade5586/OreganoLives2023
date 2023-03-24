@@ -9,18 +9,18 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Proximity;
+import frc.robot.subsystems.EngageProximity;
 
 public class HangOffChargeStation extends CommandBase {
   GenericEntry sbSensorStatus = RobotContainer.sbProxSensorStatus;
 
   boolean offEdge;
-  Proximity proximitySensor = RobotContainer.m_proximity;
+  EngageProximity proximitySensor = RobotContainer.m_proximity;
   Drivetrain drivetrain = RobotContainer.m_drivetrain;
   /** Creates a new HangOffChargeStation. */
   public HangOffChargeStation() {
     addRequirements(proximitySensor);
-    addRequirements(drivetrain);
+    // addRequirements(drivetrain);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -36,10 +36,11 @@ public class HangOffChargeStation extends CommandBase {
     offEdge = proximitySensor.getSensorStatus();
     
     if (offEdge) {
-      drivetrain.enableBrakes();
-      drivetrain.stopRobot();
+      // drivetrain.enableBrakes();
+      // drivetrain.stopRobot();
     } else {
-      drivetrain.driveArcade(0.70, 0, DriveConstants.kSecondarySpeedFactor, DriveConstants.kSecondaryTurnFactor);
+
+      // drivetrain.driveArcade(0.70, 0, DriveConstants.kSecondarySpeedFactor, DriveConstants.kSecondaryTurnFactor);
     }
 
     sbSensorStatus.setBoolean(offEdge);
@@ -48,12 +49,12 @@ public class HangOffChargeStation extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    drivetrain.stopRobot();
+    // drivetrain.stopRobot();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return offEdge;
+    return false;
   }
 }

@@ -11,10 +11,10 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.*;
-import frc.robot.commands.AimLimelightAhead;
 import frc.robot.commands.AlignGyro;
 import frc.robot.commands.ClimbChargeStation;
 import frc.robot.commands.ExitCommunity;
@@ -22,7 +22,7 @@ import frc.robot.commands.FollowTarget;
 import frc.robot.commands.HangOffChargeStation;
 import frc.robot.commands.HoldOnChargeStation;
 import frc.robot.commands.RunIntakeTime;
-import frc.robot.commands.RunIntakeUntilPiece;
+import frc.robot.commands.PickUpPiece;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -44,22 +44,22 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     Shuffleboard.selectTab("Setup");
-
+    RobotContainer.m_led.setColorRGB(0, 130, 55);
+    RobotContainer.m_led.update();
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     autoChooser = new SendableChooser<>();
 
-    autoChooser.addOption("Balance and Hang off Edge", new SequentialCommandGroup(
-      new ExitCommunity(true),
-      new ClimbChargeStation(),
-      new HoldOnChargeStation(),
+    autoChooser.addOption("Balance and Hang off Edge (Debug)", new SequentialCommandGroup(
+      new ExitCommunity(true, true),
       new AlignGyro(() -> RobotContainer.m_gyro.getZRotation()+90),
+      new ClimbChargeStation(),
       new HangOffChargeStation()
     ));
     // Autonomous modes
-    autoChooser.addOption("Place Cube, Exit Community, Pick Up Cube, Engage", new SequentialCommandGroup(
+    autoChooser.addOption("Place Cube, Exit Community, Pick Up Cube, Engage (Testing)", new SequentialCommandGroup(
       new RunIntakeTime(0.5, true),
-      new ExitCommunity(true),
+      new ExitCommunity(true, true),
       new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()+160)),
       new FollowTarget(VisionConstants.kCubeTargetArea, VisionConstants.kCubeXOffset, VisionConstants.kCubeP),
       new RunIntakeTime(0.5, false),
@@ -67,35 +67,34 @@ public class Robot extends TimedRobot {
       // new InstantCommand(m_enableAprilTagProcessor, RobotContainer.m_vision),
       // new InlineTargetWall(),
       new ClimbChargeStation(), 
-      new HoldOnChargeStation()
+      new HoldOnChargeStation(5)
     ));
 
-    autoChooser.addOption("Place Cube, Exit Community, Engage", new SequentialCommandGroup(
+    autoChooser.addOption("Place Cube, Exit Community, Engage (Center)", new SequentialCommandGroup(
       new RunIntakeTime(0.5, true),
-      new ExitCommunity(true),
+      new ExitCommunity(true, true),
       new ClimbChargeStation(), 
-      new HoldOnChargeStation(),
+      new HoldOnChargeStation(1),
       new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()+180)),
-      new HoldOnChargeStation(),
-      new HoldOnChargeStation()
+      new HoldOnChargeStation(5)
     ));
-    autoChooser.addOption("Cube and Exit Community", new SequentialCommandGroup(
+    autoChooser.addOption("Cube and Exit Community (Side)", new SequentialCommandGroup(
       new RunIntakeTime(1.0, true),
-      new ExitCommunity(true),
-      new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()+180))
+      new ExitCommunity(true, false),
+      new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()-160))
       ));
     autoChooser.addOption("Cube only", 
       new RunIntakeTime(5.0, true)
     );
 
     // TODO Test
-    autoChooser.addOption("Two Cubes", new SequentialCommandGroup(
+    autoChooser.addOption("Two Cubes (Side)", new SequentialCommandGroup(
       new RunIntakeTime(0.5, true),
-      new ExitCommunity(true),
+      new ExitCommunity(true, false),
       new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()+180)),
       new ParallelCommandGroup(
         new FollowTarget(VisionConstants.kCubeTargetArea, VisionConstants.kCubeXOffset, VisionConstants.kCubeP),
-        new RunIntakeUntilPiece()
+        new PickUpPiece()
       ),
       new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()+180)),
       new FollowTarget(VisionConstants.kAprilTagTargetArea, VisionConstants.kAprilTagXOffset, VisionConstants.kAprilTagP),
@@ -105,7 +104,7 @@ public class Robot extends TimedRobot {
     autoChooser.addOption("Follow & Pick Up Cube", new SequentialCommandGroup(
       new ParallelCommandGroup(
         new FollowTarget(VisionConstants.kCubeTargetArea, VisionConstants.kCubeXOffset, VisionConstants.kCubeP),
-        new RunIntakeUntilPiece()
+        new PickUpPiece()
       )
     ));
     autoChooser.addOption("None", null);
@@ -135,7 +134,6 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-    new AimLimelightAhead();
     RobotContainer.m_drivetrain.disableBrakes();
     Shuffleboard.selectTab("Setup");
 
@@ -148,7 +146,6 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     Shuffleboard.selectTab("Debug");
-
     // Gets selected autonomous command
     m_autonomousCommand = (Command) autoChooser.getSelected();
     // Schedules autonomous command
@@ -164,6 +161,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     Shuffleboard.selectTab("Debug");
+    RobotContainer.m_vision.enableDriverCamera();
 
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to

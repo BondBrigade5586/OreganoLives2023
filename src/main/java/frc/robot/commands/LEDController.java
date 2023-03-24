@@ -6,17 +6,19 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.LED;
 
-public class RunIntakeUntilPiece extends CommandBase {
-  Intake intake = RobotContainer.m_intake;
-
-  // TODO Implement limit switch functionality that runs the intake until the limit switch has been activated 
-
-  /** Creates a new RunIntakeUntilPiece. */
-  public RunIntakeUntilPiece() {
-    addRequirements(intake);
-    // Use addRequirements() here to declare subsystem dependencies.
+public class LEDController extends CommandBase {
+  LED led = RobotContainer.m_led;
+  int r;
+  int g;
+  int b;
+  /** Creates a new LEDController. */
+  public LEDController(int red, int green, int blue) {
+    this.r = red;
+    this.g = green;
+    this.b = blue;
+    addRequirements(led);
   }
 
   // Called when the command is initially scheduled.
@@ -25,13 +27,14 @@ public class RunIntakeUntilPiece extends CommandBase {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    led.setColorRGB(r, g, b);
+    led.update();
+  }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    intake.stop();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

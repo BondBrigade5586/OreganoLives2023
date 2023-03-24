@@ -10,13 +10,15 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Proximity;
+import frc.robot.subsystems.LED;
+import frc.robot.subsystems.EngageProximity;
 import frc.robot.subsystems.Vision;
 
 public class DriveForza extends CommandBase {
   Drivetrain drivetrain = RobotContainer.m_drivetrain;
   Vision limelight = RobotContainer.m_vision;
-  Proximity proximity = RobotContainer.m_proximity;
+  EngageProximity proximity = RobotContainer.m_proximity;
+  LED led = RobotContainer.m_led;
 
   Supplier<Double> kForward, kBackward, kTurn;
   Supplier<Boolean> kSTFactor;
@@ -45,7 +47,7 @@ public class DriveForza extends CommandBase {
   @Override
   public void execute() {
     kSpeed = kForward.get() - kBackward.get();
-    
+
     if (kSTFactor.get()) {
       spdFact = DriveConstants.kSecondarySpeedFactor;
       trnFact = DriveConstants.kSecondaryTurnFactor;

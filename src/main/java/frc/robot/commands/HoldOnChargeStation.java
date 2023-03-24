@@ -16,8 +16,10 @@ public class HoldOnChargeStation extends CommandBase {
   Gyro gyro = RobotContainer.m_gyro;
   Timer timeEngaged;
   Boolean engaged = false;
+  int endSP;
   /** Creates a new HoldOnChargeStation. */
-  public HoldOnChargeStation() {
+  public HoldOnChargeStation(int endTime) {
+    this.endSP = endTime;
     addRequirements(gyro);
     addRequirements(drivetrain);
     timeEngaged = new Timer();
@@ -72,7 +74,7 @@ public class HoldOnChargeStation extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (timeEngaged.get() > 3);
+    return (timeEngaged.get() > endSP);
   }
 
   public void resetStopTimer() {
