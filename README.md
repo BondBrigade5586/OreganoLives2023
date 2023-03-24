@@ -3,7 +3,12 @@
 
 
 ---- Changelog ----
-3/18/23
+
+3/24/23
+  - Split intake and intake movement into seperate subsystems
+  - 
+
+3/23/23
   - Able to Move Intake
   - Removed All Commands to Move Limelight (removed functionality on robot)
   - More autonomous testing

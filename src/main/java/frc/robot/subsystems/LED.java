@@ -24,16 +24,12 @@ public class LED extends SubsystemBase {
   }
 
   // Set color with HSV 
-  public void setColorHSV(int h, int s, int v) {
-    for (int i=0;i<OtherConstants.kLEDCount;i++) {
-      m_ledBuffer.setRGB(i, h, s, v);
-    }
+  public void setColorHSV(int index, int h, int s, int v) {
+    m_ledBuffer.setHSV(index, h, s, v);
   }
   // Set color with RGB
-  public void setColorRGB(int r, int g, int b) {
-    for (int i=0;i<OtherConstants.kLEDCount;i++) {
-      m_ledBuffer.setRGB(i, r, g, b);
-    }
+  public void setColorRGB(int index, int r, int g, int b) {
+    m_ledBuffer.setRGB(index, r, g, b);
   }
   public void update() {
     m_led.setData(m_ledBuffer);

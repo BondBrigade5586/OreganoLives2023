@@ -29,7 +29,7 @@ public final class Constants {
 
   public static class AutonomousConstants {
     public static final double kDistOutsideCommunityCenter = 188;
-    public static final double kDistOutsideCommunitySide = 172;
+    public static final double kDistOutsideCommunitySide = 156;
     public static final double kMaxYAngleOffset = 10;
 
     public static final double kAutoSpeedFactor = 0.80;
@@ -51,7 +51,7 @@ public final class Constants {
     
     // Encoder constants
     public static final double kGearRatio = 12.0 / 72.0; // Teeth on gear attached to motor (12) divided by teeth attached to wheel (78); 
-    public static final double kTicksPerRotation = 2048 / kGearRatio;
+    public static final double kTicksPerRotation = 2048 / kGearRatio; // Enocder ticks per wheel rotation
     public static final double kWheelDiameter = 5.75; // Wheel diameter in inches
     public static final double kTicksToInches = (Math.PI * kWheelDiameter) / kTicksPerRotation ; // Wheel circumference divided by ticks in each rotation
     
@@ -121,6 +121,7 @@ public final class Constants {
   public static class OtherConstants {
     public static final int kLEDPort = 9;
     public static final int kLEDCount = 150;
+    public static final int kLEDMidpointIndex = 75;
     
     public static final int kProximitySensorPort = 9;
   }

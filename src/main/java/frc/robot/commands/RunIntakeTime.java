@@ -10,10 +10,10 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.AutonomousConstants;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakePiece;
 
 public class RunIntakeTime extends CommandBase {
-  Intake intake = RobotContainer.m_intake;
+  IntakePiece intake = RobotContainer.m_intake;
   
   Timer timer = new Timer();
 
@@ -46,7 +46,7 @@ public class RunIntakeTime extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intake.stopIntake();
+    intake.stop();
     // RobotContainer.driverStationTab.add("Intake Speed", 0);
   }
 

@@ -11,7 +11,7 @@ import frc.robot.commands.HangOffChargeStation;
 import frc.robot.commands.HoldOnChargeStation;
 import frc.robot.commands.IntakeDown;
 import frc.robot.commands.IntakeUp;
-import frc.robot.commands.LEDController;
+import frc.robot.commands.PickUpPiece;
 import frc.robot.commands.RunIntakeTime;
 import frc.robot.commands.UseIntake;
 import frc.robot.subsystems.*;
@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -44,7 +45,8 @@ public class RobotContainer {
   
   // Declare subsystems
   public final static Drivetrain m_drivetrain = new Drivetrain();
-  public final static Intake m_intake = new Intake();
+  public final static IntakePiece m_intake = new IntakePiece();
+  public final static IntakeUnit m_intakeunit = new IntakeUnit();
   public final static Vision m_vision = new Vision();
   public final static Gyro m_gyro = new Gyro();
   public final static EngageProximity m_proximity = new EngageProximity();
@@ -115,16 +117,18 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
     // TODO Remove -- debug only
-    new JoystickButton(m_xboxDriverController, 2).whileTrue(new LEDController(195, 35, 205));
-    new JoystickButton(m_xboxDriverController, 1).whileTrue(new FollowTarget(VisionConstants.kCubeTargetArea, VisionConstants.kCubeXOffset, VisionConstants.kCubeP));
-    new JoystickButton(m_xboxDriverController, 4).whileTrue(new HangOffChargeStation());
-
+    new JoystickButton(m_xboxDriverController, 1).whileTrue(new ParallelCommandGroup(
+      new FollowTarget(VisionConstants.kCubeTargetArea, VisionConstants.kCubeXOffset, VisionConstants.kCubeP),
+      new PickUpPiece()
+    ));
+    new JoystickButton(m_xboxDriverController, 2).whileTrue(new FollowTarget(VisionConstants.kAprilTagTargetArea, VisionConstants.kAprilTagXOffset, VisionConstants.kAprilTagP));
+    
     // Bind commands to buttons on p1 controller
     new POVButton(m_xboxDriverController,270).whileTrue(new AlignGyro(() -> (m_gyro.getZRotation()-90)));
     new POVButton(m_xboxDriverController,90).whileTrue(new AlignGyro(() -> (m_gyro.getZRotation()+90)));
+    new JoystickButton(m_xboxDriverController, 4).whileTrue(new HangOffChargeStation());
     
     // Bind commands to buttons on p2 controller
-    new JoystickButton(m_subsystemController, 4).whileTrue(new RunIntakeTime(5, true));
     new JoystickButton(m_subsystemController, 2).whileTrue(new HoldOnChargeStation(15));
     new JoystickButton(m_subsystemController, 1).onTrue(new IntakeDown());
     new JoystickButton(m_subsystemController, 1).onFalse(new IntakeUp());

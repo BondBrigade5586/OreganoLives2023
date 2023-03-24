@@ -9,10 +9,10 @@ import java.util.function.Supplier;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakePiece;
 
 public class UseIntake extends CommandBase {
-  Intake intake = RobotContainer.m_intake;
+  IntakePiece intake = RobotContainer.m_intake;
   double intakeSP;
   Supplier<Boolean> intakeIn, intakeOut;
   /** Creates a new UseIntake. */
@@ -48,7 +48,7 @@ public class UseIntake extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intake.stopIntake();
+    intake.stop();
   }
 
   // Returns true when the command should end.

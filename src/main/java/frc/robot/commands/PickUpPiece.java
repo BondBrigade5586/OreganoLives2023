@@ -8,12 +8,12 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.AutonomousConstants;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakePiece;
 
 public class PickUpPiece extends CommandBase {
-  Intake intake = RobotContainer.m_intake;
+  IntakePiece intake = RobotContainer.m_intake;
 
-  // TODO Test limit switch functionality that runs the intake until the limit switch has been activated 
+  // TODO Test proximity sensor functionality that runs the intake until the proximity sensor has been activated
 
   /** Creates a new RunIntakeUntilPiece. */
   public PickUpPiece() {
@@ -38,8 +38,7 @@ public class PickUpPiece extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    // TODO Lift intake immediately after piece is picked up
-    intake.stopIntake();
+    intake.stop();
   }
 
   // Returns true when the command should end.

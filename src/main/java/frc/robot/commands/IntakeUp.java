@@ -9,18 +9,18 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakeUnit;
 
 public class IntakeUp extends CommandBase {
   GenericEntry sbIntakeStatus = RobotContainer.sbIntakeStatus;
-  Intake intake = RobotContainer.m_intake;
+  IntakeUnit intakeUnit = RobotContainer.m_intakeunit;
   
   DigitalInput switchUp;
 
   /** Creates a new IntakeUp. */
   public IntakeUp() {
     switchUp = new DigitalInput(IntakeConstants.kSwitchUpPort);
-    addRequirements(intake);
+    addRequirements(intakeUnit);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -33,16 +33,16 @@ public class IntakeUp extends CommandBase {
   public void execute() {
     sbIntakeStatus.setBoolean(switchUp.get());
     if (switchUp.get()) {
-      intake.moveIntakeUnit(0);
+      intakeUnit.moveIntake(0);
     } else {
-      intake.moveIntakeUnit(IntakeConstants.kIntakeUnitMoveSP);
+      intakeUnit.moveIntake(IntakeConstants.kIntakeUnitMoveSP);
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intake.stopLift();
+    intakeUnit.stop();
   }
 
   // Returns true when the command should end.
