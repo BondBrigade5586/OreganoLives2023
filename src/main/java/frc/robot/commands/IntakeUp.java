@@ -15,11 +15,10 @@ public class IntakeUp extends CommandBase {
   GenericEntry sbIntakeStatus = RobotContainer.sbIntakeStatus;
   IntakeUnit intakeUnit = RobotContainer.m_intakeunit;
   
-  DigitalInput switchUp;
+  DigitalInput switchUp = RobotContainer.m_intakeUpLimitSwitch;
 
   /** Creates a new IntakeUp. */
   public IntakeUp() {
-    switchUp = new DigitalInput(IntakeConstants.kSwitchUpPort);
     addRequirements(intakeUnit);
     // Use addRequirements() here to declare subsystem dependencies.
   }

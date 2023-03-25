@@ -4,22 +4,25 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.IntakeConstants;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.IntakeUnit;
+import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Vision;
 
-public class IntakeDown extends CommandBase {
-  GenericEntry sbIntakeStatusD = RobotContainer.sbIntakeStatusD;
-  IntakeUnit intakeUnit = RobotContainer.m_intakeunit;
+public class TurnUntilTargetFound extends CommandBase {
+  Drivetrain drivetrain = RobotContainer.m_drivetrain;
+  Vision limelight = RobotContainer.m_vision;
 
-  DigitalInput switchDown = RobotContainer.m_intakeDownLimitSwitch;
+  double turnSP;
+  double areaSP;
 
-  /** Creates a new IntakeDown. */
-  public IntakeDown() {
-    addRequirements(intakeUnit);
+  /** Creates a new TurnUntilTargetFound. */
+  public TurnUntilTargetFound(double tSpeed, double areaEndSP) {
+    this.turnSP = tSpeed;
+    this.areaSP = areaEndSP;
+
+    addRequirements(drivetrain);
+    addRequirements(limelight);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -30,23 +33,22 @@ public class IntakeDown extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    sbIntakeStatusD.setBoolean(switchDown.get());
-    if (switchDown.get()) {
-        intakeUnit.moveIntake(0);
+    if (limelight.getArea() < areaSP) {
+      drivetrain.turnRobot(turnSP);
     } else {
-        intakeUnit.moveIntake(-IntakeConstants.kIntakeUnitMoveSP);
+      drivetrain.stopRobot();
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intakeUnit.stop();
+    drivetrain.stopRobot();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return switchDown.get();
+    return limelight.getArea() >= areaSP;
   }
 }

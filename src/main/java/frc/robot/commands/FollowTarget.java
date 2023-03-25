@@ -29,7 +29,8 @@ public class FollowTarget extends CommandBase {
 
   double driveSP;
   double turnSP;
-  double kP;
+  double kPDrive;
+  double kPTurn;
 
   GenericEntry sbArea = RobotContainer.sbArea;
   GenericEntry sbAreaError = RobotContainer.sbAreaError;
@@ -37,10 +38,11 @@ public class FollowTarget extends CommandBase {
   GenericEntry sbTurnSpeed = RobotContainer.sbTurnSpeed;
 
   /** Creates a new FollowTape. */
-  public FollowTarget(double dsp, double tsp, double p) {
+  public FollowTarget(double dsp, double tsp, double pDrive, double pTurn) {
     this.driveSP = dsp;
     this.turnSP = tsp;
-    this.kP = p;
+    this.kPDrive = pDrive;
+    this.kPTurn = pTurn;
     addRequirements(drivetrain);
     addRequirements(limelight);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -79,14 +81,20 @@ public class FollowTarget extends CommandBase {
       driveError = 0;
       turnError = 0;
     }
+
+    if (driveError < 2.5) {
+      driveError = 2.5;
+    } else if (driveError > 9.5) {
+      driveError = 9.5;
+    }
     // Adjusts motor outputs based on drive and turn errors
-    drivetrain.driveArcade(kP * driveError, VisionConstants.kPTurn * -turnError + VisionConstants.kITurn*-turnErrorSum, AutonomousConstants.kAutoSpeedFactor, AutonomousConstants.kAutoTurnFactor);
+    drivetrain.driveArcade(kPDrive * driveError, kPTurn * -turnError + VisionConstants.kITurn*-turnErrorSum, AutonomousConstants.kAutoSpeedFactor, AutonomousConstants.kAutoTurnFactor);
     prevTimestamp = Timer.getFPGATimestamp();
 
     sbArea.setDouble(area);
     sbAreaError.setDouble(driveError);
-    sbDriveSpeed.setDouble(driveError*kP);
-    sbTurnSpeed.setDouble(VisionConstants.kPTurn * -turnError + VisionConstants.kITurn*-turnErrorSum);
+    sbDriveSpeed.setDouble(driveError*kPDrive);
+    sbTurnSpeed.setDouble(kPTurn * -turnError + VisionConstants.kITurn*-turnErrorSum);
 
   } 
 

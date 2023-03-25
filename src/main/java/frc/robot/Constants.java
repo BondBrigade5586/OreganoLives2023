@@ -28,7 +28,7 @@ public final class Constants {
 
 
   public static class AutonomousConstants {
-    public static final double kDistOutsideCommunityCenter = 188;
+    public static final double kDistOutsideCommunityCenter = 182;
     public static final double kDistOutsideCommunitySide = 156;
     public static final double kMaxYAngleOffset = 10;
 
@@ -37,6 +37,9 @@ public final class Constants {
 
     public static final double kAutoIntakeInSP = -0.50;
     public static final double kAutoIntakeOutSP = 1.00;
+
+    public static final double kDefaultDriveSpeed = 0.625;
+    public static final double kDefaultTurnSpeed = 0.65;
   }
 
 
@@ -84,15 +87,19 @@ public final class Constants {
 
     public static final double kTapeTargetArea = 1.25; // Target area of RR tape in limelight
     public static final double kTapeXOffset = 0; // Target X offset of tape in limelight
-    public static final double kTapeP = 0.5;
+    public static final double kTapePDrive = 0.50;
+    public static final double kTapePTurn = 0.05;
 
-    public static final double kCubeTargetArea = 7.70;
+    public static final double kCubeMinArea = 0.50;
+    public static final double kCubeTargetArea = 13.00;
     public static final double kCubeXOffset = 0;
-    public static final double kCubeP = 0.11;
+    public static final double kCubePDrive = 0.073;
+    public static final double kCubePTurn = 0.03875;
 
-    public static final double kAprilTagTargetArea = 5;
+    public static final double kAprilTagTargetArea = 7;
     public static final double kAprilTagXOffset = 0;
-    public static final double kAprilTagP = 0;
+    public static final double kAprilTagPDrive = 0.09;
+    public static final double kAprilTagPTurn = 0.075;
 
     public static final double kBOffset = 2;
     public static final double kMaxXOffset = 25;

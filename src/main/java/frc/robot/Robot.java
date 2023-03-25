@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.*;
 import frc.robot.commands.AlignGyro;
@@ -25,6 +26,7 @@ import frc.robot.commands.InlineTargetWall;
 import frc.robot.commands.IntakeDown;
 import frc.robot.commands.IntakeUp;
 import frc.robot.commands.RunIntakeTime;
+import frc.robot.commands.TurnUntilTargetFound;
 import frc.robot.commands.PickUpPiece;
 
 /**
@@ -87,10 +89,10 @@ public class Robot extends TimedRobot {
         new IntakeDown(),
         new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()+160))
       ),
-      new ParallelCommandGroup(
+      new ParallelDeadlineGroup(
         // Follows and picks up piece
-        new FollowTarget(VisionConstants.kCubeTargetArea, VisionConstants.kCubeXOffset, VisionConstants.kCubeP),
-        new PickUpPiece()
+        new PickUpPiece(),
+        new FollowTarget(VisionConstants.kCubeTargetArea, VisionConstants.kCubeXOffset, VisionConstants.kCubePDrive, VisionConstants.kCubePTurn)
       ),
       new ParallelCommandGroup(
         // Lifts intake, spins back around, and enables apriltag processing
@@ -98,8 +100,8 @@ public class Robot extends TimedRobot {
         new InstantCommand(enableATProcessing, RobotContainer.m_vision),
         new IntakeUp()
       ),
-      new InlineTargetWall(), // Aligns robot with apriltag
-      new AlignGyro(() -> 0.0), // Robot is facing the wall
+      // new InlineTargetWall(), // Aligns robot with apriltag
+      // new AlignGyro(() -> 0.0), // Robot is facing the wall
       new ClimbChargeStation(), // Climb charge station
       new HoldOnChargeStation(5) // Hold robot on the charge station
     ));
@@ -108,21 +110,21 @@ public class Robot extends TimedRobot {
       new RunIntakeTime(0.5, true), // Places piece
       new ParallelCommandGroup( // Exits community and lowers intake
         new ExitCommunity(true, false),
-        new IntakeDown()
+        new IntakeDown(),
+        new InstantCommand(enableCubeProcessing, RobotContainer.m_vision) // Enables cube processing
       ),
-      new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()+180)), // Spins robot 180 degrees
-      new InstantCommand(enableCubeProcessing, RobotContainer.m_vision), // Enables cube processing
-      new ParallelCommandGroup( // Follows cube until it is in the intake
-        new FollowTarget(VisionConstants.kCubeTargetArea, VisionConstants.kCubeXOffset, VisionConstants.kCubeP),
-        new PickUpPiece()
+      new TurnUntilTargetFound(AutonomousConstants.kDefaultTurnSpeed, VisionConstants.kCubeMinArea), // Spins robot until cube found
+      new ParallelDeadlineGroup( // Follows cube until it is in the intake
+        new PickUpPiece(),
+        new FollowTarget(VisionConstants.kCubeTargetArea, VisionConstants.kCubeXOffset, VisionConstants.kCubePDrive, VisionConstants.kCubePTurn)
       ),
       new ParallelCommandGroup( // Lifts intake, spins back around, enables apriltag processor
         new IntakeUp(),
         new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()+180)),
         new InstantCommand(enableATProcessing, RobotContainer.m_vision)
-      ),
-      new FollowTarget(VisionConstants.kAprilTagTargetArea, VisionConstants.kAprilTagXOffset, VisionConstants.kAprilTagP), // Drives up to node with apriltag
-      new RunIntakeTime(1.0, true) // Places piece
+      )//,
+      // new FollowTarget(VisionConstants.kAprilTagTargetArea, VisionConstants.kAprilTagXOffset, VisionConstants.kAprilTagPDrive, VisionConstants.kAprilTagPTurn), // Drives up to node with apriltag
+      // new RunIntakeTime(1.0, true) // Places piece
     ));
 
 
@@ -134,7 +136,7 @@ public class Robot extends TimedRobot {
     ));
     autoChooser.addOption("Follow & Pick Up Cube (Debug)", new SequentialCommandGroup(
       new ParallelCommandGroup(
-        new FollowTarget(VisionConstants.kCubeTargetArea, VisionConstants.kCubeXOffset, VisionConstants.kCubeP),
+        new FollowTarget(VisionConstants.kCubeTargetArea, VisionConstants.kCubeXOffset, VisionConstants.kCubePDrive, VisionConstants.kCubePTurn),
         new PickUpPiece()
       )
     ));
@@ -178,7 +180,7 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    Shuffleboard.selectTab("Debug");
+    Shuffleboard.selectTab("SmartDashboard");
     // Gets selected autonomous command
     m_autonomousCommand = (Command) autoChooser.getSelected();
     // Schedules autonomous command
