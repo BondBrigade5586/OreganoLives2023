@@ -6,25 +6,27 @@ package frc.robot;
 
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.*;
 import frc.robot.commands.AlignGyro;
 import frc.robot.commands.ClimbChargeStation;
 import frc.robot.commands.ExitCommunity;
 import frc.robot.commands.FollowTarget;
-import frc.robot.commands.HangOffChargeStation;
 import frc.robot.commands.HoldOnChargeStation;
 import frc.robot.commands.InlineTargetWall;
 import frc.robot.commands.IntakeDown;
 import frc.robot.commands.IntakeUp;
+import frc.robot.commands.MoveForwardUntilPiece;
 import frc.robot.commands.RunIntakeTime;
 import frc.robot.commands.TurnUntilTargetFound;
 import frc.robot.commands.PickUpPiece;
@@ -41,16 +43,19 @@ public class Robot extends TimedRobot {
   // Chooses autonomous command
   private SendableChooser<Object> autoChooser;
   private RobotContainer m_robotContainer;
-  Runnable enableATProcessing = new EnableAprilTagProcessor();
+  Runnable enableAT1Processing = new EnableAprilTag1Processor();
+  Runnable enableAT2Processing = new EnableAprilTag2Processor();
   Runnable enableCubeProcessing = new EnableCubeProcessor();
+  
   int firstLightHue;
-
+  public static Timer runtime = new Timer();
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   @Override
   public void robotInit() {
+    runtime.start();
     Shuffleboard.selectTab("Setup");
     RobotContainer.m_led.update();
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
@@ -58,15 +63,13 @@ public class Robot extends TimedRobot {
     autoChooser = new SendableChooser<>();
 
     // Autonomous modes
-    autoChooser.addOption("Place Cube, Exit Community, Engage (Center)", new SequentialCommandGroup(
+    autoChooser.addOption("1 Cube Engage (Center)", new SequentialCommandGroup(
       new RunIntakeTime(0.5, true),
       new ExitCommunity(true, true),
       new ClimbChargeStation(), 
-      new HoldOnChargeStation(1),
-      new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()+180)),
-      new HoldOnChargeStation(5)
+      new HoldOnChargeStation(10)
     ));
-    autoChooser.addOption("Cube and Exit Community (Side)", new SequentialCommandGroup(
+    autoChooser.addOption("1 Cube & Exit (Side)", new SequentialCommandGroup(
       new RunIntakeTime(1.0, true),
       new ExitCommunity(true, false),
       new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()-160))
@@ -77,69 +80,52 @@ public class Robot extends TimedRobot {
 
 
     // TODO Test
-    autoChooser.addOption("Place Cube, Exit Community, Pick Up Cube, Engage (Testing)", new SequentialCommandGroup(
-      new RunIntakeTime(0.5, true), // Place cube low
-      new ParallelCommandGroup(
-        // Leave community and enable cube processing
+    autoChooser.addOption("2 Cube Engage (Testing, Center)", new SequentialCommandGroup(
+      new RunIntakeTime(0.30, true), // Place cube low
+      new ParallelCommandGroup( // Leave community and enable cube processing
         new ExitCommunity(true, true),
         new InstantCommand(enableCubeProcessing, RobotContainer.m_vision)
-        ),
-      new ParallelCommandGroup(
-        // Lower intake and spin to align with cube
+      ),
+      new ParallelCommandGroup( // Lower intake and spin to align with cube
         new IntakeDown(),
-        new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()+160))
+        new TurnUntilTargetFound(-AutonomousConstants.kDefaultTurnSpeed, VisionConstants.kCubeCenterMinArea)
       ),
-      new ParallelDeadlineGroup(
-        // Follows and picks up piece
-        new PickUpPiece(),
-        new FollowTarget(VisionConstants.kCubeTargetArea, VisionConstants.kCubeXOffset, VisionConstants.kCubePDrive, VisionConstants.kCubePTurn)
-      ),
-      new ParallelCommandGroup(
-        // Lifts intake, spins back around, and enables apriltag processing
-        new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()-160)),
-        new InstantCommand(enableATProcessing, RobotContainer.m_vision),
+      new MoveForwardUntilPiece(VisionConstants.kCubePDrive, VisionConstants.kCubePTurn, VisionConstants.kCubeTargetArea),
+      new ParallelCommandGroup( // Lifts intake, spins back around, and enables AT1 processing
+        new RunIntakeTime(0.15, false),
+        new AlignGyro(() -> (0.0)), // Robot facing wall
         new IntakeUp()
       ),
-      // new InlineTargetWall(), // Aligns robot with apriltag
-      // new AlignGyro(() -> 0.0), // Robot is facing the wall
       new ClimbChargeStation(), // Climb charge station
-      new HoldOnChargeStation(5) // Hold robot on the charge station
+      new ParallelCommandGroup(
+        new RunIntakeTime(0.5, true),
+        new HoldOnChargeStation(5) // Hold robot on the charge station
+      )
     ));
 
-    autoChooser.addOption("Two Cubes (Testing)", new SequentialCommandGroup(
+    autoChooser.addOption("Two Cubes (Side)", new SequentialCommandGroup(
       new RunIntakeTime(0.5, true), // Places piece
       new ParallelCommandGroup( // Exits community and lowers intake
         new ExitCommunity(true, false),
         new IntakeDown(),
         new InstantCommand(enableCubeProcessing, RobotContainer.m_vision) // Enables cube processing
       ),
-      new TurnUntilTargetFound(AutonomousConstants.kDefaultTurnSpeed, VisionConstants.kCubeMinArea), // Spins robot until cube found
-      new ParallelDeadlineGroup( // Follows cube until it is in the intake
-        new PickUpPiece(),
-        new FollowTarget(VisionConstants.kCubeTargetArea, VisionConstants.kCubeXOffset, VisionConstants.kCubePDrive, VisionConstants.kCubePTurn)
+      new TurnUntilTargetFound(-AutonomousConstants.kDefaultTurnSpeed, VisionConstants.kCube1SideMinArea), // Spins robot until cube found
+      new MoveForwardUntilPiece(VisionConstants.kCubePDrive, VisionConstants.kCubePTurn, VisionConstants.kCubeTargetArea),
+      new InstantCommand(enableAT1Processing, RobotContainer.m_vision),
+      new AlignGyro(() -> RobotContainer.m_gyro.getZRotation()+170),
+      // new TurnUntilTargetFound(AutonomousConstants.kInchingTurnSpeed, VisionConstants.kS1AprilTagMinArea),
+      new FollowTarget(VisionConstants.kS1AprilTagTargetArea, VisionConstants.kS1AprilTagXOffset, VisionConstants.kS1AprilTagPDrive, VisionConstants.kS1AprilTagPTurn), // Drives up to node with apriltag
+      new FollowTarget(VisionConstants.kS2AprilTagTargetArea, VisionConstants.kS2AprilTagXOffset, VisionConstants.kS2AprilTagPDrive, VisionConstants.kS2AprilTagPTurn), // Drives up to node with apriltag
+      new RunIntakeTime(0.3, true), // Places piece
+      new ParallelCommandGroup( // Exits community and lowers intake
+        new ExitCommunity(true, false),
+        new IntakeDown(),
+        new InstantCommand(enableCubeProcessing, RobotContainer.m_vision) // Enables cube processing
       ),
-      new ParallelCommandGroup( // Lifts intake, spins back around, enables apriltag processor
-        new IntakeUp(),
-        new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()+180)),
-        new InstantCommand(enableATProcessing, RobotContainer.m_vision)
-      )//,
-      // new FollowTarget(VisionConstants.kAprilTagTargetArea, VisionConstants.kAprilTagXOffset, VisionConstants.kAprilTagPDrive, VisionConstants.kAprilTagPTurn), // Drives up to node with apriltag
-      // new RunIntakeTime(1.0, true) // Places piece
+      new TurnUntilTargetFound(AutonomousConstants.kDefaultTurnSpeed, VisionConstants.kCube2SideMinArea)
     ));
 
-
-    autoChooser.addOption("Balance and Hang off Edge (Debug)", new SequentialCommandGroup(
-      new ExitCommunity(true, true),
-      new AlignGyro(() -> RobotContainer.m_gyro.getZRotation()+90),
-      new ClimbChargeStation(),
-      new HangOffChargeStation()
-    ));
-    autoChooser.addOption("Follow & Pick Up Cube (Debug)", new SequentialCommandGroup(
-      new ParallelCommandGroup(
-        new FollowTarget(VisionConstants.kCubeTargetArea, VisionConstants.kCubeXOffset, VisionConstants.kCubePDrive, VisionConstants.kCubePTurn),
-        new PickUpPiece()
-      )
-    ));
     autoChooser.addOption("None", null);
 
     // Add choosers to setup tab
@@ -157,8 +143,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    pulse_led_red();
     RobotContainer.m_led.update();
+
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
@@ -191,12 +177,12 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+  }
 
   @Override
   public void teleopInit() {
-    Shuffleboard.selectTab("Debug");
-    RobotContainer.m_vision.enableDriverCamera();
+    Shuffleboard.selectTab("SmartDashboard");
 
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
@@ -234,34 +220,19 @@ public class Robot extends TimedRobot {
       RobotContainer.m_gyro.resetZRotation();
     }
   }
-  class EnableAprilTagProcessor implements Runnable {
+  class EnableAprilTag1Processor implements Runnable {
     public void run() {
-      RobotContainer.m_vision.enableAprilTagProcessor();
+      RobotContainer.m_vision.enableAprilTag1Processor();
+    }
+  }
+  class EnableAprilTag2Processor implements Runnable {
+    public void run() {
+      RobotContainer.m_vision.enableAprilTag2Processor();
     }
   }
   class EnableCubeProcessor implements Runnable {
     public void run() {
       RobotContainer.m_vision.enableCubeProcessor();
     }
-  }
-
-  private void pulse_led_red() {
-    for (int v=0;v<235;v++) {
-      for (int i=0;i<RobotContainer.m_led.getLength();i++) {
-        // int h = i*(180/RobotContainer.m_led.getLength());
-        int h =0;
-        RobotContainer.m_led.setColorHSV(i, h, 235, 230);
-      }
-    }
-
-    for (int v=235;v>0;v--) {
-      for (int i=0;i<RobotContainer.m_led.getLength();i++) {
-        // int h = i*(180/RobotContainer.m_led.getLength());
-        int h =0;
-        
-        RobotContainer.m_led.setColorHSV(i, h, 235, v);
-      }
-    }
-
   }
 }

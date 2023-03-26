@@ -6,19 +6,15 @@ package frc.robot;
 
 import frc.robot.commands.AlignGyro;
 import frc.robot.commands.DriveForza;
-import frc.robot.commands.ExitCommunity;
-import frc.robot.commands.FollowTarget;
 import frc.robot.commands.HangOffChargeStation;
 import frc.robot.commands.HoldOnChargeStation;
 import frc.robot.commands.IntakeDown;
 import frc.robot.commands.IntakeUp;
-import frc.robot.commands.PickUpPiece;
-import frc.robot.commands.RunIntakeTime;
-import frc.robot.commands.TurnUntilTargetFound;
+import frc.robot.commands.LEDControl;
+import frc.robot.commands.MoveForwardUntilPiece;
 import frc.robot.commands.UseIntake;
 import frc.robot.subsystems.*;
 import frc.robot.Constants.*;
-import frc.robot.Robot.EnableAprilTagProcessor;
 
 import java.util.Map;
 
@@ -30,10 +26,6 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -50,7 +42,8 @@ public class RobotContainer {
   Runnable resetEncoder = new ResetEncoder();
   Runnable resetGyroZ = new ResetGyroZ();
   Runnable enableCubeProcessing = new EnableCubeProcessor();
-  Runnable enableATProcessing = new EnableAprilTagProcessor();
+  Runnable enableAT1Processing = new EnableAprilTag1Processor();
+  Runnable enableAT2Processing = new EnableAprilTag2Processor();
   
   // Declare subsystems
   public final static Drivetrain m_drivetrain = new Drivetrain();
@@ -93,11 +86,12 @@ public class RobotContainer {
   public final static DigitalInput m_intakeDownLimitSwitch = new DigitalInput(IntakeConstants.kSwitchDownPort);
   public final static DigitalInput m_intakeUpLimitSwitch = new DigitalInput(IntakeConstants.kSwitchUpPort);
 
+  
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  public RobotContainer() {
+  public RobotContainer() {   
+
     // Set default commands for subsystems
     m_drivetrain.setDefaultCommand(
-      // Robot.m_drivetrainCommand
       new DriveForza(
         () -> m_xboxDriverController.getRightTriggerAxis(),
         () -> m_xboxDriverController.getLeftTriggerAxis(),
@@ -107,8 +101,11 @@ public class RobotContainer {
     );
     m_intake.setDefaultCommand(
       new UseIntake(
-        () -> m_xboxDriverController.getRawButton(IntakeConstants.kIntakeInButton), 
-        () -> m_xboxDriverController.getRawButton(IntakeConstants.kIntakeOutButton))
+        () -> m_subsystemController.getRawButton(IntakeConstants.kIntakeInButton), 
+        () -> m_subsystemController.getRawButton(IntakeConstants.kIntakeOutButton))
+    );
+    m_led.setDefaultCommand(
+      new LEDControl()
     );
 
     // Configure the trigger bindings
@@ -128,28 +125,8 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
     // TODO Remove -- debug only
-    new JoystickButton(m_xboxDriverController, 1).whileTrue(new SequentialCommandGroup(
-      new RunIntakeTime(0.5, true), // Place cube low
-      new ParallelCommandGroup(
-        // Leave community and enable cube processing
-        new ExitCommunity(true, true),
-        new InstantCommand(enableCubeProcessing, RobotContainer.m_vision)
-      ),
-      new ParallelCommandGroup(
-        // Lower intake and spin to align with cube
-        new IntakeDown(),
-        new TurnUntilTargetFound(AutonomousConstants.kDefaultTurnSpeed, VisionConstants.kCubeMinArea)
-      ),
-      new ParallelCommandGroup(
-        // Follows and picks up piece
-        new FollowTarget(VisionConstants.kCubeTargetArea, VisionConstants.kCubeXOffset, VisionConstants.kCubePDrive, VisionConstants.kCubePTurn),
-        new PickUpPiece()
-      ),
-      new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()+180))
-    ));
+    new JoystickButton(m_xboxDriverController, 3).whileTrue(new MoveForwardUntilPiece(VisionConstants.kCubePDrive, VisionConstants.kCubePTurn, VisionConstants.kCubeTargetArea));
 
-    new JoystickButton(m_xboxDriverController, 3).whileTrue(new FollowTarget(VisionConstants.kAprilTagTargetArea, VisionConstants.kAprilTagXOffset, VisionConstants.kAprilTagPDrive, VisionConstants.kAprilTagPTurn));
-    
     // Bind commands to buttons on p1 controller
     new POVButton(m_xboxDriverController,270).whileTrue(new AlignGyro(() -> (m_gyro.getZRotation()-90)));
     new POVButton(m_xboxDriverController,90).whileTrue(new AlignGyro(() -> (m_gyro.getZRotation()+90)));
@@ -187,9 +164,14 @@ public class RobotContainer {
       RobotContainer.m_vision.enableCubeProcessor();
     }
   }
-  class EnableAprilTagProcessor implements Runnable {
+  class EnableAprilTag1Processor implements Runnable {
     public void run() {
-      RobotContainer.m_vision.enableAprilTagProcessor();
+      RobotContainer.m_vision.enableAprilTag1Processor();
+    }
+  }
+  class EnableAprilTag2Processor implements Runnable {
+    public void run() {
+      RobotContainer.m_vision.enableAprilTag2Processor();
     }
   }
 }

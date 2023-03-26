@@ -65,8 +65,11 @@ public class Vision extends SubsystemBase {
   public void enableCubeProcessor() {
     pipeline.setNumber(2);
   }
-  public void enableAprilTagProcessor() {
+  public void enableAprilTag1Processor() {
     pipeline.setNumber(3);
+  }
+  public void enableAprilTag2Processor() {
+    pipeline.setNumber(4);
   }
 
   @Override

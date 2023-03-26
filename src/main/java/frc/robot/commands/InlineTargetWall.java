@@ -43,18 +43,18 @@ public class InlineTargetWall extends CommandBase {
 
     // Perpendicular to tape and wall
     if (b<90-VisionConstants.kBOffset) {
-      driveSpeed = 0.65;
+      driveSpeed = 0.75;
     } else if (b>90+VisionConstants.kBOffset) {
-      driveSpeed = -0.65;
+      driveSpeed = -0.75;
     } else {
       driveSpeed = 0;
     }
 
     // Keeps target in horizontal FOV of limelight
     if (x>VisionConstants.kMaxXOffset) {
-      turnSpeed = 0.45;
+      turnSpeed = 0.50;
     } else if (x<-VisionConstants.kMaxXOffset) {
-      turnSpeed = -0.45;
+      turnSpeed = -0.50;
     } else {
       turnSpeed = 0;
     }

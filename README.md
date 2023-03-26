@@ -4,11 +4,24 @@
 
 ---- Changelog ----
 
-3/24/23
-  - Split intake and intake movement into seperate subsystems
-  - 
+3/25/23 Final Robot Touch-ups
+  - Finished center auto (two cubes)
+    - Places one, picks up second, climbs out charge station and spits second cube
+  - Finished side auto (two cubes)
+    - Place two, exits community and aligns with a third if present (regardless of location)
+  - Added functioning LED lights on robot
+    - Change based on mode: Breathe white when disabled, flash white during autonomous, police lights for teleop (will be changed), endgame lights need to be added
+    - Also needs lights when engaged in endgame
+    - Includes LEDControl command, which runs when the robot is on, regardless of status (disabled, teleop, etc)
 
-3/23/23
+  
+3/24/23 Autonomous Advancement
+  - Split intake and intake movement into seperate subsystems
+  - Two Cube Center Auto Created
+  - Two Cube Side Auto Created
+    - Places cube low, exits community, then turns and picks up second cube
+
+3/23/23 Intake Movement
   - Able to Move Intake
   - Removed All Commands to Move Limelight (removed functionality on robot)
   - More autonomous testing

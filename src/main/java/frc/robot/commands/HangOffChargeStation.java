@@ -36,11 +36,10 @@ public class HangOffChargeStation extends CommandBase {
     offEdge = proximitySensor.getSensorStatus();
     
     if (offEdge) {
-      // drivetrain.enableBrakes();
-      // drivetrain.stopRobot();
+      drivetrain.enableBrakes();
+      drivetrain.stopRobot();
     } else {
-
-      // drivetrain.driveArcade(0.70, 0, DriveConstants.kSecondarySpeedFactor, DriveConstants.kSecondaryTurnFactor);
+      drivetrain.driveArcade(0.70, 0, DriveConstants.kSecondarySpeedFactor, DriveConstants.kSecondaryTurnFactor);
     }
 
     sbSensorStatus.setBoolean(offEdge);
@@ -49,12 +48,12 @@ public class HangOffChargeStation extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    // drivetrain.stopRobot();
+    drivetrain.stopRobot();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return offEdge;
   }
 }

@@ -39,7 +39,7 @@ public class RunIntakeTime extends CommandBase {
     if (directionOut) {
       intake.use(AutonomousConstants.kAutoIntakeOutSP);
     } else {
-      intake.use(AutonomousConstants.kAutoIntakeOutSP);
+      intake.use(AutonomousConstants.kAutoIntakeInSP);
     }
   }
 

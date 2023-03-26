@@ -30,7 +30,7 @@ public final class Constants {
   public static class AutonomousConstants {
     public static final double kDistOutsideCommunityCenter = 182;
     public static final double kDistOutsideCommunitySide = 156;
-    public static final double kMaxYAngleOffset = 10;
+    public static final double kMaxYAngleOffset = 12.5;
 
     public static final double kAutoSpeedFactor = 0.80;
     public static final double kAutoTurnFactor = 0.90;
@@ -40,6 +40,9 @@ public final class Constants {
 
     public static final double kDefaultDriveSpeed = 0.625;
     public static final double kDefaultTurnSpeed = 0.65;
+
+    public static final double kInchingDriveSpeed = 0.40;
+    public static final double kInchingTurnSpeed = 0.45;
   }
 
 
@@ -71,7 +74,7 @@ public final class Constants {
     public static final double kGyroD = 0;
     
     // Drive distance PID (used in DriveDistance)
-    public static final double kDistanceP = 0.015;
+    public static final double kDistanceP = 0.017;
     public static final double kDistErrorMargin = 0.50;
 
     public static final double kDefaultSpeedFactor = 0.80;
@@ -90,16 +93,28 @@ public final class Constants {
     public static final double kTapePDrive = 0.50;
     public static final double kTapePTurn = 0.05;
 
-    public static final double kCubeMinArea = 0.50;
-    public static final double kCubeTargetArea = 13.00;
+    public static final double kCube1SideMinArea = 1.80;
+    public static final double kCube2SideMinArea = 1.00;
+
+    public static final double kCubeCenterMinArea = 2.35;
+    public static final double kCubeTargetArea = 13.25;
     public static final double kCubeXOffset = 0;
-    public static final double kCubePDrive = 0.073;
+    public static final double kCubePDrive = 0.07625;
     public static final double kCubePTurn = 0.03875;
 
-    public static final double kAprilTagTargetArea = 7;
-    public static final double kAprilTagXOffset = 0;
-    public static final double kAprilTagPDrive = 0.09;
-    public static final double kAprilTagPTurn = 0.075;
+    public static final double kEngageAprilTagTargetArea = 1;
+    public static final double kEngageAprilTagP = 0.35;
+
+    public static final double kS1AprilTagMinArea = 0.15;
+    public static final double kS1AprilTagTargetArea = 4;
+    public static final double kS1AprilTagXOffset = 2.75;
+    public static final double kS1AprilTagPDrive = 0.25;
+    public static final double kS1AprilTagPTurn = 0.06875;
+
+    public static final double kS2AprilTagTargetArea = 2.80;
+    public static final double kS2AprilTagXOffset = -0.40;
+    public static final double kS2AprilTagPDrive = 0.20;
+    public static final double kS2AprilTagPTurn = 0.08;
 
     public static final double kBOffset = 2;
     public static final double kMaxXOffset = 25;
@@ -126,8 +141,8 @@ public final class Constants {
   }
 
   public static class OtherConstants {
-    public static final int kLEDPort = 9;
-    public static final int kLEDCount = 150;
+    public static final int kLEDPort = 0;
+    public static final int kLEDCount = 111;
     public static final int kLEDMidpointIndex = 75;
     
     public static final int kProximitySensorPort = 9;

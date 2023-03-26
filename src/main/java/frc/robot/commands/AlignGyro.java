@@ -72,9 +72,10 @@ public class AlignGyro extends CommandBase {
       outputSpeed = 0.65;
     } else if (outputSpeed < -0.65) {
       outputSpeed = -0.65;
-    } else if (outputSpeed < 0.43 && outputSpeed > 0) {
-      outputSpeed = 0.43;
-    } else if (outputSpeed > -0.43 && outputSpeed < 0) {
+    } else if (outputSpeed < 0.475 && outputSpeed > 0) {
+      outputSpeed = 0.475;
+    } else if (outputSpeed > -0.475 && outputSpeed < 0) {
+      outputSpeed = -0.475;
     }
     // Prevents turning more than 180 degrees, uses PID to determine setpoint speeds
     if (Math.abs(sp-z) <= 180 && sp>z) {

@@ -56,17 +56,17 @@ public class FollowTarget extends CommandBase {
       limelight.enableTapeProcessor();
     } else if (driveSP == VisionConstants.kCubeTargetArea) {
       limelight.enableCubeProcessor();
-    } else if (driveSP == VisionConstants.kAprilTagTargetArea) {
-      limelight.enableAprilTagProcessor();
+    } else if (driveSP == VisionConstants.kS1AprilTagTargetArea) {
+      limelight.enableAprilTag1Processor();
+    } else if (driveSP == VisionConstants.kS2AprilTagTargetArea) {
+      limelight.enableAprilTag2Processor();
     }
-
     drivetrain.enableBrakes();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
     x = limelight.getXOffset();
     y = limelight.getYOffset();
     area = limelight.getArea();
@@ -82,8 +82,8 @@ public class FollowTarget extends CommandBase {
       turnError = 0;
     }
 
-    if (driveError < 2.5) {
-      driveError = 2.5;
+    if (driveError < 2.75) {
+      driveError = 2.75;
     } else if (driveError > 9.5) {
       driveError = 9.5;
     }
