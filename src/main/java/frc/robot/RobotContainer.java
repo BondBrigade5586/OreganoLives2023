@@ -127,10 +127,11 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
     // TODO Remove -- debug only
-    new JoystickButton(m_xboxDriverController, 3).whileTrue(new SequentialCommandGroup(
-      new FollowTarget(VisionConstants.kS1AprilTagNonwiredTargetArea, -VisionConstants.kS1AprilTagNonwiredXOffset-3, VisionConstants.kS1AprilTagNonwiredPDrive, VisionConstants.kS1AprilTagNonwiredPTurn),
-      new FollowTarget(VisionConstants.kS2AprilTagNonwiredTargetArea, -VisionConstants.kS2AprilTagNonwiredXOffset-0.25, VisionConstants.kS2AprilTagNonwiredPDrive, VisionConstants.kS2AprilTagNonwiredPTurn)
-    ));
+    // new JoystickButton(m_xboxDriverController, 3).whileTrue(new SequentialCommandGroup(
+    //   new FollowTarget(VisionConstants.kS1AprilTagNonwiredTargetArea, -VisionConstants.kS1AprilTagNonwiredXOffset-3, VisionConstants.kS1AprilTagNonwiredPDrive, VisionConstants.kS1AprilTagNonwiredPTurn),
+    //   new FollowTarget(VisionConstants.kS2AprilTagNonwiredTargetArea, -VisionConstants.kS2AprilTagNonwiredXOffset-0.25, VisionConstants.kS2AprilTagNonwiredPDrive, VisionConstants.kS2AprilTagNonwiredPTurn)
+    // ));
+    
     // Bind commands to buttons on p1 controller
     new POVButton(m_xboxDriverController,270).whileTrue(new AlignGyro(() -> (m_gyro.getZRotation()-90)));
     new POVButton(m_xboxDriverController,90).whileTrue(new AlignGyro(() -> (m_gyro.getZRotation()+90)));

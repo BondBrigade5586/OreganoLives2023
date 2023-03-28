@@ -29,7 +29,7 @@ public final class Constants {
 
   public static class AutonomousConstants {
     public static final double kDistOutsideCommunityCenter = 182;
-    public static final double kDistOutsideCommunitySide = 156;
+    public static final double kDistOutsideCommunitySide = 148;
     public static final double kMaxYAngleOffset = 12.5;
 
     public static final double kAutoSpeedFactor = 0.80;
@@ -75,7 +75,7 @@ public final class Constants {
     
     // Drive distance PID (used in DriveDistance)
     public static final double kDistanceP = 0.017;
-    public static final double kDistErrorMargin = 0.50;
+    public static final double kDistErrorMargin = 2.5;
 
     public static final double kDefaultSpeedFactor = 0.80;
     public static final double kSecondarySpeedFactor = 0.40;
@@ -99,8 +99,8 @@ public final class Constants {
     public static final double kCubeCenterMinArea = 2.35;
     public static final double kCubeTargetArea = 13.25;
     public static final double kCubeXOffset = 0;
-    public static final double kCubePDrive = 0.075;
-    public static final double kCubePTurn = 0.03875;
+    public static final double kCubePDrive = 0.069;
+    public static final double kCubePTurn = 0.0385;
 
     public static final double kEngageAprilTagTargetArea = 1;
     public static final double kEngageAprilTagXOffset = 0;

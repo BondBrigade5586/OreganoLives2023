@@ -46,7 +46,7 @@ public class LEDControl extends CommandBase {
       if (intake.pieceInIntake()) {
         LEDSolidGreen();
       } else {
-        
+        LEDSolidRed();
       }
     } else if (RobotState.isEStopped()) {
       LEDFlashRed();
@@ -74,6 +74,12 @@ public class LEDControl extends CommandBase {
       led.setColorRGB(i, 0, 150, 0);
     }
   }
+  private void LEDSolidRed() {
+    for (int i=0;i<led.getLength();i++) {
+      led.setColorRGB(i, 0, 150, 0);
+    }
+  }
+
   private void LEDFlashWhite() {
   if (((int)(2*Robot.runtime.get())) %4 == 0 || ((int)(2*Robot.runtime.get())) %4 == 2) {
     for (int i=0;i<led.getLength();i++) {
