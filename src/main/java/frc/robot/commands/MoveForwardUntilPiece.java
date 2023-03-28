@@ -57,7 +57,7 @@ public class MoveForwardUntilPiece extends CommandBase {
       driveSP = AutonomousConstants.kInchingDriveSpeed;
     }
     // Determine if piece is in intake or not
-    if (!intake.getProximityStatus()) {
+    if (!intake.pieceInIntake()) {
       intake.use(0);
     } else {
       intake.use(AutonomousConstants.kAutoIntakeInSP);
@@ -77,6 +77,6 @@ public class MoveForwardUntilPiece extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !intake.getProximityStatus();
+    return !intake.pieceInIntake();
   }
 }

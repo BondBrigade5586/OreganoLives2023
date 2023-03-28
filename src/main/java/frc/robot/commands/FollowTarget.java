@@ -56,9 +56,9 @@ public class FollowTarget extends CommandBase {
       limelight.enableTapeProcessor();
     } else if (driveSP == VisionConstants.kCubeTargetArea) {
       limelight.enableCubeProcessor();
-    } else if (driveSP == VisionConstants.kS1AprilTagTargetArea) {
+    } else if (driveSP == VisionConstants.kS1AprilTagNonwiredTargetArea) {
       limelight.enableAprilTag1Processor();
-    } else if (driveSP == VisionConstants.kS2AprilTagTargetArea) {
+    } else if (driveSP == VisionConstants.kS2AprilTagNonwiredTargetArea) {
       limelight.enableAprilTag2Processor();
     }
     drivetrain.enableBrakes();

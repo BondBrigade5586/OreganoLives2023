@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.commands.AlignGyro;
 import frc.robot.commands.DriveForza;
+import frc.robot.commands.FollowTarget;
 import frc.robot.commands.HangOffChargeStation;
 import frc.robot.commands.HoldOnChargeStation;
 import frc.robot.commands.IntakeDown;
@@ -26,6 +27,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -125,8 +127,10 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
     // TODO Remove -- debug only
-    new JoystickButton(m_xboxDriverController, 3).whileTrue(new MoveForwardUntilPiece(VisionConstants.kCubePDrive, VisionConstants.kCubePTurn, VisionConstants.kCubeTargetArea));
-
+    new JoystickButton(m_xboxDriverController, 3).whileTrue(new SequentialCommandGroup(
+      new FollowTarget(VisionConstants.kS1AprilTagNonwiredTargetArea, -VisionConstants.kS1AprilTagNonwiredXOffset-3, VisionConstants.kS1AprilTagNonwiredPDrive, VisionConstants.kS1AprilTagNonwiredPTurn),
+      new FollowTarget(VisionConstants.kS2AprilTagNonwiredTargetArea, -VisionConstants.kS2AprilTagNonwiredXOffset-0.25, VisionConstants.kS2AprilTagNonwiredPDrive, VisionConstants.kS2AprilTagNonwiredPTurn)
+    ));
     // Bind commands to buttons on p1 controller
     new POVButton(m_xboxDriverController,270).whileTrue(new AlignGyro(() -> (m_gyro.getZRotation()-90)));
     new POVButton(m_xboxDriverController,90).whileTrue(new AlignGyro(() -> (m_gyro.getZRotation()+90)));

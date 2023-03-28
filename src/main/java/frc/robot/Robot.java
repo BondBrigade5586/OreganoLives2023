@@ -5,8 +5,10 @@
 package frc.robot;
 
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -69,15 +71,109 @@ public class Robot extends TimedRobot {
       new ClimbChargeStation(), 
       new HoldOnChargeStation(10)
     ));
+    
+    autoChooser.addOption("Two Cubes (Red, Side w/o Wires)", new SequentialCommandGroup(
+      new RunIntakeTime(0.5, true), // Places piece
+      new ParallelCommandGroup( // Exits community and lowers intake
+        new ExitCommunity(true, false),
+        new IntakeDown(),
+        new InstantCommand(enableCubeProcessing, RobotContainer.m_vision) // Enables cube processing
+      ),
+      new TurnUntilTargetFound(-AutonomousConstants.kDefaultTurnSpeed, VisionConstants.kCube1SideMinArea), // Spins robot until cube found
+      new MoveForwardUntilPiece(VisionConstants.kCubePDrive, VisionConstants.kCubePTurn, VisionConstants.kCubeTargetArea),
+      new InstantCommand(enableAT1Processing, RobotContainer.m_vision),
+      new AlignGyro(() -> RobotContainer.m_gyro.getZRotation()+170),
+      // new TurnUntilTargetFound(AutonomousConstants.kInchingTurnSpeed, VisionConstants.kS1AprilTagMinArea),
+      new FollowTarget(VisionConstants.kS1AprilTagNonwiredTargetArea, VisionConstants.kS1AprilTagNonwiredXOffset, VisionConstants.kS1AprilTagNonwiredPDrive, VisionConstants.kS1AprilTagNonwiredPTurn), // Drives up to node with apriltag
+      new FollowTarget(VisionConstants.kS2AprilTagNonwiredTargetArea, VisionConstants.kS2AprilTagNonwiredXOffset, VisionConstants.kS2AprilTagNonwiredPDrive, VisionConstants.kS2AprilTagNonwiredPTurn), // Drives up to node with apriltag
+      new RunIntakeTime(0.3, true), // Places piece
+      new ParallelCommandGroup( // Exits community and lowers intake
+        new ExitCommunity(true, false),
+        new IntakeDown(),
+        new InstantCommand(enableCubeProcessing, RobotContainer.m_vision) // Enables cube processing
+      ),
+      new TurnUntilTargetFound(AutonomousConstants.kDefaultTurnSpeed, VisionConstants.kCube2SideMinArea) // Turns opposite direction to find cube faster
+    ));
+
+    // TODO Needs severe testing
+    autoChooser.addOption("Two Cubes (Red, Side with Wires)", new SequentialCommandGroup(
+      new RunIntakeTime(0.5, true), // Places piece
+      new ParallelCommandGroup( // Exits community and lowers intake
+        new ExitCommunity(true, false),
+        new IntakeDown(),
+        new InstantCommand(enableCubeProcessing, RobotContainer.m_vision) // Enables cube processing
+      ),
+      new TurnUntilTargetFound(AutonomousConstants.kDefaultTurnSpeed, VisionConstants.kCube1SideMinArea), // Spins robot until cube found
+      new MoveForwardUntilPiece(VisionConstants.kCubePDrive, VisionConstants.kCubePTurn, VisionConstants.kCubeTargetArea),
+      new InstantCommand(enableAT1Processing, RobotContainer.m_vision),
+      new AlignGyro(() -> RobotContainer.m_gyro.getZRotation()+170),
+      new FollowTarget(VisionConstants.kS1AprilTagWiredTargetArea, -VisionConstants.kS1AprilTagWiredXOffset, VisionConstants.kS1AprilTagWiredPDrive, VisionConstants.kS1AprilTagWiredPTurn),
+      new FollowTarget(VisionConstants.kS2AprilTagWiredTargetArea, -VisionConstants.kS2AprilTagWiredXOffset, VisionConstants.kS2AprilTagWiredPDrive, VisionConstants.kS2AprilTagWiredPTurn),
+      new RunIntakeTime(0.3, true),
+      new ParallelCommandGroup(
+        new ExitCommunity(true, false),
+        new IntakeDown(),
+        new InstantCommand(enableCubeProcessing, RobotContainer.m_vision)
+      ),
+      new TurnUntilTargetFound(-AutonomousConstants.kDefaultTurnSpeed, VisionConstants.kCube2SideMinArea)
+    ));
+
+    autoChooser.addOption("Two Cubes (Blue, Side w/o Wires)", new SequentialCommandGroup(
+      new RunIntakeTime(0.5, true), // Places piece
+      new ParallelCommandGroup( // Exits community and lowers intake
+        new ExitCommunity(true, false),
+        new IntakeDown(),
+        new InstantCommand(enableCubeProcessing, RobotContainer.m_vision) // Enables cube processing
+      ),
+      new TurnUntilTargetFound(AutonomousConstants.kDefaultTurnSpeed, VisionConstants.kCube1SideMinArea), // Spins robot until cube found
+      new MoveForwardUntilPiece(VisionConstants.kCubePDrive, VisionConstants.kCubePTurn, VisionConstants.kCubeTargetArea),
+      new InstantCommand(enableAT1Processing, RobotContainer.m_vision),
+      new AlignGyro(() -> RobotContainer.m_gyro.getZRotation()+150),
+      new TurnUntilTargetFound(AutonomousConstants.kDefaultTurnSpeed, VisionConstants.kS1AprilTagNonwiredMinArea),
+      new FollowTarget(VisionConstants.kS1AprilTagNonwiredTargetArea, -VisionConstants.kS1AprilTagNonwiredXOffset, VisionConstants.kS1AprilTagNonwiredPDrive, VisionConstants.kS1AprilTagNonwiredPTurn), // Drives up to node with apriltag
+      new FollowTarget(VisionConstants.kS2AprilTagNonwiredTargetArea, -VisionConstants.kS2AprilTagNonwiredXOffset, VisionConstants.kS2AprilTagNonwiredPDrive, VisionConstants.kS2AprilTagNonwiredPTurn), // Drives up to node with apriltag
+      new RunIntakeTime(0.3, true), // Places piece
+      new ParallelCommandGroup( // Exits community and lowers intake
+        new ExitCommunity(true, false),
+        new IntakeDown(),
+        new InstantCommand(enableCubeProcessing, RobotContainer.m_vision) // Enables cube processing
+      ),
+      new TurnUntilTargetFound(-AutonomousConstants.kDefaultTurnSpeed, VisionConstants.kCube2SideMinArea)
+    ));
+
+    autoChooser.addOption("Two Cubes (Blue, Side with Wires)", new SequentialCommandGroup(
+      new RunIntakeTime(0.5, true), // Places piece
+      new ParallelCommandGroup( // Exits community and lowers intake
+        new ExitCommunity(true, false),
+        new IntakeDown(),
+        new InstantCommand(enableCubeProcessing, RobotContainer.m_vision) // Enables cube processing
+      ),
+      new TurnUntilTargetFound(-AutonomousConstants.kDefaultTurnSpeed, VisionConstants.kCube1SideMinArea), // Spins robot until cube found
+      new MoveForwardUntilPiece(VisionConstants.kCubePDrive, VisionConstants.kCubePTurn, VisionConstants.kCubeTargetArea),
+      new InstantCommand(enableAT1Processing, RobotContainer.m_vision),
+      new AlignGyro(() -> RobotContainer.m_gyro.getZRotation()+170),
+      new FollowTarget(VisionConstants.kS1AprilTagWiredTargetArea, -VisionConstants.kS1AprilTagWiredXOffset, VisionConstants.kS1AprilTagWiredPDrive, VisionConstants.kS1AprilTagWiredPTurn),
+      new FollowTarget(VisionConstants.kS2AprilTagWiredTargetArea, -VisionConstants.kS2AprilTagWiredXOffset, VisionConstants.kS2AprilTagWiredPDrive, VisionConstants.kS2AprilTagWiredPTurn),
+      new RunIntakeTime(0.3, true),
+      new ParallelCommandGroup(
+        new ExitCommunity(true, false),
+        new IntakeDown(),
+        new InstantCommand(enableCubeProcessing, RobotContainer.m_vision)
+      ),
+      new TurnUntilTargetFound(AutonomousConstants.kDefaultTurnSpeed, VisionConstants.kCube2SideMinArea)
+    ));
+
+    
     autoChooser.addOption("1 Cube & Exit (Side)", new SequentialCommandGroup(
       new RunIntakeTime(1.0, true),
       new ExitCommunity(true, false),
       new AlignGyro(() -> (RobotContainer.m_gyro.getZRotation()-160))
-      ));
-    autoChooser.addOption("Cube only", 
+    ));
+
+    autoChooser.addOption("Cube only (Any)", 
       new RunIntakeTime(5.0, true)
     );
-
+        
 
     // TODO Test
     autoChooser.addOption("2 Cube Engage (Testing, Center)", new SequentialCommandGroup(
@@ -91,7 +187,7 @@ public class Robot extends TimedRobot {
         new TurnUntilTargetFound(-AutonomousConstants.kDefaultTurnSpeed, VisionConstants.kCubeCenterMinArea)
       ),
       new MoveForwardUntilPiece(VisionConstants.kCubePDrive, VisionConstants.kCubePTurn, VisionConstants.kCubeTargetArea),
-      new ParallelCommandGroup( // Lifts intake, spins back around, and enables AT1 processing
+      new ParallelCommandGroup( // Lifts intake, spins back around, ensures cube is secured in intake
         new RunIntakeTime(0.15, false),
         new AlignGyro(() -> (0.0)), // Robot facing wall
         new IntakeUp()
@@ -101,29 +197,6 @@ public class Robot extends TimedRobot {
         new RunIntakeTime(0.5, true),
         new HoldOnChargeStation(5) // Hold robot on the charge station
       )
-    ));
-
-    autoChooser.addOption("Two Cubes (Side)", new SequentialCommandGroup(
-      new RunIntakeTime(0.5, true), // Places piece
-      new ParallelCommandGroup( // Exits community and lowers intake
-        new ExitCommunity(true, false),
-        new IntakeDown(),
-        new InstantCommand(enableCubeProcessing, RobotContainer.m_vision) // Enables cube processing
-      ),
-      new TurnUntilTargetFound(-AutonomousConstants.kDefaultTurnSpeed, VisionConstants.kCube1SideMinArea), // Spins robot until cube found
-      new MoveForwardUntilPiece(VisionConstants.kCubePDrive, VisionConstants.kCubePTurn, VisionConstants.kCubeTargetArea),
-      new InstantCommand(enableAT1Processing, RobotContainer.m_vision),
-      new AlignGyro(() -> RobotContainer.m_gyro.getZRotation()+170),
-      // new TurnUntilTargetFound(AutonomousConstants.kInchingTurnSpeed, VisionConstants.kS1AprilTagMinArea),
-      new FollowTarget(VisionConstants.kS1AprilTagTargetArea, VisionConstants.kS1AprilTagXOffset, VisionConstants.kS1AprilTagPDrive, VisionConstants.kS1AprilTagPTurn), // Drives up to node with apriltag
-      new FollowTarget(VisionConstants.kS2AprilTagTargetArea, VisionConstants.kS2AprilTagXOffset, VisionConstants.kS2AprilTagPDrive, VisionConstants.kS2AprilTagPTurn), // Drives up to node with apriltag
-      new RunIntakeTime(0.3, true), // Places piece
-      new ParallelCommandGroup( // Exits community and lowers intake
-        new ExitCommunity(true, false),
-        new IntakeDown(),
-        new InstantCommand(enableCubeProcessing, RobotContainer.m_vision) // Enables cube processing
-      ),
-      new TurnUntilTargetFound(AutonomousConstants.kDefaultTurnSpeed, VisionConstants.kCube2SideMinArea)
     ));
 
     autoChooser.addOption("None", null);

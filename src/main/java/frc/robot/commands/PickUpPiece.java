@@ -31,7 +31,7 @@ public class PickUpPiece extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!intake.getProximityStatus()) {
+    if (!intake.pieceInIntake()) {
       intake.use(0);
     } else {
       intake.use(AutonomousConstants.kAutoIntakeInSP);
@@ -48,6 +48,6 @@ public class PickUpPiece extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !intake.getProximityStatus();
+    return !intake.pieceInIntake();
   }
 }

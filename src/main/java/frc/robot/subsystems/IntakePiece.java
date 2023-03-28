@@ -49,7 +49,7 @@ public class IntakePiece extends SubsystemBase {
   }
  
 
-  public boolean getProximityStatus() {
+  public boolean pieceInIntake() {
     return cubeSensor.get();
   }
 }

@@ -4,14 +4,18 @@
 
 package frc.robot.commands;
 
+import java.util.regex.MatchResult;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.IntakePiece;
 import frc.robot.subsystems.LED;
 
 public class LEDControl extends CommandBase {
+  IntakePiece intake = RobotContainer.m_intake;
   LED led = RobotContainer.m_led;
   /** Creates a new LEDControl. */
   public LEDControl() {
@@ -39,7 +43,13 @@ public class LEDControl extends CommandBase {
     } else if (RobotState.isAutonomous()) {
       LEDFlashWhite();
     } else if (RobotState.isTeleop()) {
-      LEDPoliceLights();
+      if (intake.pieceInIntake()) {
+        LEDSolidGreen();
+      } else {
+        
+      }
+    } else if (RobotState.isEStopped()) {
+      LEDFlashRed();
     }
   }
 
@@ -59,6 +69,11 @@ public class LEDControl extends CommandBase {
   }
   
   // LED Modes
+  private void LEDSolidGreen() {
+    for (int i=0;i<led.getLength();i++) {
+      led.setColorRGB(i, 0, 150, 0);
+    }
+  }
   private void LEDFlashWhite() {
   if (((int)(2*Robot.runtime.get())) %4 == 0 || ((int)(2*Robot.runtime.get())) %4 == 2) {
     for (int i=0;i<led.getLength();i++) {
