@@ -97,9 +97,9 @@ public final class Constants {
     public static final double kCube2SideMinArea = 1.00;
 
     public static final double kCubeCenterMinArea = 2.35;
-    public static final double kCubeTargetArea = 13.25;
+    public static final double kCubeTargetArea = 13.60;
     public static final double kCubeXOffset = 0;
-    public static final double kCubePDrive = 0.069;
+    public static final double kCubePDrive = 0.06;
     public static final double kCubePTurn = 0.0385;
 
     public static final double kEngageAprilTagTargetArea = 1;
@@ -122,14 +122,14 @@ public final class Constants {
     // AprilTag constants for the red side with wires -- inverted for blue with wires
     public static final double kS1AprilTagWiredMinArea = 0.15;
     public static final double kS1AprilTagWiredTargetArea = 4;
-    public static final double kS1AprilTagWiredXOffset = 2.75;
+    public static final double kS1AprilTagWiredXOffset = -4.25;
     public static final double kS1AprilTagWiredPDrive = 0.25;
     public static final double kS1AprilTagWiredPTurn = 0.06875;
 
     public static final double kS2AprilTagWiredTargetArea = 2.80;
-    public static final double kS2AprilTagWiredXOffset = -0.40;
+    public static final double kS2AprilTagWiredXOffset = 0.40;
     public static final double kS2AprilTagWiredPDrive = 0.20;
-    public static final double kS2AprilTagWiredPTurn = 0.08;
+    public static final double kS2AprilTagWiredPTurn = 0.07;
 
     public static final double kBOffset = 2;
     public static final double kMaxXOffset = 25;
@@ -149,7 +149,7 @@ public final class Constants {
     public static final int kSwitchDownPort = 6;
     public static final int kCubeProxSensorPort = 8;
     
-    public static final double kIntakeUnitMoveSP = 0.30;
+    public static final double kIntakeUnitMoveSP = 0.45;
 
     public static final double kIntakePullInSP = -0.75;
     public static final double kIntakePushOutSP = 1.00;

@@ -33,17 +33,10 @@ public class LEDControl extends CommandBase {
     // LED Defaults
     if (RobotState.isDisabled()) {
       LEDPulseWhite();
-      // if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
-      //   LEDFlashBlue();
-      // } else if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
-      //   LEDFlashRed();
-      // } else {
-      //   LEDFlashWhite();
-      // }
     } else if (RobotState.isAutonomous()) {
       LEDFlashWhite();
     } else if (RobotState.isTeleop()) {
-      if (intake.pieceInIntake()) {
+      if (!intake.pieceInIntake()) {
         LEDSolidGreen();
       } else {
         LEDSolidRed();
@@ -76,7 +69,7 @@ public class LEDControl extends CommandBase {
   }
   private void LEDSolidRed() {
     for (int i=0;i<led.getLength();i++) {
-      led.setColorRGB(i, 0, 150, 0);
+      led.setColorRGB(i,150, 0, 0);
     }
   }
 

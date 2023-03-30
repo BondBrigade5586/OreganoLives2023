@@ -77,16 +77,16 @@ public class FollowTarget extends CommandBase {
     turnErrorSum = turnError*(Timer.getFPGATimestamp() - prevTimestamp);
     
     // Prevents robot from moving if there is no tape
-    if (area == 0) {
-      driveError = 0;
-      turnError = 0;
-    }
-
     if (driveError < 2.75) {
       driveError = 2.75;
     } else if (driveError > 9.5) {
       driveError = 9.5;
     }
+    if (area == 0) {
+      driveError = 0;
+      turnError = 0;
+    }
+
     // Adjusts motor outputs based on drive and turn errors
     drivetrain.driveArcade(kPDrive * driveError, kPTurn * -turnError + VisionConstants.kITurn*-turnErrorSum, AutonomousConstants.kAutoSpeedFactor, AutonomousConstants.kAutoTurnFactor);
     prevTimestamp = Timer.getFPGATimestamp();

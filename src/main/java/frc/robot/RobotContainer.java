@@ -83,7 +83,7 @@ public class RobotContainer {
   public final static Joystick m_flightstickDriverController = new Joystick(OperatorConstants.kFlightstickDriverControllerPort);
   public final static XboxController m_xboxDriverController = new XboxController(OperatorConstants.kXboxDriverControllerPort);
   public final static XboxController m_subsystemController = new XboxController(OperatorConstants.kSubsystemControllerPort);
-  
+
   // Limit Switches
   public final static DigitalInput m_intakeDownLimitSwitch = new DigitalInput(IntakeConstants.kSwitchDownPort);
   public final static DigitalInput m_intakeUpLimitSwitch = new DigitalInput(IntakeConstants.kSwitchUpPort);
@@ -125,12 +125,6 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-
-    // TODO Remove -- debug only
-    // new JoystickButton(m_xboxDriverController, 3).whileTrue(new SequentialCommandGroup(
-    //   new FollowTarget(VisionConstants.kS1AprilTagNonwiredTargetArea, -VisionConstants.kS1AprilTagNonwiredXOffset-3, VisionConstants.kS1AprilTagNonwiredPDrive, VisionConstants.kS1AprilTagNonwiredPTurn),
-    //   new FollowTarget(VisionConstants.kS2AprilTagNonwiredTargetArea, -VisionConstants.kS2AprilTagNonwiredXOffset-0.25, VisionConstants.kS2AprilTagNonwiredPDrive, VisionConstants.kS2AprilTagNonwiredPTurn)
-    // ));
     
     // Bind commands to buttons on p1 controller
     new POVButton(m_xboxDriverController,270).whileTrue(new AlignGyro(() -> (m_gyro.getZRotation()-90)));

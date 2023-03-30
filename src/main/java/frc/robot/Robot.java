@@ -87,7 +87,7 @@ public class Robot extends TimedRobot {
       new TurnUntilTargetFound(AutonomousConstants.kInchingTurnSpeed, VisionConstants.kS1AprilTagNonwiredMinArea),
       new FollowTarget(VisionConstants.kS1AprilTagNonwiredTargetArea, VisionConstants.kS1AprilTagNonwiredXOffset, VisionConstants.kS1AprilTagNonwiredPDrive, VisionConstants.kS1AprilTagNonwiredPTurn), // Drives up to node with apriltag
       new FollowTarget(VisionConstants.kS2AprilTagNonwiredTargetArea, VisionConstants.kS2AprilTagNonwiredXOffset, VisionConstants.kS2AprilTagNonwiredPDrive, VisionConstants.kS2AprilTagNonwiredPTurn), // Drives up to node with apriltag
-      new RunIntakeTime(0.3, true), // Places piece
+      new RunIntakeTime(0.5, true), // Places piece
       new ParallelCommandGroup( // Exits community and lowers intake
         new ExitCommunity(true, false),
         new InstantCommand(enableCubeProcessing, RobotContainer.m_vision) // Enables cube processing
