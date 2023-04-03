@@ -5,15 +5,11 @@
 package frc.robot;
 
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -25,13 +21,11 @@ import frc.robot.commands.ClimbChargeStation;
 import frc.robot.commands.ExitCommunity;
 import frc.robot.commands.FollowTarget;
 import frc.robot.commands.HoldOnChargeStation;
-import frc.robot.commands.InlineTargetWall;
 import frc.robot.commands.IntakeDown;
 import frc.robot.commands.IntakeUp;
 import frc.robot.commands.MoveForwardUntilPiece;
 import frc.robot.commands.RunIntakeTime;
 import frc.robot.commands.TurnUntilTargetFound;
-import frc.robot.commands.PickUpPiece;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to

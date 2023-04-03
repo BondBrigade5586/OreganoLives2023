@@ -80,7 +80,7 @@ public final class Constants {
     public static final double kDefaultSpeedFactor = 0.80;
     public static final double kSecondarySpeedFactor = 0.40;
 
-    public static final double kDefaultTurnFactor = 0.95;
+    public static final double kDefaultTurnFactor = 0.90;
     public static final double kSecondaryTurnFactor = 0.60;
   }
 
@@ -149,7 +149,7 @@ public final class Constants {
     public static final int kSwitchDownPort = 6;
     public static final int kCubeProxSensorPort = 8;
     
-    public static final double kIntakeUnitMoveSP = 0.45;
+    public static final double kIntakeUnitMoveSP = 0.35;
 
     public static final double kIntakePullInSP = -0.75;
     public static final double kIntakePushOutSP = 1.00;

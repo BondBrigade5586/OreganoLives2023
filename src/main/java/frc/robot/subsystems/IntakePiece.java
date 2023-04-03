@@ -50,6 +50,6 @@ public class IntakePiece extends SubsystemBase {
  
 
   public boolean pieceInIntake() {
-    return cubeSensor.get();
+    return !cubeSensor.get();
   }
 }

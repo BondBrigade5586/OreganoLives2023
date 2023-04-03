@@ -38,15 +38,15 @@ public class HoldOnChargeStation extends CommandBase {
   @Override
   public void execute() {
     if (gyro.getYRotation() > 6.5) {
-      drivetrain.driveArcade(0.3375, 0, 1.00, 0);
+      drivetrain.driveArcade(0.3345, 0, 1.00, 0);
     } else if (gyro.getYRotation() < -6.5) {
-      drivetrain.driveArcade(-0.3375, 0, 1.00, 0);
+      drivetrain.driveArcade(-0.3345, 0, 1.00, 0);
     } else if (gyro.getYRotation() > 5) {
-    drivetrain.driveArcade(0.315, 0, 1.00, 0);
+    drivetrain.driveArcade(0.3125, 0, 1.00, 0);
     engaged = false;
     resetStopTimer();
    } else if (gyro.getYRotation() < -5) {
-    drivetrain.driveArcade(-0.315, 0, 1.00, 0);
+    drivetrain.driveArcade(-0.3125, 0, 1.00, 0);
     resetStopTimer();
     engaged = false;
    } else if (gyro.getYRotation() < 5 && gyro.getYRotation() > -5 && !engaged) {

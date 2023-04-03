@@ -8,6 +8,7 @@ import java.util.regex.MatchResult;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotState;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
@@ -36,10 +37,15 @@ public class LEDControl extends CommandBase {
     } else if (RobotState.isAutonomous()) {
       LEDFlashWhite();
     } else if (RobotState.isTeleop()) {
-      if (!intake.pieceInIntake()) {
-        LEDSolidGreen();
+      if (intake.pieceInIntake()) {
+        LEDSolidGreen(); // Green if intake is loaded
       } else {
-        LEDSolidRed();
+        // Alliance color if no piece in intake
+        if (DriverStation.getAlliance() == Alliance.Red) {
+          LEDSolidRed();
+        } else {
+          LEDSolidBlue();
+        }
       }
     } else if (RobotState.isEStopped()) {
       LEDFlashRed();
@@ -62,14 +68,19 @@ public class LEDControl extends CommandBase {
   }
   
   // LED Modes
+  private void LEDSolidRed() {
+    for (int i=0;i<led.getLength();i++) {
+      led.setColorRGB(i,150, 0, 0);
+    }
+  }
   private void LEDSolidGreen() {
     for (int i=0;i<led.getLength();i++) {
       led.setColorRGB(i, 0, 150, 0);
     }
   }
-  private void LEDSolidRed() {
+  private void LEDSolidBlue() {
     for (int i=0;i<led.getLength();i++) {
-      led.setColorRGB(i,150, 0, 0);
+      led.setColorRGB(i, 0, 0, 150);
     }
   }
 
