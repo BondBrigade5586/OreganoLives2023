@@ -4,6 +4,14 @@
 
 ---- Changelog ----
 
+4/1/23 Post-Seven Rivers Regional
+  - Removed 2 cube wired side autonomous modes after failed attempts during practice matches
+  - Adjusted setpoints for center autonomous to account for changes in weight distribution, etc
+  - Changed LEDControl command slightly
+    - Disabled: white breathing
+    - Autonomous: white flashing
+    - Teleop: alliance color, except when a piece is in the intake (green)
+
 3/25/23 Final Robot Touch-ups
   - Finished center auto (two cubes)
     - Places one, picks up second, climbs out charge station and spits second cube
