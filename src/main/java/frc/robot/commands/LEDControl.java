@@ -18,6 +18,11 @@ import frc.robot.subsystems.LED;
 public class LEDControl extends CommandBase {
   IntakePiece intake = RobotContainer.m_intake;
   LED led = RobotContainer.m_led;
+
+  int previousLEDIndex = 0;
+  int previousAltLEDIndex = led.getLength()-1;
+  boolean reverseDirection = false;
+
   /** Creates a new LEDControl. */
   public LEDControl() {
     addRequirements(led);
@@ -32,8 +37,10 @@ public class LEDControl extends CommandBase {
   @Override
   public void execute() {
     // LED Defaults
-    if (RobotState.isDisabled()) {
-      LEDPulseWhite();
+    if (Robot.runtime.get()<5) {
+      LEDPoliceLights();
+    } else if (RobotState.isDisabled()) {
+      LEDDoubleBounce();
     } else if (RobotState.isAutonomous()) {
       LEDFlashWhite();
     } else if (RobotState.isTeleop()) {
@@ -84,15 +91,26 @@ public class LEDControl extends CommandBase {
     }
   }
 
+  private void LEDRapidFlashWhite() {
+    if (((int)(4*Robot.runtime.get())) %8 == 0 || ((int)(4*Robot.runtime.get())) %8 == 2 || ((int)(4*Robot.runtime.get())) %8 == 4 || ((int)(4*Robot.runtime.get())) %8 == 6) {
+      for (int i=0;i<led.getLength();i++) {
+        led.setColorRGB(i, 75, 75, 75);
+      }
+    } else if (((int)(4*Robot.runtime.get())) %4 == 1 || ((int)(4*Robot.runtime.get())) %4 == 3 || ((int)(4*Robot.runtime.get())) %8 == 5 || ((int)(4*Robot.runtime.get())) %8 == 7) {
+      for (int i=0;i<led.getLength();i++) {
+        led.setColorRGB(i, 0, 0, 0);
+      }
+    }
+  }
   private void LEDFlashWhite() {
-  if (((int)(2*Robot.runtime.get())) %4 == 0 || ((int)(2*Robot.runtime.get())) %4 == 2) {
-    for (int i=0;i<led.getLength();i++) {
-      led.setColorRGB(i, 75, 75, 75);
-    }
-  } else if (((int)(2*Robot.runtime.get())) %4 == 1 || ((int)(2*Robot.runtime.get())) %4 == 3) {
-    for (int i=0;i<led.getLength();i++) {
-      led.setColorRGB(i, 0, 0, 0);
-    }
+    if (((int)(2*Robot.runtime.get())) %4 == 0 || ((int)(2*Robot.runtime.get())) %4 == 2) {
+      for (int i=0;i<led.getLength();i++) {
+        led.setColorRGB(i, 75, 75, 75);
+      }
+    } else if (((int)(2*Robot.runtime.get())) %4 == 1 || ((int)(2*Robot.runtime.get())) %4 == 3) {
+      for (int i=0;i<led.getLength();i++) {
+        led.setColorRGB(i, 0, 0, 0);
+      }
     } 
   }
   private void LEDFlashRed() {
@@ -145,5 +163,48 @@ public class LEDControl extends CommandBase {
         led.setColorRGB(i, 0, 0, 150);
       }
     }
+  }
+
+  public void LEDDoubleBounce() {
+    int altI;    
+    // Determines direction the LED travels & checks bounds
+    if (previousLEDIndex >= led.getLength()-1) {
+      reverseDirection = true;
+    } else if (previousLEDIndex <= 0) {
+      reverseDirection = false;
+    }
+
+    // Sets LED strip colors
+    for (int i=0;i<led.getLength();i++) {
+      altI = led.getLength()-1-i;
+
+      if (i==previousLEDIndex) {
+        if (!reverseDirection) {
+          led.setColorHSV(altI-1, 120, 255, 190);
+          led.setColorHSV(altI, 120, 255, 30);
+          // Set LED at i to dim green and LED at i+1 to bright green
+          led.setColorHSV(i+1, 0, 255, 190);
+          led.setColorHSV(i, 0, 255, 30);
+        } else {
+          led.setColorHSV(altI+1, 120, 255, 190);
+          led.setColorHSV(altI, 120, 255, 30);
+          // Set LED at i to dim green and LED at i-1 to bright green
+          led.setColorHSV(i-1, 0, 255, 190);
+          led.setColorHSV(i, 0, 255, 30);
+        }
+      } else if (i!=previousLEDIndex && i!=previousLEDIndex+1 && i!=previousLEDIndex-1 && i!=previousAltLEDIndex && i!=previousAltLEDIndex+1 && i!=previousAltLEDIndex-1) {
+        // Set LED at i to off
+        led.setColorRGB(i, 0, 0, 0);
+      }
+    }
+
+    if (!reverseDirection) {
+      previousLEDIndex++; // Increase previous bright LED index
+      previousAltLEDIndex--;
+    } else {
+      previousLEDIndex--; // Decrease previous bright LED index
+      previousAltLEDIndex++;
+    }
+
   }
 }

@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.AutonomousConstants;
-import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.IntakePiece;
 
 public class RunIntakeTime extends CommandBase {

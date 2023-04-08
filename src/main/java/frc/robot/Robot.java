@@ -26,6 +26,7 @@ import frc.robot.commands.IntakeUp;
 import frc.robot.commands.MoveForwardUntilPiece;
 import frc.robot.commands.RunIntakeTime;
 import frc.robot.commands.TurnUntilTargetFound;
+import frc.robot.subsystems.Vision;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -107,7 +108,14 @@ public class Robot extends TimedRobot {
       new FollowTarget(VisionConstants.kS2AprilTagNonwiredTargetArea, -VisionConstants.kS2AprilTagNonwiredXOffset, VisionConstants.kS2AprilTagNonwiredPDrive, VisionConstants.kS2AprilTagNonwiredPTurn),
       new RunIntakeTime(0.5, true)
     ));
-    
+    autoChooser.addOption("Gyro/NavX Test", new SequentialCommandGroup(
+      new AlignGyro(() -> RobotContainer.m_gyro.getZRotation()+160),
+      new AlignGyro(() -> RobotContainer.m_gyro.getZRotation()-200),
+      new AlignGyro(() -> RobotContainer.m_gyro.getZRotation()-200),
+      new AlignGyro(() -> RobotContainer.m_gyro.getZRotation()+240),
+      new AlignGyro(() -> RobotContainer.m_gyro.getZRotation()+180)
+
+    ));
     autoChooser.addOption("1 Cube & Exit (Side)", new SequentialCommandGroup(
       new RunIntakeTime(1.0, true),
       new ExitCommunity(true, false),
@@ -118,8 +126,6 @@ public class Robot extends TimedRobot {
       new RunIntakeTime(5.0, true)
     );
         
-
-    // TODO Test
     autoChooser.addOption("2 Cube Engage (Testing, Center)", new SequentialCommandGroup(
       new RunIntakeTime(0.30, true), // Place cube low
       new ParallelCommandGroup( // Leave community and enable cube processing
@@ -136,9 +142,10 @@ public class Robot extends TimedRobot {
         new AlignGyro(() -> (0.0)), // Robot facing wall
         new IntakeUp()
       ),
+      new FollowTarget(VisionConstants.kEngageAprilTagTargetArea, VisionConstants.kEngageAprilTagXOffset, VisionConstants.kEngageAprilTagPDrive, VisionConstants.kEngageAprilTagPTurn),
       new ClimbChargeStation(), // Climb charge station
       new ParallelCommandGroup(
-        new RunIntakeTime(0.5, true),
+        new RunIntakeTime(1.0, true),
         new HoldOnChargeStation(5) // Hold robot on the charge station
       )
     ));

@@ -3,6 +3,12 @@
 
 
 ---- Changelog ----
+4/7/23 General Advancements and LED Updates
+  - Added startup LED animation (police lights)
+  - Idle/disabled mode changed to two singular, alternate lights moving across strip
+  - Based autonomous modes off of voltage instead of simple setpoints
+    - Allows for autonomous modes to work, even on dead batteries or more charged batteries
+    - Removed general uncertainty regarding battery power and autonomous
 
 4/1/23 Post-Seven Rivers Regional
   - Removed 2 cube wired side autonomous modes after failed attempts during practice matches

@@ -6,10 +6,12 @@ package frc.robot.commands;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.VoltageConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Gyro;
 
@@ -77,6 +79,8 @@ public class AlignGyro extends CommandBase {
     } else if (outputSpeed > -0.475 && outputSpeed < 0) {
       outputSpeed = -0.475;
     }
+    
+    outputSpeed = outputSpeed * (VoltageConstants.kAlignGyroAlignTargetTestV / RobotController.getBatteryVoltage());
     // Prevents turning more than 180 degrees, uses PID to determine setpoint speeds
     if (Math.abs(sp-z) <= 180 && sp>z) {
       drivetrain.turnRobot(outputSpeed);

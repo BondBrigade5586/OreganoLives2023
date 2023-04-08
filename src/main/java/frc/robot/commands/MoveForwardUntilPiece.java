@@ -29,8 +29,8 @@ public class MoveForwardUntilPiece extends CommandBase {
 
   /** Creates a new MoveForwardUntilPiece. */
   public MoveForwardUntilPiece(double driveP, double turnP, double targetArea) {
-    this.kTurnP = turnP;
     this.kDriveP = driveP;
+    this.kTurnP = turnP;
     this.kTargetArea = targetArea;
 
     addRequirements(drivetrain);

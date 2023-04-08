@@ -4,18 +4,20 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Gyro;
-import frc.robot.Constants.AutonomousConstants;;
+import frc.robot.Constants.AutonomousConstants;
+import frc.robot.Constants.VoltageConstants;;
 
 public class ClimbChargeStation extends CommandBase {
   Drivetrain drivetrain = RobotContainer.m_drivetrain;
   Gyro gyro = RobotContainer.m_gyro;
-  boolean interactedWithRamp;
-  boolean engaged;
+  boolean interactedWithRamp, engaged;
+  double driveSP, adjDriveSP;
   /** Creates a new AutoBalance. */
   public ClimbChargeStation() {
     addRequirements(drivetrain);
@@ -36,6 +38,12 @@ public class ClimbChargeStation extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    /** TODO
+     * Implement a timer within the angle to ensure it is not a spike in the angle
+     * Rather, ensure that the gyro does not report a false interaction with the charge station
+     * Make sure the angle holds for more than 0.4 seconds
+     * Turn the angle setpoint down to avoid having to go over the charge station twice then reverse back onto it
+     */
 
     if (gyro.getYRotation() > AutonomousConstants.kMaxYAngleOffset || gyro.getYRotation() < -AutonomousConstants.kMaxYAngleOffset) {
       interactedWithRamp = true;
@@ -44,20 +52,27 @@ public class ClimbChargeStation extends CommandBase {
 
 
     if (!interactedWithRamp) {
-      drivetrain.driveArcade(0.79, 0, 0.80, 0);
+      driveSP = 0.85;
+      // drivetrain.driveArcade(0.740625, 0, 0.75, 0);
     } else if (interactedWithRamp) {
       if (gyro.getYRotation() < -8) {
-        drivetrain.driveArcade(-0.525, 0, 0.75, 0);
+        driveSP = -0.50;
+        // drivetrain.driveArcade(-0.525, 0, 0.75, 0);
       } else if (gyro.getYRotation() > 8) {
-        drivetrain.driveArcade(0.525, 0, 0.75, 0);
+        driveSP = 0.50;
+        // drivetrain.driveArcade(0.525, 0, 0.75, 0);
       } else {
+        driveSP = 0;
         engaged = true;
         drivetrain.enableBrakes();
-        drivetrain.driveArcade(0, 0, 0, 0);
+        // drivetrain.driveArcade(0, 0, 0, 0);
       }
       SmartDashboard.putBoolean("Engaged", engaged);
     }
     
+    adjDriveSP = driveSP * (VoltageConstants.kClimbChargeStationTestV / RobotController.getBatteryVoltage());
+    drivetrain.driveArcade(adjDriveSP, 0, 0.75, 0);
+
   }
 
   // Called once the command ends or is interrupted.

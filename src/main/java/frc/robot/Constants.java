@@ -155,6 +155,11 @@ public final class Constants {
     public static final double kIntakePushOutSP = 1.00;
   }
 
+  public static class VoltageConstants {
+    public static final double kClimbChargeStationTestV = 11.70;
+    public static final double kHoldOnChargeStationTestV = 12.00;
+    public static final double kAlignGyroAlignTargetTestV = 11.30;
+  }
   public static class OtherConstants {
     public static final int kLEDPort = 0;
     public static final int kLEDCount = 111;
