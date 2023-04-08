@@ -19,7 +19,7 @@ public class LEDControl extends CommandBase {
   IntakePiece intake = RobotContainer.m_intake;
   LED led = RobotContainer.m_led;
 
-  int previousLEDIndex = 0;
+  int firstLEDHue, previousLEDIndex = 0;
   int previousAltLEDIndex = led.getLength()-1;
   boolean reverseDirection = false;
 
@@ -40,10 +40,11 @@ public class LEDControl extends CommandBase {
     if (Robot.runtime.get()<5) {
       LEDPoliceLights();
     } else if (RobotState.isDisabled()) {
-      LEDDoubleBounce();
+        // LEDDoubleBounce();
+        LEDProgressiveStaticRainbow();
     } else if (RobotState.isAutonomous()) {
       LEDFlashWhite();
-    } else if (RobotState.isTeleop()) {
+    } else if (RobotState.isTeleop()) { 
       if (intake.pieceInIntake()) {
         LEDSolidGreen(); // Green if intake is loaded
       } else {
@@ -180,24 +181,23 @@ public class LEDControl extends CommandBase {
 
       if (i==previousLEDIndex) {
         if (!reverseDirection) {
-          led.setColorHSV(altI-1, 120, 255, 190);
-          led.setColorHSV(altI, 120, 255, 30);
+          led.setColorRGB(altI-1, 0, 0, 150);
+          led.setColorRGB(altI, 0, 0, 75);
           // Set LED at i to dim green and LED at i+1 to bright green
-          led.setColorHSV(i+1, 0, 255, 190);
-          led.setColorHSV(i, 0, 255, 30);
+          led.setColorRGB(i+1, 150, 0, 0);
+          led.setColorRGB(i, 75, 0, 0);
         } else {
-          led.setColorHSV(altI+1, 120, 255, 190);
-          led.setColorHSV(altI, 120, 255, 30);
+          led.setColorRGB(altI+1, 0, 0, 150);
+          led.setColorRGB(altI, 0, 0, 75);
           // Set LED at i to dim green and LED at i-1 to bright green
-          led.setColorHSV(i-1, 0, 255, 190);
-          led.setColorHSV(i, 0, 255, 30);
+          led.setColorRGB(i-1, 150, 0, 0);
+          led.setColorRGB(i, 75, 0, 0);
         }
       } else if (i!=previousLEDIndex && i!=previousLEDIndex+1 && i!=previousLEDIndex-1 && i!=previousAltLEDIndex && i!=previousAltLEDIndex+1 && i!=previousAltLEDIndex-1) {
         // Set LED at i to off
         led.setColorRGB(i, 0, 0, 0);
       }
     }
-
     if (!reverseDirection) {
       previousLEDIndex++; // Increase previous bright LED index
       previousAltLEDIndex--;
@@ -205,6 +205,49 @@ public class LEDControl extends CommandBase {
       previousLEDIndex--; // Decrease previous bright LED index
       previousAltLEDIndex++;
     }
+  }
 
+  private void ShootSingleLED(int startIndex) {
+    for (int i=0;i<led.getLength();i++) {
+      if (i==startIndex) {
+        led.setColorRGB(i, 135, 135, 135);
+      } else {
+        led.setColorRGB(i-1, 0, 0, 0);
+      }
+    }
+
+    if (startIndex>=led.getLength()-1) {
+      return;
+    } else {
+      ShootSingleLED(startIndex+1);
+    }
+  }
+
+  // **** RAINBOW LED Methods ****
+  private void LEDEntireStripRainbow() {
+   double cycleTime = 6; // Time between rainbow cycles
+   double maxH = 180; // Maximum value of H
+   
+   int h = (int) (Robot.runtime.get() * (maxH/cycleTime));
+   h %= maxH; // Check bounds
+   for (int i=0;i<led.getLength();i++) {
+    led.setColorHSV(i, h, 255, 255);
+   }
+  }
+  private void LEDProgressiveStaticRainbow() {
+    double cycleTime = 1.0;
+    double LEDCount = led.getLength();
+    double maxH = 180;
+    double hueIncreaseInterval = LEDCount/maxH;
+
+    firstLEDHue = (int) (Robot.runtime.get() * (maxH/cycleTime));
+
+    for (int i=0;i<LEDCount;i++) {
+      int h = (int) (i * hueIncreaseInterval); // Set base hue (0-180 based on index)
+      h += firstLEDHue; // Makes rainbow move
+      h %= maxH; // Check bounds
+
+      led.setColorHSV(i, h, 255, 255);
+    }
   }
 }
