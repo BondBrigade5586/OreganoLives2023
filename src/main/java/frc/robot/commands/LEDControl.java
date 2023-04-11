@@ -40,10 +40,10 @@ public class LEDControl extends CommandBase {
     if (Robot.runtime.get()<5) {
       LEDPoliceLights();
     } else if (RobotState.isDisabled()) {
-        // LEDDoubleBounce();
-        LEDProgressiveStaticRainbow();
-    } else if (RobotState.isAutonomous()) {
-      LEDFlashWhite();
+        LEDDoubleBounce();
+      } else if (RobotState.isAutonomous()) {
+      LEDProgressiveStaticRainbow();
+      // LEDFlashWhite();
     } else if (RobotState.isTeleop()) { 
       if (intake.pieceInIntake()) {
         LEDSolidGreen(); // Green if intake is loaded

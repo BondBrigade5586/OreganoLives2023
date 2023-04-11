@@ -30,7 +30,7 @@ public final class Constants {
   public static class AutonomousConstants {
     public static final double kDistOutsideCommunityCenter = 182;
     public static final double kDistOutsideCommunitySide = 148;
-    public static final double kMaxYAngleOffset = 12.5;
+    public static final double kMaxYAngleOffset = 13.00;
 
     public static final double kAutoSpeedFactor = 0.80;
     public static final double kAutoTurnFactor = 0.90;
