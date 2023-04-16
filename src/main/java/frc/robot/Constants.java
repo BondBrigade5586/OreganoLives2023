@@ -42,7 +42,7 @@ public final class Constants {
     public static final double kDefaultTurnSpeed = 0.65;
 
     public static final double kInchingDriveSpeed = 0.40;
-    public static final double kInchingTurnSpeed = 0.45;
+    public static final double kInchingTurnSpeed = 0.4125;
   }
 
 
@@ -88,36 +88,36 @@ public final class Constants {
     public static final double kPTurn = 0.05;
     public static final double kITurn = 0.004;
 
-    public static final double kTapeTargetArea = 1.25; // Target area of RR tape in limelight
+    public static final double kTapeTargetArea = 1.15; // Target area of RR tape in limelight
     public static final double kTapeXOffset = 0; // Target X offset of tape in limelight
-    public static final double kTapePDrive = 0.50;
+    public static final double kTapePDrive = 0.515;
     public static final double kTapePTurn = 0.05;
 
-    public static final double kCube1SideMinArea = 1.80;
+    public static final double kCube1SideMinArea = 1.25;
     public static final double kCube2SideMinArea = 1.00;
 
     public static final double kCubeCenterMinArea = 2.35;
-    public static final double kCubeTargetArea = 13.60;
+    public static final double kCubeTargetArea = 11.75;
     public static final double kCubeXOffset = 0;
-    public static final double kCubePDrive = 0.06;
-    public static final double kCubePTurn = 0.0385;
+    public static final double kCubePDrive = 0.045;
+    public static final double kCubePTurn = 0.03675;
 
     public static final double kEngageAprilTagTargetArea = 1;
     public static final double kEngageAprilTagXOffset = 0;
     public static final double kEngageAprilTagPDrive = 0.35;
     public static final double kEngageAprilTagPTurn = 0.045;
 
-    // AprilTag constants for the red side without wires -- inverted for blue w/o wires
-    public static final double kS1AprilTagNonwiredMinArea = 0.15;
+    // AprilTag constants for the red side without wires -- inverted for blue
+    public static final double kS1AprilTagNonwiredMinArea = 0.10;
     public static final double kS1AprilTagNonwiredTargetArea = 4;
-    public static final double kS1AprilTagNonwiredXOffset = 2.75;
+    public static final double kS1AprilTagNonwiredXOffset = 2.10;
     public static final double kS1AprilTagNonwiredPDrive = 0.25;
-    public static final double kS1AprilTagNonwiredPTurn = 0.06875;
+    public static final double kS1AprilTagNonwiredPTurn = 0.054;
 
-    public static final double kS2AprilTagNonwiredTargetArea = 2.80;
+    public static final double kS2AprilTagNonwiredTargetArea = 4.75;
     public static final double kS2AprilTagNonwiredXOffset = -0.40;
-    public static final double kS2AprilTagNonwiredPDrive = 0.20;
-    public static final double kS2AprilTagNonwiredPTurn = 0.08;
+    public static final double kS2AprilTagNonwiredPDrive = 0.21;
+    public static final double kS2AprilTagNonwiredPTurn = 0.057;
 
     // AprilTag constants for the red side with wires -- inverted for blue with wires
     public static final double kS1AprilTagWiredMinArea = 0.15;

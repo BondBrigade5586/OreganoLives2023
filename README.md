@@ -3,6 +3,14 @@
 
 
 ---- Changelog ----
+
+4/15/23 Lakeshore FIRST Robotics Open House & Saturday before Worlds 
+  - Final Adjustments to Robot Controls
+  - Redid Entire Two Cube Autonomous Modes
+    - Much more efficient & reliable
+  - Changed LED modes -- rainbow LEDs in autonomous
+  - Proximity sensor now Changes LED strip light color to green when a piece is in the intake
+    
 4/7/23 General Advancements and LED Updates
   - Added startup LED animation (police lights)
   - Idle/disabled mode changed to two singular, alternate lights moving across strip

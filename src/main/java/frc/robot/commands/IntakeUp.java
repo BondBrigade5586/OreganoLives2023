@@ -31,11 +31,11 @@ public class IntakeUp extends CommandBase {
   @Override
   public void execute() {
     sbIntakeStatus.setBoolean(switchUp.get());
-    if (switchUp.get()) {
-      intakeUnit.moveIntake(0);
+     if (switchUp.get()) {
+       intakeUnit.moveIntake(0);
     } else {
       intakeUnit.moveIntake(IntakeConstants.kIntakeUnitMoveSP);
-    }
+     }
   }
 
   // Called once the command ends or is interrupted.

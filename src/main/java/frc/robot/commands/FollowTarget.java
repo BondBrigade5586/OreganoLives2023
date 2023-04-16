@@ -76,12 +76,17 @@ public class FollowTarget extends CommandBase {
     turnError =  turnSP - x;
     turnErrorSum = turnError*(Timer.getFPGATimestamp() - prevTimestamp);
     
-    // Prevents robot from moving if there is no tape
-    if (driveError < 2.75) {
+    if (driveError < 2.75 && driveError > 0) {
       driveError = 2.75;
+    } else if (driveError > -2.75 && driveError < 0) {
+      driveError = -2.75;
     } else if (driveError > 9.5) {
       driveError = 9.5;
+    } else if (driveError < -9.5) {
+      driveError = -9.5;
     }
+
+    // Prevents robot from moving if there is no target
     if (area == 0) {
       driveError = 0;
       turnError = 0;
@@ -109,6 +114,6 @@ public class FollowTarget extends CommandBase {
   @Override
   public boolean isFinished() {
     // Ends if area is within 5% of the target area
-    return area > (driveSP-(driveSP*0.05)) && area < (driveSP+(driveSP*0.05));
+    return area >= driveSP;
   }
 }

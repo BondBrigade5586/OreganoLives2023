@@ -51,13 +51,14 @@ public class MoveForwardUntilPiece extends CommandBase {
     
     // Set drive and turn speeds
     turnSP = x*kTurnP;
-    driveSP = kAreaError * kDriveP;
+    driveSP = 0.465;
 
     if (driveSP < AutonomousConstants.kInchingDriveSpeed) {
       driveSP = AutonomousConstants.kInchingDriveSpeed;
     }
+    
     // Determine if piece is in intake or not
-    if (!intake.pieceInIntake()) {
+    if (intake.pieceInIntake()) {
       intake.use(0);
     } else {
       intake.use(AutonomousConstants.kAutoIntakeInSP);
@@ -77,6 +78,6 @@ public class MoveForwardUntilPiece extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !intake.pieceInIntake();
+    return intake.pieceInIntake();
   }
 }
