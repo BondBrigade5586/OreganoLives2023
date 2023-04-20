@@ -77,7 +77,7 @@ public final class Constants {
     public static final double kDistanceP = 0.017;
     public static final double kDistErrorMargin = 2.5;
 
-    public static final double kDefaultSpeedFactor = 0.80;
+    public static final double kDefaultSpeedFactor = 0.90;
     public static final double kSecondarySpeedFactor = 0.40;
 
     public static final double kDefaultTurnFactor = 0.90;
@@ -161,8 +161,8 @@ public final class Constants {
     public static final double kAlignGyroAlignTargetTestV = 11.30;
   }
   public static class OtherConstants {
-    public static final int kLEDPort = 0;
-    public static final int kLEDCount = 111;
+    public static final int kLEDPort = 1;
+    public static final int kLEDCount = 34; // 111
     public static final int kLEDMidpointIndex = 75;
     
     public static final int kProximitySensorPort = 9;
