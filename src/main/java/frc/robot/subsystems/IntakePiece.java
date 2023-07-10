@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
 
@@ -29,6 +30,7 @@ public class IntakePiece extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putBoolean("Piece In Intake", pieceInIntake());
     // This method will be called once per scheduler run
   }
 

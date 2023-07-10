@@ -3,6 +3,7 @@
 
 package frc.robot.commands;
 
+import java.lang.constant.DirectMethodHandleDesc;
 import java.util.function.Supplier;
 
 import edu.wpi.first.networktables.GenericEntry;
@@ -18,7 +19,7 @@ public class DriveForza extends CommandBase {
   Drivetrain drivetrain = RobotContainer.m_drivetrain;
   Vision limelight = RobotContainer.m_vision;
   EngageProximity proximity = RobotContainer.m_proximity;
-  LED led = RobotContainer.m_led;
+  // // // LED led = RobotContainer.m_led;
 
   Supplier<Double> kForward, kBackward, kTurn;
   Supplier<Boolean> kSTFactor;
@@ -52,6 +53,8 @@ public class DriveForza extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    drivetrain.sendTempsToSmartDash();
+
     sbGyroX.setDouble(RobotContainer.m_gyro.getXRotation());
     sbGyroY.setDouble(RobotContainer.m_gyro.getYRotation());
     sbGyroZ.setDouble(RobotContainer.m_gyro.getZRotation());

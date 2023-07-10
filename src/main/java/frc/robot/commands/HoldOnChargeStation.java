@@ -6,7 +6,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.VoltageConstants;
@@ -64,25 +63,18 @@ public class HoldOnChargeStation extends CommandBase {
       engaged = true;
    } else if (engaged) {
       driveSP = 0;
-      SmartDashboard.putNumber("Time Engaged", timeEngaged.get());
       drivetrain.stopRobot();
    } else {
       engaged = false;
    }
 
-   if (!engaged) {
-    SmartDashboard.putNumber("Time Engaged", 0);
-   }
-
    adjDriveSP = driveSP * (VoltageConstants.kHoldOnChargeStationTestV / RobotController.getBatteryVoltage());
    drivetrain.driveArcade(adjDriveSP, 0, 1.00, 0);
-   SmartDashboard.putBoolean("Engaged", engaged);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    SmartDashboard.putNumber("Time Engaged", 0);
     drivetrain.stopRobot();
     resetStopTimer();
   }

@@ -54,7 +54,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     runtime.start();
     Shuffleboard.selectTab("Setup");
-    RobotContainer.m_led.update();
+    // // // RobotContainer.m_led.update();
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     autoChooser = new SendableChooser<>();
@@ -164,7 +164,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    RobotContainer.m_led.update();
+    // // // RobotContainer.m_led.update();
 
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,

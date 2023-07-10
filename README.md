@@ -3,6 +3,9 @@
 
 
 ---- Changelog ----
+7/10/23 Midsummer Updates
+  - Minor adjustments to drivetrain sensitivity
+  - Cleaned up code & removed some unnecessary items
 
 4/15/23 Lakeshore FIRST Robotics Open House & Saturday before Worlds 
   - Final Adjustments to Robot Controls

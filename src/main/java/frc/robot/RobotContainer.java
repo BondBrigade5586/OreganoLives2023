@@ -10,7 +10,6 @@ import frc.robot.commands.HangOffChargeStation;
 import frc.robot.commands.HoldOnChargeStation;
 import frc.robot.commands.IntakeDown;
 import frc.robot.commands.IntakeUp;
-import frc.robot.commands.LEDControl;
 import frc.robot.commands.UseIntake;
 import frc.robot.subsystems.*;
 import frc.robot.Constants.*;
@@ -51,7 +50,7 @@ public class RobotContainer {
   public final static Vision m_vision = new Vision();
   public final static Gyro m_gyro = new Gyro();
   public final static EngageProximity m_proximity = new EngageProximity();
-  public final static LED m_led = new LED();
+  // // // public final static LED m_led = new LED();
   
   // Create and populate debug tab
   public static ShuffleboardTab debugTab = Shuffleboard.getTab("Debug");
@@ -103,9 +102,9 @@ public class RobotContainer {
         () -> m_subsystemController.getRawButton(IntakeConstants.kIntakeInButton), 
         () -> m_subsystemController.getRawButton(IntakeConstants.kIntakeOutButton))
     );
-    m_led.setDefaultCommand(
-      new LEDControl()
-    );
+    // // // m_led.setDefaultCommand(
+    // // //   new LEDControl()
+    // // // );
 
     // Configure the trigger bindings
     configureBindings();

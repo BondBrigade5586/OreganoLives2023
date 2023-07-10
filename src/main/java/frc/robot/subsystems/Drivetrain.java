@@ -13,12 +13,14 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 
 public class Drivetrain extends SubsystemBase {
-  
+  private double prevForwardSpd = 0;
+
   private final WPI_TalonFX m_frontLeft;
   private final WPI_TalonFX m_frontRight;
   private final WPI_TalonFX m_backLeft;
@@ -54,23 +56,43 @@ public class Drivetrain extends SubsystemBase {
 
   /* ------- CUSTOM DRIVETRAIN METHODS ------ */
 
+  private double getCurrentForwardSpeed() {
+    return prevForwardSpd; // Returns the forward speed at the previous iteration
+  }
+  private double adjustSP(double targetSP) {
+    double adjSP;
+    double currentSP = getCurrentForwardSpeed();
+    if (Math.abs(targetSP) < 0.25) {
+      return 0;
+    } else if (Math.abs(Math.abs(currentSP) - Math.abs(targetSP)) < DriveConstants.kMaxSpeedChange) {
+      return targetSP; // Returns the target setpoint in order to prevent a setpoint out of bounds
+    } else if (targetSP < currentSP) {
+      adjSP = currentSP - DriveConstants.kMaxSpeedChange;
+    } else {
+      adjSP = currentSP+DriveConstants.kMaxSpeedChange;
+    }
+    return adjSP; // Returns the adjusted setpoint in order to prevent overacceleration
+  }
   public void driveTank(double left, double right) {
     tankDrive.tankDrive(left, right);
   }
   public void driveArcade(double forward, double turn, double speedFactor, double turnFactor) {
+    // double adjForward = adjustSP(forward);
     tankDrive.arcadeDrive(forward*speedFactor, -turn*turnFactor);
-    SmartDashboard.putNumber("Drive Speed", forward*speedFactor);
-    SmartDashboard.putNumber("Turn Speed", turn);
+    // prevForwardSpd = adjForward;
+
+    SmartDashboard.putNumber("Current Speed", prevForwardSpd);
+    SmartDashboard.putNumber("Target Speed", forward);
   }
   public void turnRobot(double turn) {
     tankDrive.arcadeDrive(0, -turn*0.85);
-    SmartDashboard.putNumber("Drive Speed", 0);
-    SmartDashboard.putNumber("Turn Speed", turn);
+    prevForwardSpd = 0;
+
   }
   public void stopRobot() {
     tankDrive.tankDrive(0, 0);
-    SmartDashboard.putNumber("Drive Speed", 0);
-    SmartDashboard.putNumber("Turn Speed", 0);
+    prevForwardSpd = 0;
+
   }
 
   public void enableBrakes() {
@@ -110,10 +132,14 @@ public class Drivetrain extends SubsystemBase {
     setEncoderPosition(0);
   }
 
-  public double getDriveSpeed() {
-    return SmartDashboard.getNumber("Drive Speed", 0);
+  public boolean isShutDown(WPI_TalonFX motor) {
+    return motor.isAlive();
   }
-  public double getTurnSpeed() {
-    return SmartDashboard.getNumber("Turn Speed", 0);
+
+  public void sendTempsToSmartDash() {
+    SmartDashboard.putNumber("FL Status", (((9/5)*m_frontLeft.getTemperature()) + 32));
+    SmartDashboard.putNumber("FR Status", (((9/5)*m_frontRight.getTemperature()) + 32)); 
+    SmartDashboard.putNumber("BL Status", (((9/5)*m_backLeft.getTemperature()) + 32));
+    SmartDashboard.putNumber("BR Status", (((9/5)*m_backRight.getTemperature()) + 32));
   }
 }

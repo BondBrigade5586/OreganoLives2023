@@ -49,9 +49,9 @@ public final class Constants {
   public static class DriveConstants {
     // Drive motor controller IDs
     public static final int kFrontLeftID = 1;
-    public static final int kFrontRightID = 22; // 22
+    public static final int kFrontRightID = 26;
     public static final int kBackLeftID = 3;
-    public static final int kBackRightID = 44; // 44
+    public static final int kBackRightID = 48;
 
     public static final double kGyroSPAngle = 0; // Robot should be powered on facing the wall/driver stations
     
@@ -63,7 +63,7 @@ public final class Constants {
     
     // Converting between measurement systems
     public static final double kInchesToFt = 1.0 / 12.0;
-    public static final double kFeetToM = 1.0 /3.28084;
+    public static final double kFeetToM = 1.0 / 3.28084;
     public static final double kFeetToMiles = 1.0 / 5208.0;
     public static final double kFPStoMPH = 225.0 / 330.0;
     public static final double kMPHtoFPS = 330.0 / 225.0;
@@ -78,7 +78,8 @@ public final class Constants {
     public static final double kDistErrorMargin = 2.5;
 
     public static final double kDefaultSpeedFactor = 0.90;
-    public static final double kSecondarySpeedFactor = 0.40;
+    public static final double kSecondarySpeedFactor = 0.50 * kDefaultSpeedFactor;
+    public static final double kMaxSpeedChange = 0.03;
 
     public static final double kDefaultTurnFactor = 0.90;
     public static final double kSecondaryTurnFactor = 0.60;
@@ -114,7 +115,7 @@ public final class Constants {
     public static final double kS1AprilTagNonwiredPDrive = 0.25;
     public static final double kS1AprilTagNonwiredPTurn = 0.054;
 
-    public static final double kS2AprilTagNonwiredTargetArea = 4.75;
+    public static final double kS2AprilTagNonwiredTargetArea = 5.00;
     public static final double kS2AprilTagNonwiredXOffset = -0.40;
     public static final double kS2AprilTagNonwiredPDrive = 0.21;
     public static final double kS2AprilTagNonwiredPTurn = 0.057;
