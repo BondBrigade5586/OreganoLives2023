@@ -142,4 +142,17 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("BL Status", (((9/5)*m_backLeft.getTemperature()) + 32));
     SmartDashboard.putNumber("BR Status", (((9/5)*m_backRight.getTemperature()) + 32));
   }
+
+  public double getFLTempF() {
+    return (((9/5)*m_frontLeft.getTemperature()) + 32);
+  }
+  public double getFRTempF() {
+    return (((9/5)*m_frontRight.getTemperature()) + 32);
+  }
+  public double getBLTempF() {
+    return (((9/5)*m_backLeft.getTemperature()) + 32);
+  }
+  public double getBRTempF() {
+    return (((9/5)*m_backRight.getTemperature()) + 32);
+  }
 }

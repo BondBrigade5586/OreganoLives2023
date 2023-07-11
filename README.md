@@ -3,6 +3,12 @@
 
 
 ---- Changelog ----
+
+7/10/23 Pneumatic Cooling System (Stage 1)
+  - Added command & subsystem for pneumatic cooling
+    - Testing functionality with button presses
+    - Should be automated in next update
+
 7/10/23 Midsummer Updates
   - Minor adjustments to drivetrain sensitivity
   - Cleaned up code & removed some unnecessary items

@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -154,6 +156,13 @@ public final class Constants {
 
     public static final double kIntakePullInSP = -0.75;
     public static final double kIntakePushOutSP = 1.00;
+  }
+
+  public static class PneumaticConstants {
+    public static final PneumaticsModuleType controlModuleType = PneumaticsModuleType.CTREPCM;
+    public static final int kMasterSolenoidID = 0; // ID on PCM
+    public static final int kOverheatThreshold = 150; // Temperature (F) at which the motors will be cooled // TODO Set correct val
+
   }
 
   public static class VoltageConstants {
