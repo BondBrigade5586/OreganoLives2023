@@ -15,7 +15,6 @@ import frc.robot.subsystems.*;
 import frc.robot.Constants.*;
 
 import java.util.Map;
-
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
@@ -24,6 +23,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -42,6 +42,8 @@ public class RobotContainer {
   Runnable enableCubeProcessing = new EnableCubeProcessor();
   Runnable enableAT1Processing = new EnableAprilTag1Processor();
   Runnable enableAT2Processing = new EnableAprilTag2Processor();
+  Runnable enableSolenoid = new EnableSolenoid();
+  Runnable disableSolenoid = new DisableSolenoid();
   
   // Declare subsystems
   public final static Drivetrain m_drivetrain = new Drivetrain();
@@ -50,6 +52,7 @@ public class RobotContainer {
   public final static Vision m_vision = new Vision();
   public final static Gyro m_gyro = new Gyro();
   public final static EngageProximity m_proximity = new EngageProximity();
+  public final static Pneumatics m_pneumatics = new Pneumatics();
   // // // public final static LED m_led = new LED();
   
   // Create and populate debug tab
@@ -126,6 +129,10 @@ public class RobotContainer {
     new POVButton(m_xboxDriverController,270).whileTrue(new AlignGyro(() -> (m_gyro.getZRotation()-90)));
     new POVButton(m_xboxDriverController,90).whileTrue(new AlignGyro(() -> (m_gyro.getZRotation()+90)));
     new JoystickButton(m_xboxDriverController, 4).whileTrue(new HangOffChargeStation());
+
+    // TODO *** DEBUG ONLY ***
+    new JoystickButton(m_xboxDriverController, 2).onTrue(new InstantCommand(enableSolenoid, m_pneumatics));
+    new JoystickButton(m_xboxDriverController, 2).onFalse(new InstantCommand(disableSolenoid, m_pneumatics));
     
     // Bind commands to buttons on p2 controller
     new JoystickButton(m_subsystemController, 2).whileTrue(new HoldOnChargeStation(15));
@@ -156,17 +163,27 @@ public class RobotContainer {
   }
   class EnableCubeProcessor implements Runnable {
     public void run() {
-      RobotContainer.m_vision.enableCubeProcessor();
+      m_vision.enableCubeProcessor();
     }
   }
   class EnableAprilTag1Processor implements Runnable {
     public void run() {
-      RobotContainer.m_vision.enableAprilTag1Processor();
+      m_vision.enableAprilTag1Processor();
     }
   }
   class EnableAprilTag2Processor implements Runnable {
     public void run() {
-      RobotContainer.m_vision.enableAprilTag2Processor();
+      m_vision.enableAprilTag2Processor();
+    }
+  }
+  class EnableSolenoid implements Runnable {
+    public void run() {
+      m_pneumatics.enable();
+    }
+  }
+  class DisableSolenoid implements Runnable {
+    public void run() {
+      m_pneumatics.enable();
     }
   }
 }
