@@ -5,20 +5,19 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.PneumaticConstants;
 
 public class Pneumatics extends SubsystemBase {
   Compressor compressor;
-  DoubleSolenoid masterSolenoid;
+  Solenoid masterSolenoid;
 
   /** Creates a new Pneumatics. */
   public Pneumatics() {
     compressor = new Compressor(PneumaticConstants.controlModuleType);
-    masterSolenoid = new DoubleSolenoid(PneumaticConstants.controlModuleType, PneumaticConstants.kForwardChannel, PneumaticConstants.kReverseChannel);
+    masterSolenoid = new Solenoid(PneumaticConstants.controlModuleType, PneumaticConstants.kSolenoidChannel);
   }
 
   @Override
@@ -28,10 +27,10 @@ public class Pneumatics extends SubsystemBase {
 
 
   public void enableSolenoid() {
-    masterSolenoid.set(Value.kForward);
+    masterSolenoid.set(true);
   }
   public void disableSolenoid() {
-    masterSolenoid.set(Value.kOff);
+    masterSolenoid.set(false);
   }
 
   public void enableCompressor() {

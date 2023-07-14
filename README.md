@@ -4,13 +4,21 @@
 
 ---- Changelog ----
 
+
+7/13/23 Pneumatic Cooling System (Stage 3)
+  - Confirmed success of the complete cooling system (works as intended, functionality wise)
+  - Final steps
+    - Automate this process using temperatures of the drive motors
+      - Currently linked to 'A' button on the drive controller
+    - Disable compressor during matches (avoid pumping warm/hot air)
+
 7/13/23 Pneumatic Cooling System (Stage 2)
-  - Final Testing of Pneumatic Cooling System
+  - Further testing of Pneumatic Cooling System
 
 7/10/23 Pneumatic Cooling System (Stage 1)
   - Added command & subsystem for pneumatic cooling
     - Testing functionality with button presses
-    - Should be automated in next update
+    - Should be automated upon success
 
 7/10/23 Midsummer Updates
   - Minor adjustments to drivetrain sensitivity

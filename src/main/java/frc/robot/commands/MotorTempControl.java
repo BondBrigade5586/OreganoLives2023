@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.PneumaticConstants;
@@ -28,8 +30,9 @@ public class MotorTempControl extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-
+    if (DriverStation.isFMSAttached()) {
+      pneumatics.disableCompressor();
+    }
     // TODO **** Uncomment after initial functionality testing ****
     // // if (findMax(temps) > PneumaticConstants.kOverheatThreshold) {
     // //   pneumatics.enable();
@@ -48,15 +51,5 @@ public class MotorTempControl extends CommandBase {
   @Override
   public boolean isFinished() {
     return false;
-  }
-
-  public double findMax(Double[] numList) {
-    double maxVal = 0;
-    for (double x: numList) {
-      if (x > maxVal) {
-        maxVal = x;
-      }
-    }
-    return maxVal;
   }
 }
