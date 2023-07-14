@@ -29,7 +29,6 @@ public class MotorTempControl extends CommandBase {
   @Override
   public void execute() {
 
-    Double[] temps = {drivetrain.getFLTempF(), drivetrain.getFRTempF(), drivetrain.getBLTempF(), drivetrain.getBRTempF()};
 
     // TODO **** Uncomment after initial functionality testing ****
     // // if (findMax(temps) > PneumaticConstants.kOverheatThreshold) {
@@ -42,7 +41,7 @@ public class MotorTempControl extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    pneumatics.disable();
+    pneumatics.disableSolenoid();
   }
 
   // Returns true when the command should end.

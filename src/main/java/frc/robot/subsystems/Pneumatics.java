@@ -5,51 +5,39 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.PneumaticConstants;
 
 public class Pneumatics extends SubsystemBase {
-  Solenoid masterSolenoid;
-  // // Solenoid flSolenoid;
-  // // Solenoid frSolenoid;
-  // // Solenoid blSolenoid;
-  // // Solenoid brSolenoid;
+  Compressor compressor;
+  DoubleSolenoid masterSolenoid;
 
   /** Creates a new Pneumatics. */
   public Pneumatics() {
-    masterSolenoid = new Solenoid(PneumaticConstants.controlModuleType, PneumaticConstants.kMasterSolenoidID);
+    compressor = new Compressor(PneumaticConstants.controlModuleType);
+    masterSolenoid = new DoubleSolenoid(PneumaticConstants.controlModuleType, PneumaticConstants.kForwardChannel, PneumaticConstants.kReverseChannel);
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Compressor Pressure", compressor.getPressure());
   }
 
 
-  public void enable() {
-    masterSolenoid.set(true);
+  public void enableSolenoid() {
+    masterSolenoid.set(Value.kForward);
   }
-  public void disable() {
-    masterSolenoid.set(false);
+  public void disableSolenoid() {
+    masterSolenoid.set(Value.kOff);
   }
-  // // // Enable, disable, or enable for set duration of select solenoid(s)
-  // // public void enable(Solenoid ... solenoids) {
-  // //   for (Solenoid sol: solenoids) {
-  // //     sol.set(true);
-  // //   }
-  // // }
-  // // public void disable(Solenoid ... solenoids) {
-  // //   for (Solenoid sol: solenoids) {
-  // //     sol.set(false);
-  // //   }  
-  // // }
 
-  // // // Enable, disable, or enable for set duration of all solenoids at once
-  // // public void enableAll() {
-  // //   enable(flSolenoid, frSolenoid, blSolenoid, brSolenoid);
-  // // }
-  // // public void disableAll() {
-  // //   disable(flSolenoid, frSolenoid, blSolenoid, brSolenoid);
-  // // }
+  public void enableCompressor() {
+    compressor.enableDigital();
+  }
+  public void disableCompressor() {
+    compressor.disable();
+  }
 }

@@ -44,6 +44,8 @@ public class RobotContainer {
   Runnable enableAT2Processing = new EnableAprilTag2Processor();
   Runnable enableSolenoid = new EnableSolenoid();
   Runnable disableSolenoid = new DisableSolenoid();
+  Runnable enableCompressor = new EnableCompressor();
+  Runnable disableCompressor = new DisableCompressor();
   
   // Declare subsystems
   public final static Drivetrain m_drivetrain = new Drivetrain();
@@ -131,8 +133,8 @@ public class RobotContainer {
     new JoystickButton(m_xboxDriverController, 4).whileTrue(new HangOffChargeStation());
 
     // TODO *** DEBUG ONLY ***
-    new JoystickButton(m_xboxDriverController, 2).onTrue(new InstantCommand(enableSolenoid, m_pneumatics));
-    new JoystickButton(m_xboxDriverController, 2).onFalse(new InstantCommand(disableSolenoid, m_pneumatics));
+    new JoystickButton(m_xboxDriverController, 1).onTrue(new InstantCommand(enableSolenoid, m_pneumatics));
+    new JoystickButton(m_xboxDriverController, 1).onFalse(new InstantCommand(disableSolenoid, m_pneumatics));
     
     // Bind commands to buttons on p2 controller
     new JoystickButton(m_subsystemController, 2).whileTrue(new HoldOnChargeStation(15));
@@ -178,12 +180,22 @@ public class RobotContainer {
   }
   class EnableSolenoid implements Runnable {
     public void run() {
-      m_pneumatics.enable();
+      m_pneumatics.enableSolenoid();
     }
   }
   class DisableSolenoid implements Runnable {
     public void run() {
-      m_pneumatics.enable();
+      m_pneumatics.disableSolenoid();
+    }
+  }
+  class EnableCompressor implements Runnable {
+    public void run() {
+      m_pneumatics.enableCompressor();
+    }
+  }
+  class DisableCompressor implements Runnable {
+    public void run() {
+      m_pneumatics.disableCompressor();
     }
   }
 }

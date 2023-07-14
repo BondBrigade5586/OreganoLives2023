@@ -4,6 +4,9 @@
 
 ---- Changelog ----
 
+7/13/23 Pneumatic Cooling System (Stage 2)
+  - Final Testing of Pneumatic Cooling System
+
 7/10/23 Pneumatic Cooling System (Stage 1)
   - Added command & subsystem for pneumatic cooling
     - Testing functionality with button presses
