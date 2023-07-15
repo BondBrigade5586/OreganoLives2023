@@ -33,12 +33,14 @@ public class MotorTempControl extends CommandBase {
     if (DriverStation.isFMSAttached()) {
       pneumatics.disableCompressor();
     }
-    // TODO **** Uncomment after initial functionality testing ****
-    // // if (findMax(temps) > PneumaticConstants.kOverheatThreshold) {
-    // //   pneumatics.enable();
-    // // } else {
-    // //   pneumatics.disable();
-    // // }
+    
+    Double[] temps = {drivetrain.getFLTempF(), drivetrain.getFRTempF(), drivetrain.getBLTempF(), drivetrain.getBRTempF()};
+
+    if (findMax(temps) > PneumaticConstants.kOverheatThreshold) {
+      pneumatics.enableSolenoid();
+    } else {
+      pneumatics.disableSolenoid();
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -51,5 +53,16 @@ public class MotorTempControl extends CommandBase {
   @Override
   public boolean isFinished() {
     return false;
+  }
+
+  public double findMax(Double[] nums) {
+    double max = 0;
+    for (double x: nums) {
+      if (x > max) {
+        max = x;
+      }
+    }
+
+    return max;
   }
 }

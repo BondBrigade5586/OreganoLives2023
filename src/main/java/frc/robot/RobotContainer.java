@@ -133,8 +133,9 @@ public class RobotContainer {
     new JoystickButton(m_xboxDriverController, 4).whileTrue(new HangOffChargeStation());
 
     // TODO *** DEBUG ONLY ***
-    new JoystickButton(m_xboxDriverController, 1).onTrue(new InstantCommand(enableSolenoid, m_pneumatics));
-    new JoystickButton(m_xboxDriverController, 1).onFalse(new InstantCommand(disableSolenoid, m_pneumatics));
+    new JoystickButton(m_subsystemController, 3).onTrue(new InstantCommand(enableSolenoid, m_pneumatics));
+    new JoystickButton(m_subsystemController, 3).onFalse(new InstantCommand(disableSolenoid, m_pneumatics));
+    new JoystickButton(m_subsystemController, 4).onTrue(new InstantCommand(disableCompressor, m_pneumatics));
     
     // Bind commands to buttons on p2 controller
     new JoystickButton(m_subsystemController, 2).whileTrue(new HoldOnChargeStation(15));

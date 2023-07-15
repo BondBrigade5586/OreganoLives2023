@@ -4,6 +4,10 @@
 
 ---- Changelog ----
 
+7/14/23 Pneumatic Cooling System (Stage 4)
+  - Added buttons to control compressor and solenoid status in case of emergency or failure
+  - Automatic system to control cooling completed, needs testing
+  - Added functionality to stop the compressor from running while the FMS is connected
 
 7/13/23 Pneumatic Cooling System (Stage 3)
   - Confirmed success of the complete cooling system (works as intended, functionality wise)

@@ -161,7 +161,7 @@ public final class Constants {
   public static class PneumaticConstants {
     public static final PneumaticsModuleType controlModuleType = PneumaticsModuleType.CTREPCM;
     public static final int kSolenoidChannel = 0; // ID on PCM
-    public static final int kOverheatThreshold = 130; // Temperature (F) at which the motors will be cooled // TODO Set correct val
+    public static final int kOverheatThreshold = 115; // Temperature (F) at which the motors will be cooled // TODO Set correct val
 
   }
 
